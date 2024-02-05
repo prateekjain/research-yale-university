@@ -1,25 +1,24 @@
-from dash import Dash, dcc, html, Input, Output, callback
-import os
+from dash import Dash, html, dcc, callback, Output, Input
+import plotly.express as px
+import pandas as pd
 
+df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminder_unfiltered.csv')
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = Dash(__name__, external_stylesheets=external_stylesheets)
-
-server = app.server
+app = Dash(__name__)
 
 app.layout = html.Div([
-    html.H1('Hello World'),
-    dcc.Dropdown(['LA', 'NYC', 'MTL'],
-        'LA',
-        id='dropdown'
-    ),
-    html.Div(id='display-value')
+    html.H1(children='Title of Dash App', style={'textAlign':'center'}),
+    dcc.Dropdown(df.country.unique(), 'Canada', id='dropdown-selection'),
+    dcc.Graph(id='graph-content')
 ])
 
-@callback(Output('display-value', 'children'), Input('dropdown', 'value'))
-def display_value(value):
-    return f'You have selected {value}'
+@callback(
+    Output('graph-content', 'figure'),
+    Input('dropdown-selection', 'value')
+)
+def update_graph(value):
+    dff = df[df.country==value]
+    return px.line(dff, x='year', y='pop')
 
 if __name__ == '__main__':
     app.run(debug=True)
