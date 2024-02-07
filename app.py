@@ -75,7 +75,7 @@ def get_data(selected_mz):
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
-
+server = app.server
 # Define the layout of the app
 app.layout = html.Div([
     html.H1("Cancer Research Portfolio"),
@@ -217,4 +217,4 @@ def update_selected_mz_value(selected_mz):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)
