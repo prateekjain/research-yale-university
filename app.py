@@ -1,3 +1,4 @@
+from sqlalchemy import select
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -6,15 +7,18 @@ import plotly.graph_objs as go
 import psycopg2
 from dotenv import load_dotenv
 import os
+import numpy as np
 
 load_dotenv()
 # Function to fetch mz values from the database
 db_url = os.getenv('DATABASE_URL')
-print(f"Database URL: {db_url}")
+print(db_url)
+
+connection = psycopg2.connect(db_url)
+cursor = connection.cursor()
+
 
 def get_mz_values():
-    connection = psycopg2.connect(db_url)
-    cursor = connection.cursor()
 
     query_mz_values = "SELECT DISTINCT mz FROM mz_value"
     cursor.execute(query_mz_values)
@@ -28,45 +32,81 @@ def get_mz_values():
 # Function to fetch data from the database based on selected mz_value
 
 
-def get_data(selected_mz):
-    connection = psycopg2.connect(**db_params)
+def get_case_columns_query(table_name, selected_mz):
+    # Connect to the database
+    connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
 
-    # Fetch data from the "asceding" table
-    query_asceding = f"SELECT * FROM asceding WHERE mz = {selected_mz}"
-    cursor.execute(query_asceding)
-    asceding_data = cursor.fetchall()
+    # Get all column names from the table
+    cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
+    all_columns = [desc[0] for desc in cursor.description]
+    # print(all_columns)
+    # Construct the SQL query dynamically
+    query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
+    query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
 
-    # Fetch data from the "asceding_output" table
-    query_asceding_output = f"SELECT * FROM asceding_output WHERE mz = {selected_mz}"
-    cursor.execute(query_asceding_output)
-    asceding_output_data = cursor.fetchall()
+    # print("query_case" ,query_case)
+    # print("query_control", query_control)
+    cursor.execute(query_case, (selected_mz,))
+    case_results = cursor.fetchall()
 
-    # Get column names for "asceding" table
-    cursor.execute(
-        f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding'")
-    asceding_columns = [row[0] for row in cursor.fetchall()]
+    cursor.execute(query_control, (selected_mz,))
+    control_results = cursor.fetchall()
 
-    # Get column names for "asceding_output" table
-    cursor.execute(
-        f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'")
-    asceding_output_columns = [row[0] for row in cursor.fetchall()]
-
+    # Close the cursor and connection
     cursor.close()
     connection.close()
 
-    print("asceding_data:")
-    print(asceding_data)
-    print("asceding_output_data:")
-    print(asceding_output_data)
+    return case_results, control_results
 
-    print("\nColumn names for asceding table:")
-    print(asceding_columns)
+# def get_data(selected_mz):
 
-    print("\nColumn names for asceding_output table:")
-    print(asceding_output_columns)
+#     # Fetch data from the "asceding_output" table
+#     query_asceding_output = f"SELECT * FROM asceding_output WHERE mz = {selected_mz}"
+#     cursor.execute(query_asceding_output)
+#     asceding_output_data = cursor.fetchall()
 
-    return asceding_data, asceding_output_data
+#     # Get column names for "asceding" table
+#     # cursor.execute(
+#     #     f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding'")
+#     # asceding_columns = [row[0] for row in cursor.fetchall()]
+
+#     # Get column names for "asceding_output" table
+#     cursor.execute(
+#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'")
+#     # asceding_output_columns = [row[0] for row in cursor.fetchall()]
+
+#     asceding_output_columns = get_case_columns_query(asceding_output,selected_mz)
+#     print(asceding_output_columns)
+#     print("hello1")
+
+#     cursor.execute(
+#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output' AND column_name LIKE '%Ascending_case%'")
+#     asceding_case_columns = [row[0] for row in cursor.fetchall()]
+
+#     cursor.execute(
+#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output' AND column_name LIKE '%Ascending_control%'")
+#     asceding_control_columns = [row[0] for row in cursor.fetchall()]
+
+#     # sSELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'AND mz = "mz" and
+    # cursor.close()
+    # connection.close()
+
+    # print("asceding_data:")
+    # print(asceding_data)
+    # print("asceding_output_data:")
+    # print(asceding_output_data)
+
+    # print("\nColumn names for asceding_output table:")
+    # print(asceding_output_columns)
+
+    # print("\nColumn names for asceding table with '_case':")
+    # print(asceding_case_columns)
+
+    # print("\nColumn names for asceding table with 'control':")
+    # print(asceding_control_columns)
+
+    # return asceding_data, asceding_output_data
 
 
 # Initialize the Dash app
@@ -131,65 +171,65 @@ def update_scatter_plot(selected_compound):
 
         # Assuming you have a column named "mz" in your tables
         selected_mz = float(selected_compound)
-
+        print("hello")
         # Fetch data from the database
-        asceding_data, asceding_output_data = get_data(selected_mz)
+        query_case, query_control = get_case_columns_query(
+            "asceding_output", selected_mz)
+        query_case = list(query_case[0])
+        query_control = list(query_control[0])
 
-        # Create a DataFrame from the fetched data
-        # print(pd.DataFrame(asceding_data))
-        # print(pd.DataFrame(asceding_output_data))
+        print("asceding_data", query_case)
+        # print("asceding_data1", type(query_case[0][0]))
+        # print(query_case[0][0])
 
-        df_asceding = pd.DataFrame(
-            asceding_data, columns=['col1', 'col2', 'mz'])
-        df_asceding_output = pd.DataFrame(
-            asceding_output_data, columns=['col1', 'col2', 'mz'])
+        print("asceding_data1", query_control)
 
         # Create a scatter plot
         scatter_plot = go.Figure()
 
         # Add box plots for columns with '_case'
-        for column_name in df_asceding.columns:
-            if '_case' in column_name:
-                scatter_plot.add_trace(go.Box(
-                    x=['Tumor'],
-                    y=df_asceding[column_name],
-                    boxpoints='all',
-                    marker=dict(color='rgba(255, 0, 0, 0.5)'),
-                    jitter=0.3,
-                    pointpos=0,
-                    name=column_name,
-                ))
+        # for i, case_value in enumerate(query_case[1:]):
+        scatter_plot.add_trace(go.Box(
+            x=['Tumor'] * len(query_case),
+            y=query_case,
+            boxpoints='all',
+            marker=dict(color='rgba(255, 0, 0, 0.5)'),
+            jitter=0.3,
+            pointpos=0,
+            showlegend=False,
 
-        # Add box plots for columns with '_control'
-        for column_name in df_asceding_output.columns:
-            if '_control' in column_name:
-                scatter_plot.add_trace(go.Box(
-                    x=['Normal'],
-                    y=df_asceding_output[column_name],
-                    boxpoints='all',
-                    marker=dict(color='rgba(0, 255, 0, 0.5)'),
-                    jitter=0.3,
-                    pointpos=0,
-                    name=column_name,
-                ))
+            name='Tumor',
+        ))
+
+        # Add a box plot for 'Control' values
+        scatter_plot.add_trace(go.Box(
+            x=['Normal'] * len(query_control),
+            y=query_control,
+            boxpoints='all',
+            marker=dict(color='rgba(0, 255, 0, 0.5)'),
+            jitter=0.3,
+            pointpos=0,
+            showlegend=False,
+            name='Control',
+        ))
 
         # Customize layout
         scatter_plot.update_layout(
             title=f'Scatter Plot - asceding - MZ: {selected_mz}',
-            width=800,
+            width=300,
             height=500,
             xaxis=dict(
                 title=dict(
-                    text=f'<b>{selected_mz}</b>',
+                    text=f'<b>asceding</b>',
                     font=dict(size=14, family='Arial, sans-serif',
                               color='black')
                 ),
                 tickangle=90,
-                line=dict(color='black', width=0.5)
+                # line=dict(color='black', width=0.5)
             ),
             yaxis=dict(
                 title='Relative Abundance',
-                line=dict(color='black', width=0.5)
+                # line=dict(color='black', width=0.5)
             )
         )
 
