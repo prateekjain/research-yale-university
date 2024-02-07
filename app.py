@@ -1,13 +1,10 @@
-from sqlalchemy import select
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output
-import pandas as pd
 import plotly.graph_objs as go
 import psycopg2
 from dotenv import load_dotenv
 import os
-import numpy as np
 
 load_dotenv()
 # Function to fetch mz values from the database
@@ -30,8 +27,6 @@ def get_mz_values():
     return mz_values
 
 # Function to fetch data from the database based on selected mz_value
-
-
 def get_case_columns_query(table_name, selected_mz):
     # Connect to the database
     connection = psycopg2.connect(db_url)
@@ -58,56 +53,6 @@ def get_case_columns_query(table_name, selected_mz):
     connection.close()
 
     return case_results, control_results
-
-# def get_data(selected_mz):
-
-#     # Fetch data from the "asceding_output" table
-#     query_asceding_output = f"SELECT * FROM asceding_output WHERE mz = {selected_mz}"
-#     cursor.execute(query_asceding_output)
-#     asceding_output_data = cursor.fetchall()
-
-#     # Get column names for "asceding" table
-#     # cursor.execute(
-#     #     f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding'")
-#     # asceding_columns = [row[0] for row in cursor.fetchall()]
-
-#     # Get column names for "asceding_output" table
-#     cursor.execute(
-#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'")
-#     # asceding_output_columns = [row[0] for row in cursor.fetchall()]
-
-#     asceding_output_columns = get_case_columns_query(asceding_output,selected_mz)
-#     print(asceding_output_columns)
-#     print("hello1")
-
-#     cursor.execute(
-#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output' AND column_name LIKE '%Ascending_case%'")
-#     asceding_case_columns = [row[0] for row in cursor.fetchall()]
-
-#     cursor.execute(
-#         f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output' AND column_name LIKE '%Ascending_control%'")
-#     asceding_control_columns = [row[0] for row in cursor.fetchall()]
-
-#     # sSELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'AND mz = "mz" and
-    # cursor.close()
-    # connection.close()
-
-    # print("asceding_data:")
-    # print(asceding_data)
-    # print("asceding_output_data:")
-    # print(asceding_output_data)
-
-    # print("\nColumn names for asceding_output table:")
-    # print(asceding_output_columns)
-
-    # print("\nColumn names for asceding table with '_case':")
-    # print(asceding_case_columns)
-
-    # print("\nColumn names for asceding table with 'control':")
-    # print(asceding_control_columns)
-
-    # return asceding_data, asceding_output_data
-
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -155,8 +100,6 @@ app.layout = html.Div([
 ])
 
 # Define callback to update the scatter plot based on dropdown selections
-
-
 @app.callback(
     [Output('scatter-plot', 'figure'),
      Output('loading-output', 'children')],
@@ -171,18 +114,18 @@ def update_scatter_plot(selected_compound):
 
         # Assuming you have a column named "mz" in your tables
         selected_mz = float(selected_compound)
-        print("hello")
+        # print("hello")
         # Fetch data from the database
         query_case, query_control = get_case_columns_query(
             "asceding_output", selected_mz)
         query_case = list(query_case[0])
         query_control = list(query_control[0])
 
-        print("asceding_data", query_case)
+        # print("asceding_data", query_case)
         # print("asceding_data1", type(query_case[0][0]))
         # print(query_case[0][0])
 
-        print("asceding_data1", query_control)
+        # print("asceding_data1", query_control)
 
         # Create a scatter plot
         scatter_plot = go.Figure()
