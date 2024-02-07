@@ -4,20 +4,16 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objs as go
 import psycopg2
+from dotenv import load_dotenv
+import os
 
-db_params = {
-    'dbname': 'researchDB',
-    'user': 'postgres',
-    'password': 'postgres',
-    'host': 'localhost',
-    'port': '5432'
-}
-
+load_dotenv()
 # Function to fetch mz values from the database
-
+db_url = os.getenv('DATABASE_URL')
+print(f"Database URL: {db_url}")
 
 def get_mz_values():
-    connection = psycopg2.connect(**db_params)
+    connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
 
     query_mz_values = "SELECT DISTINCT mz FROM mz_value"
@@ -76,6 +72,7 @@ def get_data(selected_mz):
 # Initialize the Dash app
 app = dash.Dash(__name__)
 server = app.server
+
 # Define the layout of the app
 app.layout = html.Div([
     html.H1("Cancer Research Portfolio"),
