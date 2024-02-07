@@ -3,7 +3,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.graph_objs as go
-import psycopg2
+import z
 
 db_params = {
     'dbname': 'researchDB',
@@ -47,11 +47,13 @@ def get_data(selected_mz):
     asceding_output_data = cursor.fetchall()
 
     # Get column names for "asceding" table
-    cursor.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding'")
+    cursor.execute(
+        f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding'")
     asceding_columns = [row[0] for row in cursor.fetchall()]
 
     # Get column names for "asceding_output" table
-    cursor.execute(f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'")
+    cursor.execute(
+        f"SELECT column_name FROM information_schema.columns WHERE table_name = 'asceding_output'")
     asceding_output_columns = [row[0] for row in cursor.fetchall()]
 
     cursor.close()
@@ -76,7 +78,16 @@ app = dash.Dash(__name__)
 
 # Define the layout of the app
 app.layout = html.Div([
-    html.H1("Interactive Plots from PostgreSQL Database"),
+    html.H1("Cancer Research Portfolio"),
+
+    # Body content
+    html.Div([
+        html.P("About"),
+        html.P(
+            "In the same way that a recipe combines a few basic ingredients into a uniquely delicious baked confection, a portfolio is a collection of index funds intelligently mixed in the right proportions. Here you can learn about famous portfolios, study the real-world performance of each concept in both good times and bad, and generally get a good feel for the best investing ideas that the indexing world has to offer."
+        ),
+        html.Div(className="border-line"),
+    ], className="main-container"),
 
     # Body content
     html.Div([

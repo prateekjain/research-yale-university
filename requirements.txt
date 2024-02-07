@@ -18,6 +18,8 @@ numpy==1.26.3
 packaging==23.2
 pandas==2.2.0
 plotly==5.18.0
+psycopg2==2.9.7
+psycopg2-binary==2.9.9
 python-dateutil==2.8.2
 pytz==2024.1
 requests==2.31.0
