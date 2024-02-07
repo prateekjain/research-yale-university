@@ -27,6 +27,8 @@ def get_mz_values():
     return mz_values
 
 # Function to fetch data from the database based on selected mz_value
+
+
 def get_case_columns_query(table_name, selected_mz):
     # Connect to the database
     connection = psycopg2.connect(db_url)
@@ -39,20 +41,26 @@ def get_case_columns_query(table_name, selected_mz):
     # Construct the SQL query dynamically
     query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
     query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
-
+    get_side_val = f"SELECT raw_pval, q_fdr, log_fc_matched FROM {table_name} WHERE mz = {selected_mz}"
     # print("query_case" ,query_case)
     # print("query_control", query_control)
+
     cursor.execute(query_case, (selected_mz,))
     case_results = cursor.fetchall()
 
     cursor.execute(query_control, (selected_mz,))
     control_results = cursor.fetchall()
 
+    cursor.execute(get_side_val)
+    final_get_side_val = cursor.fetchall()
+    # print(final_get_side_val)
+
     # Close the cursor and connection
     cursor.close()
     connection.close()
 
-    return case_results, control_results
+    return case_results, control_results, final_get_side_val
+
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -86,8 +94,13 @@ app.layout = html.Div([
     ),
     html.Div(id='selected-mz-value'),
 
-    # Scatter plot
-    dcc.Graph(id='scatter-plot'),
+    html.Div(
+        dcc.Graph(
+            id='scatter-plot',
+            # Set width and height here
+            style={'width': '100%'}
+        )
+    ),
 
     # Loading indicator
     dcc.Loading(
@@ -100,6 +113,8 @@ app.layout = html.Div([
 ])
 
 # Define callback to update the scatter plot based on dropdown selections
+
+
 @app.callback(
     [Output('scatter-plot', 'figure'),
      Output('loading-output', 'children')],
@@ -114,19 +129,28 @@ def update_scatter_plot(selected_compound):
 
         # Assuming you have a column named "mz" in your tables
         selected_mz = float(selected_compound)
-        # print("hello")
+
         # Fetch data from the database
-        query_case, query_control = get_case_columns_query(
+        query_case, query_control, final_get_side_val = get_case_columns_query(
             "asceding_output", selected_mz)
         query_case = list(query_case[0])
         query_control = list(query_control[0])
+        final_get_side_val = list(final_get_side_val[0])
 
-        # print("asceding_data", query_case)
-        # print("asceding_data1", type(query_case[0][0]))
-        # print(query_case[0][0])
+        print(final_get_side_val[1])
+        qFdr = final_get_side_val[1]
+        print(qFdr)
 
-        # print("asceding_data1", query_control)
+        if qFdr < 0.001 and qFdr > 0.01:
+            qFdrStars = '***'
+        elif qFdr < 0.01 and qFdr > 0.05:
+            qFdrStars = '**'
+        elif qFdr < 0.05:
+            qFdrStars = '*'
+        else:
+            qFdrStars = 'NA'
 
+        print(qFdrStars)
         # Create a scatter plot
         scatter_plot = go.Figure()
 
@@ -155,15 +179,28 @@ def update_scatter_plot(selected_compound):
             showlegend=False,
             name='Control',
         ))
-
+        # annotations = [
+        #     {
+        #         'x': 1.75,
+        #         'y': 0.94,
+        #         'xref': 'paper',
+        #         'yref': 'paper',
+        #         'text' = f"q: {qFdrStars}<br>LogFC: {final_get_side_val[2]:.2f}",
+        #         'showarrow': False,
+        #         'font': {
+        #             'size': 12,
+        #             'color': 'black'
+        #         }
+        #     }
+        # ]
         # Customize layout
         scatter_plot.update_layout(
-            title=f'Scatter Plot - asceding - MZ: {selected_mz}',
+            title=f'MZ: {selected_mz}',
             width=300,
             height=500,
             xaxis=dict(
                 title=dict(
-                    text=f'<b>asceding</b>',
+                    text=f'<b>ascending</b>',
                     font=dict(size=14, family='Arial, sans-serif',
                               color='black')
                 ),
@@ -173,7 +210,21 @@ def update_scatter_plot(selected_compound):
             yaxis=dict(
                 title='Relative Abundance',
                 # line=dict(color='black', width=0.5)
-            )
+            ),
+            annotations=[
+                dict(
+                    x=1.45,
+                    y=0.94,  # Adjust the y-coordinate as needed
+                    xref='paper',
+                    yref='paper',
+                    text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[2]:.2f}",
+                    showarrow=False,
+                    font={
+                        'size': 12,  # Corrected assignment
+                        'color': 'black',  # Corrected assignment
+                    }
+                )
+            ]
         )
 
         return scatter_plot, loading_message
