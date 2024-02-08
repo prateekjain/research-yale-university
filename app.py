@@ -62,8 +62,8 @@ def get_case_columns_query(table_name, selected_mz):
     return case_results, control_results, final_get_side_val
 
 
-# Initialize the Dash app
-app = dash.Dash(__name__)
+external_stylesheets = ['styles.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 # Define the layout of the app
@@ -132,7 +132,7 @@ def update_scatter_plot(selected_compound):
 
         # Fetch data from the database
         query_case, query_control, final_get_side_val = get_case_columns_query(
-            "asceding_output", selected_mz)
+            "asceding", selected_mz)
         query_case = list(query_case[0])
         query_control = list(query_control[0])
         final_get_side_val = list(final_get_side_val[0])
