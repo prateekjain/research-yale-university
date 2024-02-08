@@ -14,6 +14,8 @@ print(db_url)
 
 connection = psycopg2.connect(db_url)
 cursor = connection.cursor()
+region = ["cecum", "ascending", "transverse",
+          "descending", "sigmoid", "rectosigmoid", "rectum"]
 
 
 def get_mz_values():
@@ -93,15 +95,32 @@ app.layout = html.Div([
         options=[{'label': mz, 'value': mz} for mz in get_mz_values()],
         placeholder="Select Mz Value",
         multi=False,
-        style={'width': '50%'}
+        style={'width': '50%'},
     ),
     html.Div(id='selected-mz-value'),
 
     html.Div(
-    [dcc.Graph(
-        id=f'scatter-plot-{i}',
-        style={'width': '100%', 'display': 'inline-block', 'margin-right': '10px'}
+        [dcc.Graph(
+            id=f'scatter-plot-{i}',
+            style={'width': '100%', 'display': 'inline-block',
+                   'margin-right': '10px'}
         ) for i in range(7)],
+        style={'display': 'flex'}
+    ),
+    html.Div(
+        [dcc.Graph(
+            id=f'tumor-plot',
+            style={'width': '100%', 'display': 'inline-block',
+                   'margin-right': '10px'}
+        )],
+        style={'display': 'flex'}
+    ),
+    html.Div(
+        [dcc.Graph(
+            id=f'normal-plot',
+            style={'width': '100%', 'display': 'inline-block',
+                   'margin-right': '10px'}
+        )],
         style={'display': 'flex'}
     ),
 
@@ -122,13 +141,11 @@ app.layout = html.Div([
     [Output(f'scatter-plot-{i}', 'figure') for i in range(7)],
     [Input('compound-dropdown', 'value')]
 )
-def update_scatter_plots(selected_compound):
+def tumor_vs_normal_plots(selected_compound):
     if selected_compound is not None:
         # Fetch and process data based on selected values
         # Assuming you have a column named "mz" in your tables
         selected_mz = float(selected_compound)
-        region = ["cecum", "ascending", "transverse",
-                  "descending", "sigmoid", "rectosigmoid", "rectum"]
 
         figures = []
 
@@ -234,11 +251,130 @@ def update_scatter_plots(selected_compound):
 
             figures.append(scatter_plot)
 
+        # Show the graph container
         return figures
     else:
-        # If dropdown is not selected, return empty plots
+        # If dropdown is not selected, hide the container
         return [go.Figure()] * 7
+
 # Callback to update the displayed mz value
+
+
+@app.callback(
+    Output('tumor-plot', 'figure'),
+    Output('normal-plot', 'figure'),
+    [Input('compound-dropdown', 'value')]
+)
+def tumor_normal_plot(selected_compound):
+    if selected_compound is not None:
+        # Fetch and process data based on selected values
+        selected_mz = float(selected_compound)
+        query_tumor_regions = []
+        query_normal_regions = []
+        for i in range(len(region)):
+            query_case, query_control, final_get_side_val = get_case_columns_query(
+                region[i], selected_mz)
+            query_case = list(query_case[0])
+            query_control = list(query_control[0])
+            query_tumor_regions.extend(query_case)
+            query_normal_regions.extend(query_control)
+
+        tumor_plot_all_regions = make_subplots()
+        tumor_plot_all_regions.add_trace(go.Box(
+            x=[f'{region[i]}'for i in range(
+                len(region))] * len(query_tumor_regions),
+            y=query_tumor_regions,
+            boxpoints='all',
+            fillcolor='white',
+            line=dict(color='black'),
+            marker=dict(color='rgba(255, 0, 0, 1)'),
+            jitter=0.1,
+            pointpos=0,
+            showlegend=False,
+            name='Tumor',
+        ))
+        tumor_plot_all_regions.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        tumor_plot_all_regions.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        tumor_plot_all_regions.update_layout(
+            width=600,
+            height=500,
+            xaxis=dict(
+                title=dict(
+                    text=f'<b>All Regions Tumor</b>',
+                    font=dict(
+                        size=14, family='Arial, sans-serif', color='black')
+                ),
+                tickangle=90,
+            ),
+            yaxis=dict(
+                title='Relative Abundance',
+            ),
+            plot_bgcolor='white',
+        )
+        
+        normal_plot_all_regions = make_subplots()
+        normal_plot_all_regions.add_trace(go.Box(
+            x=[f'{region[i]}'for i in range(
+                len(region))] * len(query_normal_regions),
+            y=query_normal_regions,
+            boxpoints='all',
+            fillcolor='white',
+            line=dict(color='black'),
+            marker=dict(color='rgba(0, 255, 0, 1)'),
+            jitter=0.1,
+            pointpos=0,
+            showlegend=False,
+            name='Normal',
+        ))
+        normal_plot_all_regions.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        normal_plot_all_regions.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        normal_plot_all_regions.update_layout(
+            width=600,
+            height=500,
+            xaxis=dict(
+                title=dict(
+                    text=f'<b>All Regions Normal</b>',
+                    font=dict(
+                        size=14, family='Arial, sans-serif', color='black')
+                ),
+                tickangle=90,
+            ),
+            yaxis=dict(
+                title='Relative Abundance',
+            ),
+            plot_bgcolor='white',
+        )
+
+
+        # Show the graph containers
+        return tumor_plot_all_regions, normal_plot_all_regions
+    else:
+        # If dropdown is not selected, hide the containers
+        return go.Figure(), go.Figure()
 
 
 @app.callback(

@@ -4,3 +4,4 @@ venv
 .env
 init_db.py
 test.py
+mydb.dump
