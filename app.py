@@ -41,19 +41,22 @@ def get_case_columns_query(table_name, selected_mz):
     # Construct the SQL query dynamically
     query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
     query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
-    get_side_val = f"SELECT raw_pval, q_fdr, log_fc_matched FROM {table_name} WHERE mz = {selected_mz}"
+    get_side_val = f"SELECT q_fdr, log_fc_matched FROM {table_name} WHERE mz = {selected_mz}"
     # print("query_case" ,query_case)
     # print("query_control", query_control)
 
     cursor.execute(query_case, (selected_mz,))
     case_results = cursor.fetchall()
+    print(case_results)
+    
 
     cursor.execute(query_control, (selected_mz,))
     control_results = cursor.fetchall()
+    print(control_results)
 
     cursor.execute(get_side_val)
     final_get_side_val = cursor.fetchall()
-    # print(final_get_side_val)
+    print(final_get_side_val)
 
     # Close the cursor and connection
     cursor.close()
@@ -137,8 +140,8 @@ def update_scatter_plot(selected_compound):
         query_control = list(query_control[0])
         final_get_side_val = list(final_get_side_val[0])
 
-        print(final_get_side_val[1])
-        qFdr = final_get_side_val[1]
+        print(final_get_side_val[0])
+        qFdr = final_get_side_val[0]
         print(qFdr)
 
         if qFdr < 0.001 and qFdr > 0.01:
@@ -231,7 +234,7 @@ def update_scatter_plot(selected_compound):
                     y=0.94,  # Adjust the y-coordinate as needed
                     xref='paper',
                     yref='paper',
-                    text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[2]:.2f}",
+                    text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
                     align='left',
                     showarrow=False,
                     font={
