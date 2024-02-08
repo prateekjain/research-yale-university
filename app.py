@@ -108,14 +108,16 @@ app.layout = html.Div([
         style={'display': 'flex'}
     ),
     html.Div(
-    [
-        dcc.Graph(
-            id=f'tumor-plot',
-            style={'width': '50%', 'display': 'inline-block', 'margin-right': '10px'}
-        ),
-        dcc.Graph(
-            id=f'normal-plot',
-            style={'width': '50%', 'display': 'inline-block', 'margin-right': '10px'}
+        [
+            dcc.Graph(
+                id=f'tumor-plot',
+                style={'width': '50%', 'display': 'inline-block',
+                       'margin-right': '10px'}
+            ),
+            dcc.Graph(
+                id=f'normal-plot',
+                style={'width': '50%', 'display': 'inline-block',
+                       'margin-right': '10px'}
             ),
         ],
         style={'display': 'flex'}
@@ -268,6 +270,18 @@ def tumor_normal_plot(selected_compound):
         selected_mz = float(selected_compound)
         query_tumor_regions = []
         query_normal_regions = []
+
+        # Define a list of colors for each region
+        region_colors = {
+            "cecum": 'aliceblue',
+            "ascending": 'blue',
+            "transverse": 'cyan',
+            "descending": 'mistyrose',
+            "sigmoid": 'yellow',
+            "rectosigmoid": 'brown',
+            "rectum": 'pink',
+        }
+
         for i in range(len(region)):
             query_case, query_control, final_get_side_val = get_case_columns_query(
                 region[i], selected_mz)
@@ -277,19 +291,24 @@ def tumor_normal_plot(selected_compound):
             query_normal_regions.extend(query_control)
 
         tumor_plot_all_regions = make_subplots()
-        tumor_plot_all_regions.add_trace(go.Box(
-            x=[f'{region[i]}'for i in range(
-                len(region))] * len(query_tumor_regions),
-            y=query_tumor_regions,
-            boxpoints='all',
-            fillcolor='white',
-            line=dict(color='black'),
-            marker=dict(color='rgba(255, 0, 0, 1)'),
-            jitter=0.1,
-            pointpos=0,
-            showlegend=False,
-            name='Tumor',
-        ))
+        for i in range(len(region)):
+            # Create a separate trace for each region with different color
+            x_values = [f'{region[i]}' for _ in range(
+                len(query_tumor_regions)//len(region))]
+            tumor_plot_all_regions.add_trace(go.Box(
+                x=x_values,
+                y=query_tumor_regions[i*len(x_values):(i+1)*len(x_values)],
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color=region_colors[region[i]]),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+                name='Tumor',
+            ))
+
+        # Update layout for tumor plot
         tumor_plot_all_regions.update_xaxes(
             mirror=True,
             ticks='outside',
@@ -320,21 +339,26 @@ def tumor_normal_plot(selected_compound):
             ),
             plot_bgcolor='white',
         )
-        
+
         normal_plot_all_regions = make_subplots()
-        normal_plot_all_regions.add_trace(go.Box(
-            x=[f'{region[i]}'for i in range(
-                len(region))] * len(query_normal_regions),
-            y=query_normal_regions,
-            boxpoints='all',
-            fillcolor='white',
-            line=dict(color='black'),
-            marker=dict(color='rgba(0, 255, 0, 1)'),
-            jitter=0.1,
-            pointpos=0,
-            showlegend=False,
-            name='Normal',
-        ))
+        for i in range(len(region)):
+            # Create a separate trace for each region with different color
+            x_values = [f'{region[i]}' for _ in range(
+                len(query_normal_regions)//len(region))]
+            normal_plot_all_regions.add_trace(go.Box(
+                x=x_values,
+                y=query_normal_regions[i*len(x_values):(i+1)*len(x_values)],
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color=region_colors[region[i]]),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+                name='Normal',
+            ))
+
+        # Update layout for normal plot
         normal_plot_all_regions.update_xaxes(
             mirror=True,
             ticks='outside',
@@ -366,13 +390,11 @@ def tumor_normal_plot(selected_compound):
             plot_bgcolor='white',
         )
 
-
         # Show the graph containers
         return tumor_plot_all_regions, normal_plot_all_regions
     else:
         # If dropdown is not selected, hide the containers
         return go.Figure(), go.Figure()
-
 
 @app.callback(
     Output('selected-mz-value', 'children'),
