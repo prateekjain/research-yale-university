@@ -98,10 +98,11 @@ app.layout = html.Div([
     html.Div(id='selected-mz-value'),
 
     html.Div(
-        [dcc.Graph(
-            id=f'scatter-plot-{i}',
-            style={'width': '100%'}
-        ) for i in range(7)]
+    [dcc.Graph(
+        id=f'scatter-plot-{i}',
+        style={'width': '100%', 'display': 'inline-block', 'margin-right': '10px'}
+        ) for i in range(7)],
+        style={'display': 'flex'}
     ),
 
     # Loading indicator
