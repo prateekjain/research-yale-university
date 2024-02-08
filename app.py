@@ -160,12 +160,18 @@ def update_scatter_plot(selected_compound):
             x=['Tumor'] * len(query_case),
             y=query_case,
             boxpoints='all',
-            marker=dict(color='rgba(255, 0, 0, 0.5)'),
-            jitter=0.3,
+            fillcolor='white',
+            line=dict(color='black'),
+            # gridcolor='lightgrey',
+            marker=dict(
+                color='rgba(255, 0, 0, 1)',  # Red color for the box
+                # line=dict(color='black', width=1),  # Black border for the box
+            ),
+            jitter=0.1,
             pointpos=0,
             showlegend=False,
-
             name='Tumor',
+
         ))
 
         # Add a box plot for 'Control' values
@@ -173,29 +179,34 @@ def update_scatter_plot(selected_compound):
             x=['Normal'] * len(query_control),
             y=query_control,
             boxpoints='all',
-            marker=dict(color='rgba(0, 255, 0, 0.5)'),
-            jitter=0.3,
+            fillcolor='white',
+            line=dict(color='black'),
+            # gridcolor='lightgrey',
+            marker=dict(color='rgba(0, 255, 0, 0.8)',
+                        # line=dict(color='black', width=1),
+                        ),
+            jitter=0.1,
             pointpos=0,
             showlegend=False,
-            name='Control',
+
         ))
-        # annotations = [
-        #     {
-        #         'x': 1.75,
-        #         'y': 0.94,
-        #         'xref': 'paper',
-        #         'yref': 'paper',
-        #         'text' = f"q: {qFdrStars}<br>LogFC: {final_get_side_val[2]:.2f}",
-        #         'showarrow': False,
-        #         'font': {
-        #             'size': 12,
-        #             'color': 'black'
-        #         }
-        #     }
-        # ]
+
+        scatter_plot.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        scatter_plot.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
         # Customize layout
         scatter_plot.update_layout(
-            title=f'MZ: {selected_mz}',
             width=300,
             height=500,
             xaxis=dict(
@@ -211,18 +222,24 @@ def update_scatter_plot(selected_compound):
                 title='Relative Abundance',
                 # line=dict(color='black', width=0.5)
             ),
+            # template='plotly_dark',
+            plot_bgcolor='white',
+            # paper_bgcolor='rgba(0, 0, 0, 0)',
             annotations=[
                 dict(
-                    x=1.45,
+                    x=1.57,
                     y=0.94,  # Adjust the y-coordinate as needed
                     xref='paper',
                     yref='paper',
                     text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[2]:.2f}",
+                    align='left',
                     showarrow=False,
                     font={
                         'size': 12,  # Corrected assignment
                         'color': 'black',  # Corrected assignment
-                    }
+                    },
+                    bordercolor='black',
+                    borderwidth=1
                 )
             ]
         )
