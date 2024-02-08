@@ -108,19 +108,16 @@ app.layout = html.Div([
         style={'display': 'flex'}
     ),
     html.Div(
-        [dcc.Graph(
+    [
+        dcc.Graph(
             id=f'tumor-plot',
-            style={'width': '100%', 'display': 'inline-block',
-                   'margin-right': '10px'}
-        )],
-        style={'display': 'flex'}
-    ),
-    html.Div(
-        [dcc.Graph(
+            style={'width': '50%', 'display': 'inline-block', 'margin-right': '10px'}
+        ),
+        dcc.Graph(
             id=f'normal-plot',
-            style={'width': '100%', 'display': 'inline-block',
-                   'margin-right': '10px'}
-        )],
+            style={'width': '50%', 'display': 'inline-block', 'margin-right': '10px'}
+            ),
+        ],
         style={'display': 'flex'}
     ),
 
