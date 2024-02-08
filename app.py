@@ -4,6 +4,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import psycopg2
 from dotenv import load_dotenv
+from plotly.subplots import make_subplots
 import os
 
 load_dotenv()
@@ -48,7 +49,6 @@ def get_case_columns_query(table_name, selected_mz):
     cursor.execute(query_case, (selected_mz,))
     case_results = cursor.fetchall()
     print(case_results)
-    
 
     cursor.execute(query_control, (selected_mz,))
     control_results = cursor.fetchall()
@@ -98,11 +98,10 @@ app.layout = html.Div([
     html.Div(id='selected-mz-value'),
 
     html.Div(
-        dcc.Graph(
-            id='scatter-plot',
-            # Set width and height here
+        [dcc.Graph(
+            id=f'scatter-plot-{i}',
             style={'width': '100%'}
-        )
+        ) for i in range(7)]
     ),
 
     # Loading indicator
@@ -119,139 +118,125 @@ app.layout = html.Div([
 
 
 @app.callback(
-    [Output('scatter-plot', 'figure'),
-     Output('loading-output', 'children')],
+    [Output(f'scatter-plot-{i}', 'figure') for i in range(7)],
     [Input('compound-dropdown', 'value')]
 )
-def update_scatter_plot(selected_compound):
-    loading_message = None
-
+def update_scatter_plots(selected_compound):
     if selected_compound is not None:
         # Fetch and process data based on selected values
-        loading_message = f"Fetching data for Compound {selected_compound}..."
-
         # Assuming you have a column named "mz" in your tables
         selected_mz = float(selected_compound)
+        region = ["cecum", "ascending", "transverse",
+                  "descending", "sigmoid", "rectosigmoid", "rectum"]
 
-        # Fetch data from the database
-        query_case, query_control, final_get_side_val = get_case_columns_query(
-            "asceding", selected_mz)
-        query_case = list(query_case[0])
-        query_control = list(query_control[0])
-        final_get_side_val = list(final_get_side_val[0])
+        figures = []
 
-        print(final_get_side_val[0])
-        qFdr = final_get_side_val[0]
-        print(qFdr)
+        for i in range(len(region)):
+            # Fetch data from the database
+            query_case, query_control, final_get_side_val = get_case_columns_query(
+                region[i], selected_mz)
+            query_case = list(query_case[0])
+            query_control = list(query_control[0])
+            final_get_side_val = list(final_get_side_val[0])
 
-        if qFdr < 0.001 and qFdr > 0.01:
-            qFdrStars = '***'
-        elif qFdr < 0.01 and qFdr > 0.05:
-            qFdrStars = '**'
-        elif qFdr < 0.05:
-            qFdrStars = '*'
-        else:
-            qFdrStars = 'NA'
+            qFdr = final_get_side_val[0]
 
-        print(qFdrStars)
-        # Create a scatter plot
-        scatter_plot = go.Figure()
+            if qFdr < 0.001 and qFdr > 0.01:
+                qFdrStars = '***'
+            elif qFdr < 0.01 and qFdr > 0.05:
+                qFdrStars = '**'
+            elif qFdr < 0.05:
+                qFdrStars = '*'
+            else:
+                qFdrStars = 'NA'
 
-        # Add box plots for columns with '_case'
-        # for i, case_value in enumerate(query_case[1:]):
-        scatter_plot.add_trace(go.Box(
-            x=['Tumor'] * len(query_case),
-            y=query_case,
-            boxpoints='all',
-            fillcolor='white',
-            line=dict(color='black'),
-            # gridcolor='lightgrey',
-            marker=dict(
-                color='rgba(255, 0, 0, 1)',  # Red color for the box
-                # line=dict(color='black', width=1),  # Black border for the box
-            ),
-            jitter=0.1,
-            pointpos=0,
-            showlegend=False,
-            name='Tumor',
+            # Create a scatter plot
+            scatter_plot = make_subplots()
 
-        ))
+            # Add box plots for columns with '_case'
+            scatter_plot.add_trace(go.Box(
+                x=['Tumor'] * len(query_case),
+                y=query_case,
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color='rgba(255, 0, 0, 1)'),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+                name='Tumor',
+            ))
 
-        # Add a box plot for 'Control' values
-        scatter_plot.add_trace(go.Box(
-            x=['Normal'] * len(query_control),
-            y=query_control,
-            boxpoints='all',
-            fillcolor='white',
-            line=dict(color='black'),
-            # gridcolor='lightgrey',
-            marker=dict(color='rgba(0, 255, 0, 0.8)',
-                        # line=dict(color='black', width=1),
-                        ),
-            jitter=0.1,
-            pointpos=0,
-            showlegend=False,
+            # Add a box plot for 'Control' values
+            scatter_plot.add_trace(go.Box(
+                x=['Normal'] * len(query_control),
+                y=query_control,
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color='rgba(0, 255, 0, 0.8)'),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+            ))
 
-        ))
+            scatter_plot.update_xaxes(
+                mirror=True,
+                ticks='outside',
+                showline=True,
+                linecolor='black',
+                gridcolor='lightgrey'
+            )
+            scatter_plot.update_yaxes(
+                mirror=True,
+                ticks='outside',
+                showline=True,
+                linecolor='black',
+                gridcolor='lightgrey'
+            )
 
-        scatter_plot.update_xaxes(
-            mirror=True,
-            ticks='outside',
-            showline=True,
-            linecolor='black',
-            gridcolor='lightgrey'
-        )
-        scatter_plot.update_yaxes(
-            mirror=True,
-            ticks='outside',
-            showline=True,
-            linecolor='black',
-            gridcolor='lightgrey'
-        )
-        # Customize layout
-        scatter_plot.update_layout(
-            width=300,
-            height=500,
-            xaxis=dict(
-                title=dict(
-                    text=f'<b>ascending</b>',
-                    font=dict(size=14, family='Arial, sans-serif',
-                              color='black')
+            # Customize layout
+            name = region[i]
+            scatter_plot.update_layout(
+                width=300,
+                height=500,
+                xaxis=dict(
+                    title=dict(
+                        text=f'<b>{name}</b>',
+                        font=dict(
+                            size=14, family='Arial, sans-serif', color='black')
+                    ),
+                    tickangle=90,
                 ),
-                tickangle=90,
-                # line=dict(color='black', width=0.5)
-            ),
-            yaxis=dict(
-                title='Relative Abundance',
-                # line=dict(color='black', width=0.5)
-            ),
-            # template='plotly_dark',
-            plot_bgcolor='white',
-            # paper_bgcolor='rgba(0, 0, 0, 0)',
-            annotations=[
-                dict(
-                    x=1.57,
-                    y=0.94,  # Adjust the y-coordinate as needed
-                    xref='paper',
-                    yref='paper',
-                    text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
-                    align='left',
-                    showarrow=False,
-                    font={
-                        'size': 12,  # Corrected assignment
-                        'color': 'black',  # Corrected assignment
-                    },
-                    bordercolor='black',
-                    borderwidth=1
-                )
-            ]
-        )
+                yaxis=dict(
+                    title='Relative Abundance',
+                ),
+                plot_bgcolor='white',
+                annotations=[
+                    dict(
+                        x=1.57,
+                        y=0.94,
+                        xref='paper',
+                        yref='paper',
+                        text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
+                        align='left',
+                        showarrow=False,
+                        font={
+                            'size': 12,
+                            'color': 'black',
+                        },
+                        bordercolor='black',
+                        borderwidth=1
+                    )
+                ]
+            )
 
-        return scatter_plot, loading_message
+            figures.append(scatter_plot)
+
+        return figures
     else:
-        # If dropdown is not selected, return an empty plot
-        return go.Figure(), None
-
+        # If dropdown is not selected, return empty plots
+        return [go.Figure()] * 7
 # Callback to update the displayed mz value
 
 

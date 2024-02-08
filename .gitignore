@@ -3,3 +3,4 @@ venv
 .DS_Store
 .env
 init_db.py
+test.py

@@ -42,9 +42,9 @@ def read_csv_with_encoding(csv_path, encodings):
         "Unable to decode CSV file with specified encodings")
 
 
-tableName = "transvrse"
+tableName = "transverse"
 # Specify the path to your CSV file
-csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/CRC_HILIC_transvrse_Ttest_output_AJ1.csv'
+csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/CRC_HILIC_transverse_Ttest_output_AJ1.csv'
 
 encodings_to_try = ['utf-8', 'latin-1']  # Add more if needed
 
