@@ -136,13 +136,13 @@ def vs_columnNames(table_name, fig, selected_meta):
                 qFdr = query_q_vs_result[0][vs_value]
                 print("exist_", i)
 
-                if qFdr < 0.001 and qFdr > 0.01:
+                if qFdr < 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01 and qFdr > 0.05:
+                elif qFdr < 0.01:
                     qFdrStars = '**'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
@@ -163,14 +163,14 @@ def vs_columnNames(table_name, fig, selected_meta):
                 print(query_q_vs_result[0][vs_value])
                 print("exist_", i)
                 qFdr = query_q_vs_result[0][vs_value]
-                if qFdr < 0.001 and qFdr > 0.01:
+                if qFdr < 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
 
-                elif qFdr < 0.01 and qFdr > 0.05:
+                elif qFdr < 0.01:
                     qFdrStars = '**'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
@@ -566,7 +566,7 @@ def add_comparison_lines(fig, regions, y_range, symbol):
         y0=y_range[0],
         x1=regions[0],
         y1=y_range[1],
-        line=dict(color="black", width=2),
+        line=dict(color="black", width=0.5),
     )
     fig.add_shape(
         type="line",
@@ -576,7 +576,7 @@ def add_comparison_lines(fig, regions, y_range, symbol):
         y0=y_range[1],
         x1=regions[1],
         y1=y_range[1],
-        line=dict(color="black", width=2),
+        line=dict(color="black", width=0.5),
     )
     fig.add_shape(
         type="line",
@@ -586,7 +586,7 @@ def add_comparison_lines(fig, regions, y_range, symbol):
         y0=y_range[1],
         x1=regions[1],
         y1=y_range[0],
-        line=dict(color="black", width=2),
+        line=dict(color="black", width=0.5),
     )
 
     bar_xcoord_map = {x: idx for idx, x in enumerate(region)}
