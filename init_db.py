@@ -42,9 +42,9 @@ def read_csv_with_encoding(csv_path, encodings):
         "Unable to decode CSV file with specified encodings")
 
 
-tableName = "transverse"
+tableName = "tumor_tumor_compare"
 # Specify the path to your CSV file
-csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/CRC_HILIC_transverse_Ttest_output_AJ1.csv'
+csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/Tumor_tumor_test.csv'
 
 encodings_to_try = ['utf-8', 'latin-1']  # Add more if needed
 
@@ -52,7 +52,7 @@ df = read_csv_with_encoding(csv_path, encodings_to_try)
 # Read the CSV file and get column names
 # df = pd.read_csv(csv_path)
 print(df.columns)
-df.columns = [col.replace('.', '_').replace(
+df.columns = [col.replace(' - ', '_vs_').replace(
     '(', '_').replace(')', '_').replace('/', '_') for col in df.columns]
 
 column_names = df.columns.tolist()
@@ -68,7 +68,7 @@ with conn.cursor() as cursor:
     cursor.execute(create_table_sql)
 
 # Specify the columns you want to alter to type TEXT
-# columns_to_alter = ["name", "HMDB_matches", "HMDB_matches_1"]
+columns_to_alter = ["Metabolite"]
 
 # add list_2_match, HMDB_matches_2 for output files too
 # columns_to_alter = ["name", "HMDB_matches",
@@ -76,10 +76,10 @@ with conn.cursor() as cursor:
 
 
 # # Create and execute ALTER TABLE statements
-# for col in columns_to_alter:
-#     alter_sql = f"ALTER TABLE {tableName} ALTER COLUMN {col} TYPE TEXT;"
-#     with conn.cursor() as cursor:
-#         cursor.execute(alter_sql)
+for col in columns_to_alter:
+    alter_sql = f"ALTER TABLE {tableName} ALTER COLUMN {col} TYPE TEXT;"
+    with conn.cursor() as cursor:
+        cursor.execute(alter_sql)
 
 
 # Load data into the table

@@ -14,11 +14,14 @@ print(db_url)
 
 connection = psycopg2.connect(db_url)
 cursor = connection.cursor()
+
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
 
 def get_mz_values():
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
 
     query_mz_values = "SELECT DISTINCT mz FROM mz_value"
     cursor.execute(query_mz_values)
@@ -32,12 +35,25 @@ def get_mz_values():
 # Function to fetch data from the database based on selected mz_value
 
 
+def get_meta_values():
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+
+    query_meta_values = "SELECT DISTINCT Metabolite FROM tumor_tumor_compare"
+    cursor.execute(query_meta_values)
+    meta_values = [row[0] for row in cursor.fetchall()]
+
+    cursor.close()
+    connection.close()
+
+    return meta_values
+
+
 def get_case_columns_query(table_name, selected_mz):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-
-    # Get all column names from the table
+    # # Get all column names from the table
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
     # print(all_columns)
@@ -48,11 +64,11 @@ def get_case_columns_query(table_name, selected_mz):
     # print("query_case" ,query_case)
     # print("query_control", query_control)
 
-    cursor.execute(query_case, (selected_mz,))
+    cursor.execute(query_case)
     case_results = cursor.fetchall()
     print(case_results)
 
-    cursor.execute(query_control, (selected_mz,))
+    cursor.execute(query_control)
     control_results = cursor.fetchall()
     print(control_results)
 
@@ -65,6 +81,110 @@ def get_case_columns_query(table_name, selected_mz):
     connection.close()
 
     return case_results, control_results, final_get_side_val
+
+
+def get_case_columns_vs_query(columName, selected_meta):
+    # Connect to the database
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    table_name = "tumor_tumor_compare"
+
+    cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
+    all_columns = [desc[0] for desc in cursor.description]
+    print("all_columns", all_columns)
+    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE metabolite = '{selected_meta}'"
+
+    cursor.execute(query_case)
+    case_results = cursor.fetchall()
+
+    case_values = [item for sublist in case_results for item in sublist]
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    return case_results
+
+
+def vs_columnNames(table_name, fig, selected_meta):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    col_vs = []
+
+    cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
+    all_columns = [desc[0] for desc in cursor.description]
+    query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE metabolite = '{selected_meta}'"
+    cursor.execute(query_q_vs, (selected_meta,))
+    query_q_vs_result = cursor.fetchall()
+    print(query_q_vs_result)
+
+    for col in all_columns:
+        if 'vs' in col.lower():
+            col_vs.append(col)
+    # print(col_vs)
+    index = 0
+    vpos = 0.69
+    hpos = 0.7
+    for i in range(len(region)):
+        for j in range(i+1, len(region)):
+            vs_value_name = "case_"+region[i]+"_vs_case_"+region[j]
+            vs_value_name_neg = "case_"+region[j]+"_vs_case_"+region[i]
+            print("vpos", vpos, hpos)
+
+            if vs_value_name in col_vs:
+                vs_value = col_vs.index(vs_value_name)
+                print(query_q_vs_result[0][vs_value])
+                qFdr = query_q_vs_result[0][vs_value]
+                print("exist_", i)
+
+                if qFdr < 0.001 and qFdr > 0.01:
+                    qFdrStars = '***'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+                elif qFdr < 0.01 and qFdr > 0.05:
+                    qFdrStars = '**'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+
+                elif qFdr < 0.05:
+                    qFdrStars = '*'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+
+                # add_comparison_lines(fig, [region[i], region[j]], [
+                #                      0.78+index, 0.8+index], symbol=qFdrStars)
+            elif vs_value_name_neg in col_vs:
+                vs_value = col_vs.index(vs_value_name_neg)
+                print(query_q_vs_result[0][vs_value])
+                print("exist_", i)
+                qFdr = query_q_vs_result[0][vs_value]
+                if qFdr < 0.001 and qFdr > 0.01:
+                    qFdrStars = '***'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+
+                elif qFdr < 0.01 and qFdr > 0.05:
+                    qFdrStars = '**'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+
+                elif qFdr < 0.05:
+                    qFdrStars = '*'
+                    add_comparison_lines(fig, [region[i], region[j]], [
+                        vpos+index, hpos+index], symbol=qFdrStars)
+                    index += 0.03
+                    print("vpos", vpos+index, hpos+index)
+    cursor.close()
+    connection.close()
 
 
 external_stylesheets = ['styles.css']
@@ -89,11 +209,12 @@ app.layout = html.Div([
         html.P("This is some content in a body font."),
     ]),
 
-    html.Label("Select Compound:"),
+    html.Label("Select Compound mz-h:"),
     dcc.Dropdown(
         id='compound-dropdown',
         options=[{'label': mz, 'value': mz} for mz in get_mz_values()],
         placeholder="Select Mz Value",
+        searchable=True,
         multi=False,
         style={'width': '50%'},
     ),
@@ -116,6 +237,34 @@ app.layout = html.Div([
             ),
             dcc.Graph(
                 id=f'normal-plot',
+                style={'width': '50%', 'display': 'inline-block',
+                       'margin-right': '10px'}
+            ),
+        ],
+        style={'display': 'flex'}
+    ),
+    html.Label("Select Compound mz Compare:"),
+
+    dcc.Dropdown(
+        id='compound-dropdown-compare',
+        options=[{'label': mz, 'value': mz} for mz in get_meta_values()],
+        placeholder="Select Mz Value",
+        searchable=True,
+        clearable=True,
+        multi=False,
+        style={'width': '50%'},
+    ),
+    html.Div(id='selected-meta-value'),
+
+    html.Div(
+        [
+            dcc.Graph(
+                id=f'tumor-comparable-plot',
+                style={'width': '50%', 'display': 'inline-block',
+                       'margin-right': '10px'}
+            ),
+            dcc.Graph(
+                id=f'normal-comparable-plot',
                 style={'width': '50%', 'display': 'inline-block',
                        'margin-right': '10px'}
             ),
@@ -396,6 +545,7 @@ def tumor_normal_plot(selected_compound):
         # If dropdown is not selected, hide the containers
         return go.Figure(), go.Figure()
 
+
 @app.callback(
     Output('selected-mz-value', 'children'),
     [Input('compound-dropdown', 'value')]
@@ -403,6 +553,210 @@ def tumor_normal_plot(selected_compound):
 def update_selected_mz_value(selected_mz):
     if selected_mz:
         return f"Selected Mz Value: {selected_mz}"
+    else:
+        return ""
+
+
+def add_comparison_lines(fig, regions, y_range, symbol):
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[0],
+        y0=y_range[0],
+        x1=regions[0],
+        y1=y_range[1],
+        line=dict(color="black", width=2),
+    )
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[0],
+        y0=y_range[1],
+        x1=regions[1],
+        y1=y_range[1],
+        line=dict(color="black", width=2),
+    )
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[1],
+        y0=y_range[1],
+        x1=regions[1],
+        y1=y_range[0],
+        line=dict(color="black", width=2),
+    )
+
+    bar_xcoord_map = {x: idx for idx, x in enumerate(region)}
+    fig.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=(bar_xcoord_map[regions[0]] + bar_xcoord_map[regions[1]]) / 2,
+            y=y_range[1] * 1.04,
+            showarrow=False,
+            text=symbol,
+            textangle=0,
+            xref="x",
+            yref="paper",
+        )
+    )
+
+
+@app.callback(
+    Output('tumor-comparable-plot', 'figure'),
+    Output('normal-comparable-plot', 'figure'),
+    [Input('compound-dropdown-compare', 'value')]
+)
+def tumor_normal_comparable_plot(selected_compound):
+    if selected_compound is not None:
+        # Fetch and process data based on selected values
+        selected_meta = selected_compound
+        table_name = "tumor_tumor_compare"
+        query_tumor_regions = []
+        query_normal_regions = []
+        # vs_columnNames(selected_meta)
+        # Define a list of colors for each region
+        region_colors = {
+            "cecum": 'gold',
+            "ascending": 'blue',
+            "transverse": 'cyan',
+            "descending": 'mistyrose',
+            "sigmoid": 'yellow',
+            "rectosigmoid": 'brown',
+            "rectum": 'pink',
+        }
+
+        for i in region:
+            print(i)
+            print('\n')
+            query_case = get_case_columns_vs_query(i, selected_meta)
+            query_case = list(query_case[0])
+
+            # print(query_case)
+
+            # query_control = list(query_control[0])
+            query_tumor_regions.extend(query_case)
+            # print(query_tumor_regions)
+            # query_normal_regions.extend(query_control)
+
+        tumor_plot_comparable_all_regions = make_subplots()
+        for i in range(len(region)):
+            # Create a separate trace for each region with different color
+            x_values = [f'{region[i]}' for _ in range(
+                len(query_tumor_regions)//len(region))]
+            tumor_plot_comparable_all_regions.add_trace(go.Box(
+                x=x_values,
+                y=query_tumor_regions[i*len(x_values):(i+1)*len(x_values)],
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color=region_colors[region[i]]),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+                name='Tumor',
+            ))
+
+        # Update layout for tumor plot
+        tumor_plot_comparable_all_regions.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        tumor_plot_comparable_all_regions.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        tumor_plot_comparable_all_regions.update_layout(
+            width=600,
+            height=600,
+            xaxis=dict(
+                title=dict(
+                    text=f'<b>All Regions Comparable Tumor</b>',
+                    font=dict(
+                        size=14, family='Arial, sans-serif', color='black')
+                ),
+                tickangle=90,
+            ),
+            yaxis=dict(
+                title='Relative Abundance',
+            ),
+            plot_bgcolor='white',
+        )
+        vs_columnNames(
+            table_name, tumor_plot_comparable_all_regions, selected_meta)
+
+        normal_plot_comparable_all_regions = make_subplots()
+        for i in range(len(region)):
+            # Create a separate trace for each region with different color
+            x_values = [f'{region[i]}' for _ in range(
+                len(query_normal_regions)//len(region))]
+            normal_plot_comparable_all_regions.add_trace(go.Box(
+                x=x_values,
+                y=query_normal_regions[i*len(x_values):(i+1)*len(x_values)],
+                boxpoints='all',
+                fillcolor='white',
+                line=dict(color='black'),
+                marker=dict(color=region_colors[region[i]]),
+                jitter=0.1,
+                pointpos=0,
+                showlegend=False,
+                name='Normal',
+            ))
+
+        # Update layout for normal plot
+        normal_plot_comparable_all_regions.update_xaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        normal_plot_comparable_all_regions.update_yaxes(
+            mirror=True,
+            ticks='outside',
+            showline=True,
+            linecolor='black',
+            gridcolor='lightgrey'
+        )
+        normal_plot_comparable_all_regions.update_layout(
+            width=600,
+            height=500,
+            xaxis=dict(
+                title=dict(
+                    text=f'<b>All Regions Comparable Normal</b>',
+                    font=dict(
+                        size=14, family='Arial, sans-serif', color='black')
+                ),
+                tickangle=90,
+            ),
+            yaxis=dict(
+                title='Relative Abundance',
+            ),
+            plot_bgcolor='white',
+        )
+
+        # Show the graph containers
+        return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
+    else:
+        # If dropdown is not selected, hide the containers
+        return go.Figure(), go.Figure()
+
+
+@app.callback(
+    Output('selected-meta-value', 'children'),
+    [Input('compound-dropdown-compare', 'value')]
+)
+def update_selected_meta_value(selected_meta):
+    if selected_meta:
+        return f"Selected meta Value: {selected_meta}"
     else:
         return ""
 
