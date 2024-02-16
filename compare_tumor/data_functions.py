@@ -1,16 +1,14 @@
 # data_functions.py
-import psycopg2
-
-from app import region
-
+import os
 import psycopg2
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 from dotenv import load_dotenv
-import os
 
-table_name = 'tumor_tumor_compare'
 all_columns = []
+
+region = ["cecum", "ascending", "transverse",
+          "descending", "sigmoid", "rectosigmoid", "rectum"]
 
 load_dotenv()
 db_url = os.getenv('DATABASE_URL')
@@ -130,13 +128,13 @@ def vs_columnNames(table_name, fig, selected_meta):
                 qFdr = query_q_vs_result[0][vs_value]
                 print("exist_", i)
 
-                if qFdr < 0.001 and qFdr > 0.01:
+                if qFdr < 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01 and qFdr > 0.05:
+                elif qFdr < 0.01:
                     qFdrStars = '**'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
@@ -157,14 +155,13 @@ def vs_columnNames(table_name, fig, selected_meta):
                 print(query_q_vs_result[0][vs_value])
                 print("exist_", i)
                 qFdr = query_q_vs_result[0][vs_value]
-                if qFdr < 0.001 and qFdr > 0.01:
+                if qFdr < 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
-
-                elif qFdr < 0.01 and qFdr > 0.05:
+                elif qFdr < 0.01:
                     qFdrStars = '**'
                     add_comparison_lines(fig, [region[i], region[j]], [
                         vpos+index, hpos+index], symbol=qFdrStars)
@@ -182,47 +179,47 @@ def vs_columnNames(table_name, fig, selected_meta):
 
   
 def add_comparison_lines(fig, regions, y_range, symbol):
-  fig.add_shape(
-      type="line",
-      xref="x",
-      yref="paper",
-      x0=regions[0],
-      y0=y_range[0],
-      x1=regions[0],
-      y1=y_range[1],
-      line=dict(color="black", width=2),
-  )
-  fig.add_shape(
-      type="line",
-      xref="x",
-      yref="paper",
-      x0=regions[0],
-      y0=y_range[1],
-      x1=regions[1],
-      y1=y_range[1],
-      line=dict(color="black", width=2),
-  )
-  fig.add_shape(
-      type="line",
-      xref="x",
-      yref="paper",
-      x0=regions[1],
-      y0=y_range[1],
-      x1=regions[1],
-      y1=y_range[0],
-      line=dict(color="black", width=2),
-  )
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[0],
+        y0=y_range[0],
+        x1=regions[0],
+        y1=y_range[1],
+        line=dict(color="black", width=0.5),
+    )
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[0],
+        y0=y_range[1],
+        x1=regions[1],
+        y1=y_range[1],
+        line=dict(color="black", width=0.5),
+    )
+    fig.add_shape(
+        type="line",
+        xref="x",
+        yref="paper",
+        x0=regions[1],
+        y0=y_range[1],
+        x1=regions[1],
+        y1=y_range[0],
+        line=dict(color="black", width=0.5),
+    )
 
-  bar_xcoord_map = {x: idx for idx, x in enumerate(region)}
-  fig.add_annotation(
-      dict(
-          font=dict(color="black", size=14),
-          x=(bar_xcoord_map[regions[0]] + bar_xcoord_map[regions[1]]) / 2,
-          y=y_range[1] * 1.04,
-          showarrow=False,
-          text=symbol,
-          textangle=0,
-          xref="x",
-          yref="paper",
-      )
-  )
+    bar_xcoord_map = {x: idx for idx, x in enumerate(region)}
+    fig.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=(bar_xcoord_map[regions[0]] + bar_xcoord_map[regions[1]]) / 2,
+            y=y_range[1] * 1.04,
+            showarrow=False,
+            text=symbol,
+            textangle=0,
+            xref="x",
+            yref="paper",
+        )
+    )

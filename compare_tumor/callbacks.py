@@ -1,12 +1,15 @@
 # callback.py
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output 
+from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_meta_values, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
-from app import region
+from compare_tumor.data_functions import get_mz_values, get_meta_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
+
+region = ["cecum", "ascending", "transverse",
+          "descending", "sigmoid", "rectosigmoid", "rectum"]
+
 
 def register_callbacks(app):
     @app.callback(
@@ -131,7 +134,6 @@ def register_callbacks(app):
 
 # Callback to update the displayed mz value
 
-
     @app.callback(
         Output('tumor-plot', 'figure'),
         Output('normal-plot', 'figure'),
@@ -220,7 +222,8 @@ def register_callbacks(app):
                     len(query_normal_regions)//len(region))]
                 normal_plot_all_regions.add_trace(go.Box(
                     x=x_values,
-                    y=query_normal_regions[i*len(x_values):(i+1)*len(x_values)],
+                    y=query_normal_regions[i *
+                                           len(x_values):(i+1)*len(x_values)],
                     boxpoints='all',
                     fillcolor='white',
                     line=dict(color='black'),
@@ -269,7 +272,6 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-
     @app.callback(
         Output('selected-mz-value', 'children'),
         [Input('compound-dropdown', 'value')]
@@ -279,6 +281,7 @@ def register_callbacks(app):
             return f"Selected Mz Value: {selected_mz}"
         else:
             return ""
+
     @app.callback(
         Output('tumor-comparable-plot', 'figure'),
         Output('normal-comparable-plot', 'figure'),
@@ -351,7 +354,7 @@ def register_callbacks(app):
             )
             tumor_plot_comparable_all_regions.update_layout(
                 width=600,
-                height=600,
+                height=500,
                 xaxis=dict(
                     title=dict(
                         text=f'<b>All Regions Comparable Tumor</b>',
@@ -375,7 +378,8 @@ def register_callbacks(app):
                     len(query_normal_regions)//len(region))]
                 normal_plot_comparable_all_regions.add_trace(go.Box(
                     x=x_values,
-                    y=query_normal_regions[i*len(x_values):(i+1)*len(x_values)],
+                    y=query_normal_regions[i *
+                                           len(x_values):(i+1)*len(x_values)],
                     boxpoints='all',
                     fillcolor='white',
                     line=dict(color='black'),
@@ -423,7 +427,6 @@ def register_callbacks(app):
         else:
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
-
 
     @app.callback(
         Output('selected-meta-value', 'children'),
