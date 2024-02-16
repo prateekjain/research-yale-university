@@ -1,0 +1,128 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: #f8f8f8;
+    color: #333;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #009688;
+    margin: 20px 0;
+    text-align: center; /* Center align the title */
+}
+
+.main-container {
+    max-width: 1180px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #009688;
+    text-align: center; /* Center align the about-text */
+}
+
+.border-line {
+    width: 100%;
+    height: 1px;
+    background: #ccc;
+    margin-top: 20px;
+}
+.outer-container {
+    width: 80%;
+    padding: 20px;
+    margin: 0 auto;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+}
+
+.inner-container {
+    display: flex;
+    overflow-x: auto;
+    width: 100%;
+    padding: 20px;
+}
+
+.scatter-plot {
+    width: 45%;
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.select-label {
+    font-size: 16px;
+    color: #009688;
+    padding: 10px;
+    margin-left: 20%;
+    margin: 0 auto; 
+    display: block;
+
+}
+
+.select-input {
+    width: 75%;
+    padding: 10px;
+    font-size: 16px;
+    margin: 0 auto; /* Center align the select-input */
+    display: block;
+}
+
+.scatter-plots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.scatter-plot {
+    width: 45%;
+    margin-bottom: 20px;
+}
+
+.side-by-side-plots {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.tumor-plot,
+.normal-plot {
+    width: 48%;
+}
+
+.comparable-plots {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.tumor-comparable-plot,
+.normal-comparable-plot {
+    width: 48%;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

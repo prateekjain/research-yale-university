@@ -187,29 +187,29 @@ def vs_columnNames(table_name, fig, selected_meta):
     connection.close()
 
 
-external_stylesheets = ['styles.css']
+external_stylesheets = ['assets/stylesheet.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
+app.head = [html.Link(rel='stylesheet', href='assets/stylesheet.css')]
+
 # Define the layout of the app
 app.layout = html.Div([
-    html.H1("Cancer Research Portfolio"),
+    # Added class to the title
+    html.H1("Cancer Research Portfolio", className="title"),
 
     # Body content
     html.Div([
-        html.P("About"),
+        # Added class to the about-text
+        html.P("About", className="about-text"),
         html.P(
             "In the same way that a recipe combines a few basic ingredients into a uniquely delicious baked confection, a portfolio is a collection of index funds intelligently mixed in the right proportions. Here you can learn about famous portfolios, study the real-world performance of each concept in both good times and bad, and generally get a good feel for the best investing ideas that the indexing world has to offer."
         ),
-        html.Div(className="border-line"),
+        html.Div(className="border-line"),  # Added class to the border-line
     ], className="main-container"),
 
-    # Body content
-    html.Div([
-        html.P("This is some content in a body font."),
-    ]),
-
-    html.Label("Select Compound mz-h:"),
+    # Added class to the select label
+    html.Label("Select Compound mz-h:", className="select-label"),
     dcc.Dropdown(
         id='compound-dropdown',
         options=[{'label': mz, 'value': mz} for mz in get_mz_values()],
@@ -217,34 +217,40 @@ app.layout = html.Div([
         searchable=True,
         multi=False,
         style={'width': '50%'},
+        className="select-input"  # Added class to the select input
     ),
     html.Div(id='selected-mz-value'),
 
     html.Div(
-        [dcc.Graph(
-            id=f'scatter-plot-{i}',
-            style={'width': '100%', 'display': 'inline-block',
-                   'margin-right': '10px'}
-        ) for i in range(7)],
-        style={'display': 'flex'}
+        html.Div(
+            [dcc.Graph(
+                id=f'scatter-plot-{i}',
+                className = "scatter-plot",
+                style={'width': '100%', 'display': 'inline-block',
+                       'marginRight': '10px'}
+            ) for i in range(7)],
+            style={'display': 'flex'},
+            className = "inner-container",
+        ),
+        className = "outer-container",
     ),
     html.Div(
         [
             dcc.Graph(
                 id=f'tumor-plot',
                 style={'width': '50%', 'display': 'inline-block',
-                       'margin-right': '10px'}
+                       'marginRight': '10px'}
             ),
             dcc.Graph(
                 id=f'normal-plot',
                 style={'width': '50%', 'display': 'inline-block',
-                       'margin-right': '10px'}
+                       'marginRight': '10px'}
             ),
         ],
         style={'display': 'flex'}
     ),
-    html.Label("Select Compound mz Compare:"),
-
+    # Added class to the select label
+    html.Label("Select Compound mz Compare:", className="select-label"),
     dcc.Dropdown(
         id='compound-dropdown-compare',
         options=[{'label': mz, 'value': mz} for mz in get_meta_values()],
@@ -253,6 +259,7 @@ app.layout = html.Div([
         clearable=True,
         multi=False,
         style={'width': '50%'},
+        className="select-input"  # Added class to the select input
     ),
     html.Div(id='selected-meta-value'),
 
@@ -261,12 +268,12 @@ app.layout = html.Div([
             dcc.Graph(
                 id=f'tumor-comparable-plot',
                 style={'width': '50%', 'display': 'inline-block',
-                       'margin-right': '10px'}
+                       'marginRight': '10px'}
             ),
             dcc.Graph(
                 id=f'normal-comparable-plot',
                 style={'width': '50%', 'display': 'inline-block',
-                       'margin-right': '10px'}
+                       'marginRight': '10px'}
             ),
         ],
         style={'display': 'flex'}
@@ -275,6 +282,7 @@ app.layout = html.Div([
     # Loading indicator
     dcc.Loading(
         id="loading",
+        className="loading",  # Added class to the loading indicator
         type="default",
         children=[
             html.Div(id="loading-output"),

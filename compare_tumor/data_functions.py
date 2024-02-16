@@ -15,7 +15,21 @@ all_columns = []
 load_dotenv()
 db_url = os.getenv('DATABASE_URL')
 
+# add table name and column names for the function
+def get_mz_values():
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
 
+    query_mz_values = "SELECT DISTINCT mz FROM mz_value"
+    cursor.execute(query_mz_values)
+    mz_values = [row[0] for row in cursor.fetchall()]
+
+    cursor.close()
+    connection.close()
+
+    return mz_values
+
+# add table name and column names for the function
 def get_meta_values():
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -29,6 +43,39 @@ def get_meta_values():
 
     return meta_values
 
+
+def get_case_columns_query(table_name, selected_mz):
+    # Connect to the database
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    # # Get all column names from the table
+    cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
+    all_columns = [desc[0] for desc in cursor.description]
+    # print(all_columns)
+    # Construct the SQL query dynamically
+    query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
+    query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
+    get_side_val = f"SELECT q_fdr, log_fc_matched FROM {table_name} WHERE mz = {selected_mz}"
+    # print("query_case" ,query_case)
+    # print("query_control", query_control)
+
+    cursor.execute(query_case)
+    case_results = cursor.fetchall()
+    print(case_results)
+
+    cursor.execute(query_control)
+    control_results = cursor.fetchall()
+    print(control_results)
+
+    cursor.execute(get_side_val)
+    final_get_side_val = cursor.fetchall()
+    print(final_get_side_val)
+
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    return case_results, control_results, final_get_side_val
 
 def get_case_columns_vs_query(columName, selected_meta):
     # Connect to the database
