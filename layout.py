@@ -63,13 +63,11 @@ main_layout = dbc.Container([
                                         id=f'tumor-plot',
                                         className="tumor-plot",
                                     ),
-                                ], md=6),
-                                dbc.Col([
                                     dcc.Graph(
                                         id=f'normal-plot',
                                         className="normal-plot",
                                     ),
-                                ], md=6),
+                                ], style={'display': 'flex'}),
                             ]),
                         ],
                         className="outer-container with-shadow",  # Added shadow
@@ -124,7 +122,7 @@ main_layout = dbc.Container([
                                         id=f'normal-plus-plot',
                                         className="normal-plot",
                                     ),
-                                ],),
+                                ], style={'display': 'flex'}),
                             ]),
                         ],
                         className="outer-container with-shadow",  # Added shadow
@@ -171,7 +169,7 @@ main_layout = dbc.Container([
                                 className="normal-comparable-plot",
 
                             ),
-                        ],
+                        ], style={'display': 'flex'},
                         className="outer-container with-shadow",
                     ),
                 ],
