@@ -42,9 +42,9 @@ def read_csv_with_encoding(csv_path, encodings):
         "Unable to decode CSV file with specified encodings")
 
 
-tableName = "tumor_comparable_plots"
+tableName = "sigmoid_M_plus_H"
 # Specify the path to your CSV file
-csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/Tumor_Tumor_log.csv'
+csv_path = 'D:/Akshat/Project of python/research/NormalvsTumor_M+H/sigmoid_M_plus_H_output.csv'
 
 encodings_to_try = ['utf-8', 'latin-1']  # Add more if needed
 
@@ -68,18 +68,18 @@ with conn.cursor() as cursor:
     cursor.execute(create_table_sql)
 
 # Specify the columns you want to alter to type TEXT
-columns_to_alter = ["mz"]
+# columns_to_alter = ["mz"]
 
 # add list_2_match, HMDB_matches_2 for output files too
 # columns_to_alter = ["name", "HMDB_matches",
 #                     "HMDB_matches_1", "list_2_match", "HMDB_matches_2"]
 
 
-# # Create and execute ALTER TABLE statements
-for col in columns_to_alter:
-    alter_sql = f"ALTER TABLE {tableName} ALTER COLUMN {col} TYPE TEXT;"
-    with conn.cursor() as cursor:
-        cursor.execute(alter_sql)
+# # # Create and execute ALTER TABLE statements
+# for col in columns_to_alter:
+#     alter_sql = f"ALTER TABLE {tableName} ALTER COLUMN {col} TYPE TEXT;"
+#     with conn.cursor() as cursor:
+#         cursor.execute(alter_sql)
 
 
 # Load data into the table

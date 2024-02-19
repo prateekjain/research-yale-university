@@ -16,11 +16,11 @@ db_url = os.getenv('DATABASE_URL')
 # add table name and column names for the function
 
 
-def get_mz_values():
+def get_mz_values(table_name):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
 
-    query_mz_values = "SELECT DISTINCT mz FROM mz_value"
+    query_mz_values = f"SELECT DISTINCT mz FROM {table_name}"
     cursor.execute(query_mz_values)
     mz_values = [row[0] for row in cursor.fetchall()]
 

@@ -1,138 +1,194 @@
 # layouts.py
 import dash
 from dash import dcc, html
+import dash_bootstrap_components as dbc
+
 from compare_tumor.callbacks import register_callbacks
-from compare_tumor.data_functions import get_mz_values, get_meta_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
+
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
-main_layout = html.Div([
-    # Added class to the title
-    html.H1("Cancer Research Portfolio", className="title"),
+main_layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            html.Br(),
+            html.H1("Cancer Research Portfolio", className="title"),
+            html.P("About", className="about-text"),
+            html.P(
+                "In the same way that a recipe combines a few basic ingredients into a uniquely delicious baked confection, a portfolio is a collection of index funds intelligently mixed in the right proportions. Here you can learn about famous portfolios, study the real-world performance of each concept in both good times and bad, and generally get a good feel for the best investing ideas that the indexing world has to offer.",
+                className='para'
+            ),
+            html.Div(className="border-line"),
+        ], md=12),
+    ]),
 
-    # Body content
-    html.Div([
-        # Added class to the about-text
-        html.P("About", className="about-text"),
-        html.P(
-            "In the same way that a recipe combines a few basic ingredients into a uniquely delicious baked confection, a portfolio is a collection of index funds intelligently mixed in the right proportions. Here you can learn about famous portfolios, study the real-world performance of each concept in both good times and bad, and generally get a good feel for the best investing ideas that the indexing world has to offer."
-        ),
-        # Added class to the border-line
-        html.Div(className="border-line"),
-    ], className="main-container"),
+    dbc.Row([
+        dbc.Col([
+            html.Label("Select Compound mz-h:", className="select-label"),
+            dcc.Dropdown(
+                id='compound-dropdown',
+                options=[{'label': mz, 'value': mz}
+                         for mz in get_mz_values("ascending")],
+                placeholder="Select Mz Value",
+                searchable=True,
+                multi=False,
+                style={'width': '100%'},
+                className="select-input"
+            ),
+            html.Div(id='selected-mz-h-value', className="select-label"),
+        ], md=12),
+    ]),
 
-    # Added class to the select label
-    html.Label("Select Compound mz-h:", className="select-label"),
-    dcc.Dropdown(
-        id='compound-dropdown',
-        options=[{'label': mz, 'value': mz} for mz in get_mz_values()],
-        placeholder="Select Mz Value",
-        searchable=True,
-        multi=False,
-        style={'width': '50%'},
-        className="select-input"  # Added class to the select input
-    ),
-    html.Div(id='selected-mz-value'),
-
-    html.Div(
-        [
+    dbc.Row([
+        dbc.Col([
             dcc.Loading(
                 id="outer-container-loading",
                 type="circle",
                 children=[
                     html.Div(
                         [
-                            html.Div(
-                                [
+                            dbc.Row([
+                                dbc.Col([
                                     dcc.Graph(
-                                        id=f'scatter-plot-{i}',
+                                        id=f'scatter-plot-mz_minus_h-{i}',
                                         className="scatter-plot",
-                                        style={
-                                            'width': '100%',
-                                            'display': 'inline-block',
-                                            'marginRight': '10px'
-                                        }
                                     ) for i in range(7)
-                                ],
-                                style={'display': 'flex'},
-                                className="inner-container",
-                            ),
-                            html.Div(
-                                [
+                                ], className="inner-container"),
+                            ]),
+
+                            dbc.Row([
+                                dbc.Col([
                                     dcc.Graph(
                                         id=f'tumor-plot',
-                                        style={
-                                            'width': '50%',
-                                            'display': 'inline-block',
-                                            'marginRight': '10px'
-                                        }
+                                        className="tumor-plot",
                                     ),
+                                ], md=6),
+                                dbc.Col([
                                     dcc.Graph(
                                         id=f'normal-plot',
-                                        style={
-                                            'width': '50%',
-                                            'display': 'inline-block',
-                                            'marginRight': '10px'
-                                        }
+                                        className="normal-plot",
                                     ),
-                                ],
-                                style={'display': 'flex'}
-                            ),
+                                ], md=6),
+                            ]),
                         ],
-                        className="outer-container",
+                        className="outer-container with-shadow",  # Added shadow
                     ),
                 ],
             ),
-        ],
-    ),
+        ], md=12),
+    ]),
 
-    # Added class to the select label
-    html.Label("Select Compound mz Compare:", className="select-label"),
-    dcc.Dropdown(
-        id='compound-dropdown-compare',
-        options=[{'label': mz, 'value': mz} for mz in get_meta_values()],
-        placeholder="Select Mz Value",
-        searchable=True,
-        clearable=True,
-        multi=False,
-        style={'width': '50%'},
-        className="select-input"  # Added class to the select input
-    ),
-    html.Div(id='selected-meta-value'),
-    
-    html.Div(
-        [
+    dbc.Row([
+        dbc.Col([
+            html.Label("Select Compound mz+h:", className="select-label"),
+            dcc.Dropdown(
+                id='compound-dropdown-mz-plus',
+                options=[{'label': mz, 'value': mz}
+                         for mz in get_mz_values("ascending_m_plus_h")],
+                placeholder="Select M+H Value",
+                searchable=True,
+                multi=False,
+                style={'width': '100%'},
+                className="select-input"
+            ),
+            html.Div(id='selected-mz-plus-value'),
+        ], md=12),
+    ]),
+
+    dbc.Row([
+        dbc.Col([
+            dcc.Loading(
+                id="outer-container-plus-loading",
+                type="circle",
+                children=[
+                    html.Div(
+                        [
+                            dbc.Row([
+                                dbc.Col([
+                                    dcc.Graph(
+                                        id=f'scatter-plot-mz_plus_h-{i}',
+                                        className="scatter-plot",
+                                    ) for i in range(7)
+                                ], className="inner-container"),
+                            ]),
+
+                            dbc.Row([
+                                dbc.Row([
+                                    dcc.Graph(
+                                        id=f'tumor-plus-plot',
+                                        className="tumor-plot",
+                                    ),
+
+                                    dcc.Graph(
+                                        id=f'normal-plus-plot',
+                                        className="normal-plot",
+                                    ),
+                                ],),
+                            ]),
+                        ],
+                        className="outer-container with-shadow",  # Added shadow
+                    ),
+                ],
+            ),
+        ], md=12),
+    ]),
+
+    dbc.Row([
+        dbc.Col([
+            html.Label("Select Compound mz Compare:",
+                       className="select-label"),
+            dcc.Dropdown(
+                id='compound-dropdown-compare',
+                options=[{'label': mz, 'value': mz}
+                         for mz in get_mz_values("tumor_comparable_plots")],
+                placeholder="Select Mz Value",
+                searchable=True,
+                clearable=True,
+                multi=False,
+                style={'width': '100%'},
+                className="select-input"
+            ),
+            html.Div(id='selected-mz-compare-value'),
+        ], md=12),
+    ]),
+
+    dbc.Row([
+        dbc.Col([
             dcc.Loading(
                 id="outer-container-loading",
                 type="circle",
-                children=[html.Div(
+                children=[
                     html.Div(
                         [
                             dcc.Graph(
                                 id=f'tumor-comparable-plot',
-                                style={'width': '50%', 'display': 'inline-block',
-                                       'marginRight': '10px'}
+                                className="tumor-comparable-plot",
+
                             ),
                             dcc.Graph(
                                 id=f'normal-comparable-plot',
-                                style={'width': '50%', 'display': 'inline-block',
-                                       'marginRight': '10px'}
+                                className="normal-comparable-plot",
+
                             ),
                         ],
-                        style={'display': 'flex'}
+                        className="outer-container with-shadow",
                     ),
-                    className="outer-container",),]),
-        ]
+                ],
+            ),
+        ], md=12),
+    ]),
 
-    ),
-
-    # Loading indicator
-    dcc.Loading(
-        id="loading",
-        className="loading",  # Added class to the loading indicator
-        type="circle",  # Updated to circular loading animation
-        children=[
-            html.Div(id="loading-output"),
-        ],
-    ),]
-)
+    dbc.Row([
+        dbc.Col([
+            dcc.Loading(
+                id="loading",
+                className="loading",
+                type="circle",
+                children=[
+                    html.Div(id="loading-output"),
+                ],
+            ),
+        ], md=12),
+    ]),
+], fluid=True)  # Set fluid=True for a full-width container
