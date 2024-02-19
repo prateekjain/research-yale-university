@@ -7,6 +7,8 @@ import plotly.graph_objs as go
 
 from compare_tumor.data_functions import get_mz_values, get_meta_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
 
+from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots
+
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
@@ -33,96 +35,8 @@ def register_callbacks(app):
                 final_get_side_val = list(final_get_side_val[0])
 
                 qFdr = final_get_side_val[0]
-
-                if qFdr < 0.001 and qFdr > 0.01:
-                    qFdrStars = '***'
-                elif qFdr < 0.01 and qFdr > 0.05:
-                    qFdrStars = '**'
-                elif qFdr < 0.05:
-                    qFdrStars = '*'
-                else:
-                    qFdrStars = 'NA'
-
-                # Create a scatter plot
-                scatter_plot = make_subplots()
-
-                # Add box plots for columns with '_case'
-                scatter_plot.add_trace(go.Box(
-                    x=['Tumor'] * len(query_case),
-                    y=query_case,
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color='rgba(255, 0, 0, 1)'),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                    name='Tumor',
-                ))
-
-                # Add a box plot for 'Control' values
-                scatter_plot.add_trace(go.Box(
-                    x=['Normal'] * len(query_control),
-                    y=query_control,
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color='rgba(0, 255, 0, 0.8)'),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                ))
-
-                scatter_plot.update_xaxes(
-                    mirror=True,
-                    ticks='outside',
-                    showline=True,
-                    linecolor='black',
-                    gridcolor='lightgrey'
-                )
-                scatter_plot.update_yaxes(
-                    mirror=True,
-                    ticks='outside',
-                    showline=True,
-                    linecolor='black',
-                    gridcolor='lightgrey'
-                )
-
-                # Customize layout
-                name = region[i]
-                scatter_plot.update_layout(
-                    width=300,
-                    height=500,
-                    xaxis=dict(
-                        title=dict(
-                            text=f'<b>{name}</b>',
-                            font=dict(
-                                size=14, family='Arial, sans-serif', color='black')
-                        ),
-                        tickangle=90,
-                    ),
-                    yaxis=dict(
-                        title='Relative Abundance',
-                    ),
-                    plot_bgcolor='white',
-                    annotations=[
-                        dict(
-                            x=1.57,
-                            y=0.94,
-                            xref='paper',
-                            yref='paper',
-                            text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
-                            align='left',
-                            showarrow=False,
-                            font={
-                                'size': 12,
-                                'color': 'black',
-                            },
-                            bordercolor='black',
-                            borderwidth=1
-                        )
-                    ]
-                )
+                scatter_plot = tumor_vs_normal_plot(
+                    query_case, query_control, final_get_side_val,  region[i])
 
                 figures.append(scatter_plot)
 
@@ -146,17 +60,6 @@ def register_callbacks(app):
             query_tumor_regions = []
             query_normal_regions = []
 
-            # Define a list of colors for each region
-            region_colors = {
-                "cecum": 'aliceblue',
-                "ascending": 'blue',
-                "transverse": 'cyan',
-                "descending": 'mistyrose',
-                "sigmoid": 'yellow',
-                "rectosigmoid": 'brown',
-                "rectum": 'pink',
-            }
-
             for i in range(len(region)):
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i], selected_mz)
@@ -166,105 +69,12 @@ def register_callbacks(app):
                 query_normal_regions.extend(query_control)
 
             tumor_plot_all_regions = make_subplots()
-            for i in range(len(region)):
-                # Create a separate trace for each region with different color
-                x_values = [f'{region[i]}' for _ in range(
-                    len(query_tumor_regions)//len(region))]
-                tumor_plot_all_regions.add_trace(go.Box(
-                    x=x_values,
-                    y=query_tumor_regions[i*len(x_values):(i+1)*len(x_values)],
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color=region_colors[region[i]]),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                    name='Tumor',
-                ))
-
-            # Update layout for tumor plot
-            tumor_plot_all_regions.update_xaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            tumor_plot_all_regions.update_yaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            tumor_plot_all_regions.update_layout(
-                width=600,
-                height=500,
-                xaxis=dict(
-                    title=dict(
-                        text=f'<b>All Regions Tumor</b>',
-                        font=dict(
-                            size=14, family='Arial, sans-serif', color='black')
-                    ),
-                    tickangle=90,
-                ),
-                yaxis=dict(
-                    title='Relative Abundance',
-                ),
-                plot_bgcolor='white',
-            )
+            tumor_plot_all_regions = all_regions_plots(
+                tumor_plot_all_regions, query_tumor_regions)
 
             normal_plot_all_regions = make_subplots()
-            for i in range(len(region)):
-                # Create a separate trace for each region with different color
-                x_values = [f'{region[i]}' for _ in range(
-                    len(query_normal_regions)//len(region))]
-                normal_plot_all_regions.add_trace(go.Box(
-                    x=x_values,
-                    y=query_normal_regions[i *
-                                           len(x_values):(i+1)*len(x_values)],
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color=region_colors[region[i]]),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                    name='Normal',
-                ))
-
-            # Update layout for normal plot
-            normal_plot_all_regions.update_xaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            normal_plot_all_regions.update_yaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            normal_plot_all_regions.update_layout(
-                width=600,
-                height=500,
-                xaxis=dict(
-                    title=dict(
-                        text=f'<b>All Regions Normal</b>',
-                        font=dict(
-                            size=14, family='Arial, sans-serif', color='black')
-                    ),
-                    tickangle=90,
-                ),
-                yaxis=dict(
-                    title='Relative Abundance',
-                ),
-                plot_bgcolor='white',
-            )
+            normal_plot_all_regions = all_regions_plots(
+                normal_plot_all_regions, query_normal_regions)
 
             # Show the graph containers
             return tumor_plot_all_regions, normal_plot_all_regions
@@ -291,7 +101,7 @@ def register_callbacks(app):
         if selected_compound is not None:
             # Fetch and process data based on selected values
             selected_meta = selected_compound
-            table_name = "tumor_tumor_compare"
+            table_name = "tumor_comparable_plots"
             query_tumor_regions = []
             query_normal_regions = []
             # vs_columnNames(selected_meta)
@@ -320,108 +130,12 @@ def register_callbacks(app):
                 # query_normal_regions.extend(query_control)
 
             tumor_plot_comparable_all_regions = make_subplots()
-            for i in range(len(region)):
-                # Create a separate trace for each region with different color
-                x_values = [f'{region[i]}' for _ in range(
-                    len(query_tumor_regions)//len(region))]
-                tumor_plot_comparable_all_regions.add_trace(go.Box(
-                    x=x_values,
-                    y=query_tumor_regions[i*len(x_values):(i+1)*len(x_values)],
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color=region_colors[region[i]]),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                    name='Tumor',
-                ))
-
-            # Update layout for tumor plot
-            tumor_plot_comparable_all_regions.update_xaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            tumor_plot_comparable_all_regions.update_yaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            tumor_plot_comparable_all_regions.update_layout(
-                width=600,
-                height=500,
-                xaxis=dict(
-                    title=dict(
-                        text=f'<b>All Regions Comparable Tumor</b>',
-                        font=dict(
-                            size=14, family='Arial, sans-serif', color='black')
-                    ),
-                    tickangle=90,
-                ),
-                yaxis=dict(
-                    title='Relative Abundance',
-                ),
-                plot_bgcolor='white',
-            )
-            vs_columnNames(
-                table_name, tumor_plot_comparable_all_regions, selected_meta)
+            tumor_plot_comparable_all_regions = comparable_plots(tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", table_name,selected_meta)
+            
 
             normal_plot_comparable_all_regions = make_subplots()
-            for i in range(len(region)):
-                # Create a separate trace for each region with different color
-                x_values = [f'{region[i]}' for _ in range(
-                    len(query_normal_regions)//len(region))]
-                normal_plot_comparable_all_regions.add_trace(go.Box(
-                    x=x_values,
-                    y=query_normal_regions[i *
-                                           len(x_values):(i+1)*len(x_values)],
-                    boxpoints='all',
-                    fillcolor='white',
-                    line=dict(color='black'),
-                    marker=dict(color=region_colors[region[i]]),
-                    jitter=0.1,
-                    pointpos=0,
-                    showlegend=False,
-                    name='Normal',
-                ))
-
-            # Update layout for normal plot
-            normal_plot_comparable_all_regions.update_xaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            normal_plot_comparable_all_regions.update_yaxes(
-                mirror=True,
-                ticks='outside',
-                showline=True,
-                linecolor='black',
-                gridcolor='lightgrey'
-            )
-            normal_plot_comparable_all_regions.update_layout(
-                width=600,
-                height=500,
-                xaxis=dict(
-                    title=dict(
-                        text=f'<b>All Regions Comparable Normal</b>',
-                        font=dict(
-                            size=14, family='Arial, sans-serif', color='black')
-                    ),
-                    tickangle=90,
-                ),
-                yaxis=dict(
-                    title='Relative Abundance',
-                ),
-                plot_bgcolor='white',
-            )
-
+            normal_plot_comparable_all_regions = comparable_plots(normal_plot_comparable_all_regions, query_tumor_regions, "Normal", table_name,selected_meta)
+            
             # Show the graph containers
             return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
         else:

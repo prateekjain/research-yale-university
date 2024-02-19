@@ -14,6 +14,8 @@ load_dotenv()
 db_url = os.getenv('DATABASE_URL')
 
 # add table name and column names for the function
+
+
 def get_mz_values():
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -28,11 +30,13 @@ def get_mz_values():
     return mz_values
 
 # add table name and column names for the function
+
+
 def get_meta_values():
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
 
-    query_meta_values = "SELECT DISTINCT Metabolite FROM tumor_tumor_compare"
+    query_meta_values = "SELECT DISTINCT mz FROM tumor_comparable_plots"
     cursor.execute(query_meta_values)
     meta_values = [row[0] for row in cursor.fetchall()]
 
@@ -75,16 +79,17 @@ def get_case_columns_query(table_name, selected_mz):
 
     return case_results, control_results, final_get_side_val
 
+
 def get_case_columns_vs_query(columName, selected_meta):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-    table_name = "tumor_tumor_compare"
+    table_name = "tumor_comparable_plots"
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
     print("all_columns", all_columns)
-    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE metabolite = '{selected_meta}'"
+    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_meta}'"
 
     cursor.execute(query_case)
     case_results = cursor.fetchall()
@@ -101,13 +106,14 @@ def vs_columnNames(table_name, fig, selected_meta):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
     col_vs = []
+    print("hellowwwwwwww")
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
-    query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE metabolite = '{selected_meta}'"
+    query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE mz = '{selected_meta}'"
     cursor.execute(query_q_vs, (selected_meta,))
     query_q_vs_result = cursor.fetchall()
-    print(query_q_vs_result)
+    print("query_q_vs_result", query_q_vs_result)
 
     for col in all_columns:
         if 'vs' in col.lower():
@@ -118,9 +124,9 @@ def vs_columnNames(table_name, fig, selected_meta):
     hpos = 0.7
     for i in range(len(region)):
         for j in range(i+1, len(region)):
-            vs_value_name = "case_"+region[i]+"_vs_case_"+region[j]
-            vs_value_name_neg = "case_"+region[j]+"_vs_case_"+region[i]
-            print("vpos", vpos, hpos)
+            vs_value_name = region[i]+"_vs_"+region[j]
+            vs_value_name_neg = region[j]+"_vs_"+region[i]
+            print("vpos", vs_value_name, vs_value_name_neg)
 
             if vs_value_name in col_vs:
                 vs_value = col_vs.index(vs_value_name)
@@ -148,8 +154,6 @@ def vs_columnNames(table_name, fig, selected_meta):
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
 
-                # add_comparison_lines(fig, [region[i], region[j]], [
-                #                      0.78+index, 0.8+index], symbol=qFdrStars)
             elif vs_value_name_neg in col_vs:
                 vs_value = col_vs.index(vs_value_name_neg)
                 print(query_q_vs_result[0][vs_value])
@@ -177,8 +181,9 @@ def vs_columnNames(table_name, fig, selected_meta):
     cursor.close()
     connection.close()
 
-  
+
 def add_comparison_lines(fig, regions, y_range, symbol):
+    print("com,ing here")
     fig.add_shape(
         type="line",
         xref="x",

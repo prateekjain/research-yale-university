@@ -42,9 +42,9 @@ def read_csv_with_encoding(csv_path, encodings):
         "Unable to decode CSV file with specified encodings")
 
 
-tableName = "tumor_tumor_compare"
+tableName = "tumor_comparable_plots"
 # Specify the path to your CSV file
-csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/Tumor_tumor_test.csv'
+csv_path = 'D:/Akshat/Project of python/research/normalvstumor_hilic_all/Tumor_Tumor_log.csv'
 
 encodings_to_try = ['utf-8', 'latin-1']  # Add more if needed
 
@@ -68,7 +68,7 @@ with conn.cursor() as cursor:
     cursor.execute(create_table_sql)
 
 # Specify the columns you want to alter to type TEXT
-columns_to_alter = ["Metabolite"]
+columns_to_alter = ["mz"]
 
 # add list_2_match, HMDB_matches_2 for output files too
 # columns_to_alter = ["name", "HMDB_matches",
