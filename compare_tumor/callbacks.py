@@ -47,10 +47,8 @@ def register_callbacks(app):
             return [go.Figure()] * 7
 
 
-    
-
-
 # Callback to update the displayed mz value
+
 
     @app.callback(
         Output('tumor-plot', 'figure'),
@@ -95,7 +93,7 @@ def register_callbacks(app):
             return f"Selected Mz Value: {selected_mz}"
         else:
             return ""
-        
+
     @app.callback(
         [Output(f'scatter-plot-mz_plus_h-{i}', 'figure') for i in range(7)],
         [Input('compound-dropdown-mz-plus', 'value')]
@@ -127,7 +125,7 @@ def register_callbacks(app):
         else:
             # If dropdown is not selected, hide the container
             return [go.Figure()] * 7
-        
+
     @app.callback(
         Output('tumor-plus-plot', 'figure'),
         Output('normal-plus-plot', 'figure'),
@@ -171,7 +169,6 @@ def register_callbacks(app):
             return f"Selected Mz Value: {selected_mz}"
         else:
             return ""
-
 
     @app.callback(
         Output('tumor-comparable-plot', 'figure'),

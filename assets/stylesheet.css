@@ -39,6 +39,47 @@ body {
     margin-top: 20px;
 }
 
+.button-container {
+            display: flex;
+        }
+.button-container button {
+            flex: 1;
+            border-right: 1px solid #000; /* Vertical divider line */
+            background-color: #fff; /* Button background color */
+            padding: 10px; /* Adjust padding as needed */
+            text-align: center; /* Center text */
+            cursor: pointer;
+        }
+
+.button-container button:last-child {
+    border-right: none; /* Remove divider for the last button */
+}
+.btn-row {
+    display: flex;
+    justify-content: center;
+    width: 45%;
+    margin: 0 auto;
+    padding:5px;
+}
+
+.btn-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-section {
+    outline: 0.3rem solid;
+    outline-color: transparent;
+    color: #009688; 
+    padding: 10px; 
+    /* width: 0 auto; Equally divided buttons with margins */
+    margin-right: 10px;
+    font-size:17px;
+    width: 150px;
+    height: 50px;
+    /* margin-left: 7.5%;
+    margin-right: 7.5%; */
+}
 .outer-container {
     width: 80%;
     padding: 20px;
@@ -61,7 +102,11 @@ body {
     margin-left: 10px;
     margin-bottom: 20px;
 }
-
+.tabs {
+    padding: 3%;
+    width: 85%;
+    margin-left: 4.5%;
+}
 .select-label {
     font-size: 16px;
     margin-top: 10px;
