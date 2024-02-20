@@ -26,7 +26,7 @@ def get_mz_values(table_name):
 
     cursor.close()
     connection.close()
-
+    print("mzval", mz_values[1])
     return mz_values
 
 # add table name and column names for the function

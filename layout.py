@@ -34,7 +34,8 @@ main_layout = dbc.Container([
                 searchable=True,
                 multi=False,
                 style={'width': '100%'},
-                className="select-input"
+                className="select-input",
+                value=get_mz_values("ascending")[0]
             ),
             html.Div(id='selected-mz-h-value', className="select-label"),
         ], md=12),
@@ -88,7 +89,8 @@ main_layout = dbc.Container([
                 searchable=True,
                 multi=False,
                 style={'width': '100%'},
-                className="select-input"
+                className="select-input",
+                value=get_mz_values("ascending_m_plus_h")[0]
             ),
             html.Div(id='selected-mz-plus-value'),
         ], md=12),
@@ -145,7 +147,8 @@ main_layout = dbc.Container([
                 clearable=True,
                 multi=False,
                 style={'width': '100%'},
-                className="select-input"
+                className="select-input",
+                value=get_mz_values("tumor_comparable_plots")[0]
             ),
             html.Div(id='selected-mz-compare-value'),
         ], md=12),
