@@ -2,7 +2,7 @@ venv
 *.pyc
 .DS_Store
 .env
-init_db.py
+initdb.py
 mydb.dump
 trying.py
 tumor_test.py
