@@ -80,11 +80,10 @@ def get_case_columns_query(table_name, selected_mz):
     return case_results, control_results, final_get_side_val
 
 
-def get_case_columns_vs_query(columName, selected_meta):
+def get_case_columns_vs_query(columName, selected_meta, table_name):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-    table_name = "tumor_comparable_plots"
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]

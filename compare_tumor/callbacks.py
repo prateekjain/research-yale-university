@@ -179,7 +179,7 @@ def register_callbacks(app):
         if selected_compound is not None:
             # Fetch and process data based on selected values
             selected_meta = selected_compound
-            table_name = "tumor_comparable_plots"
+            # table_name = "tumor_comparable_plots"
             query_tumor_regions = []
             query_normal_regions = []
             # vs_columnNames(selected_meta)
@@ -197,23 +197,24 @@ def register_callbacks(app):
             for i in region:
                 print(i)
                 print('\n')
-                query_case = get_case_columns_vs_query(i, selected_meta)
+                
+                query_case = get_case_columns_vs_query(i, selected_meta, "tumor_comparable_plots")
                 query_case = list(query_case[0])
-
-                # print(query_case)
-
-                # query_control = list(query_control[0])
                 query_tumor_regions.extend(query_case)
-                # print(query_tumor_regions)
-                # query_normal_regions.extend(query_control)
-
+                print(query_tumor_regions)
+                
+                query_control =  get_case_columns_vs_query(i, selected_meta, "normal_comparable_plots")
+                query_control = list(query_control[0])
+                query_normal_regions.extend(query_control)
+                print(query_normal_regions)
+                
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
-                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", table_name, selected_meta)
+                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_comparable_plots", selected_meta)
 
             normal_plot_comparable_all_regions = make_subplots()
             normal_plot_comparable_all_regions = comparable_plots(
-                normal_plot_comparable_all_regions, query_tumor_regions, "Normal", table_name, selected_meta)
+                normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_comparable_plots", selected_meta)
 
             # Show the graph containers
             return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
