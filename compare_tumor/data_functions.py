@@ -13,9 +13,8 @@ region = ["cecum", "ascending", "transverse",
 load_dotenv()
 db_url = os.getenv('DATABASE_URL')
 
+
 # add table name and column names for the function
-
-
 def get_mz_values(table_name):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -28,22 +27,6 @@ def get_mz_values(table_name):
     connection.close()
     print("mzval", mz_values[1])
     return mz_values
-
-# add table name and column names for the function
-
-
-def get_meta_values():
-    connection = psycopg2.connect(db_url)
-    cursor = connection.cursor()
-
-    query_meta_values = "SELECT DISTINCT mz FROM tumor_comparable_plots"
-    cursor.execute(query_meta_values)
-    meta_values = [row[0] for row in cursor.fetchall()]
-
-    cursor.close()
-    connection.close()
-
-    return meta_values
 
 
 def get_case_columns_query(table_name, selected_mz):
@@ -80,7 +63,7 @@ def get_case_columns_query(table_name, selected_mz):
     return case_results, control_results, final_get_side_val
 
 
-def get_case_columns_vs_query(columName, selected_meta, table_name):
+def get_case_columns_vs_query(columName, selected_mz, table_name):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -88,7 +71,7 @@ def get_case_columns_vs_query(columName, selected_meta, table_name):
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
     print("all_columns", all_columns)
-    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_meta}'"
+    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
 
     cursor.execute(query_case)
     case_results = cursor.fetchall()
@@ -101,16 +84,40 @@ def get_case_columns_vs_query(columName, selected_meta, table_name):
     return case_results
 
 
-def vs_columnNames(table_name, fig, selected_meta):
+def get_case_columns_linear_query(columName, selected_mz, table_name):
+    # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-    col_vs = []
-    print("hellowwwwwwww")
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
-    query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE mz = '{selected_meta}'"
-    cursor.execute(query_q_vs, (selected_meta,))
+    print("all_columns", all_columns)
+
+    query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
+    cursor.execute(query_case)
+    case_results = cursor.fetchall()
+
+    get_side_val = f"SELECT q_fdr FROM {table_name} WHERE mz = '{selected_mz}'"
+    cursor.execute(get_side_val)
+    qfdr_results = cursor.fetchall()
+
+    case_values = [item for sublist in case_results for item in sublist]
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+
+    return case_results, qfdr_results
+
+
+def vs_columnNames(table_name, fig, selected_mz):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    col_vs = []
+
+    cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
+    all_columns = [desc[0] for desc in cursor.description]
+    query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
+    cursor.execute(query_q_vs, (selected_mz,))
     query_q_vs_result = cursor.fetchall()
     print("query_q_vs_result", query_q_vs_result)
 

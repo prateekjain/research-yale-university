@@ -161,7 +161,26 @@ def all_regions_plots(plot_all_regions, query_regions, title):
     return plot_all_regions
 
 
-def comparable_plots(plot_all_regions, query_regions, title, table_name,selected_meta ):
+def addAnotations(plot_all_regions, qFdrStars):
+    plot_all_regions.update_layout(
+        annotations=[
+            dict(
+                x=0.5,
+                y=1,
+                xref='paper',
+                yref='paper',
+                text=f"{qFdrStars}<br>",
+                align='left',
+                showarrow=False,
+                font={'size': 16, 'color': 'black'}
+            )
+        ]
+    )
+
+    return plot_all_regions
+
+
+def comparable_plots(plot_all_regions, query_regions, title, table_name, selected_meta):
 
     for i in range(len(region)):
         # Create a separate trace for each region with different color
@@ -211,7 +230,7 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name,selected
         ),
         plot_bgcolor='white',
     )
-    
+
     vs_columnNames(table_name, plot_all_regions, selected_meta)
 
     return plot_all_regions

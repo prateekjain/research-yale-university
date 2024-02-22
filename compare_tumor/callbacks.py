@@ -5,9 +5,9 @@ from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query
 
-from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots
+from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
@@ -84,15 +84,15 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-    @app.callback(
-        Output('selected-mz-h-value', 'children'),
-        [Input('compound-dropdown', 'value')]
-    )
-    def update_selected_mz_value(selected_mz):
-        if selected_mz:
-            return f"Selected Mz Value: {selected_mz}"
-        else:
-            return ""
+    # @app.callback(
+    #     Output('selected-mz-h-value', 'children'),
+    #     [Input('compound-dropdown', 'value')]
+    # )
+    # def update_selected_mz_value(selected_mz):
+    #     if selected_mz:
+    #         return f"Selected Mz Value: {selected_mz}"
+    #     else:
+    #         return ""
 
     @app.callback(
         [Output(f'scatter-plot-mz_plus_h-{i}', 'figure') for i in range(7)],
@@ -160,15 +160,6 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-    @app.callback(
-        Output('selected-mz-plus-value', 'children'),
-        [Input('compound-dropdown-mz-plus', 'value')]
-    )
-    def update_selected_mz_value(selected_mz):
-        if selected_mz:
-            return f"Selected Mz Value: {selected_mz}"
-        else:
-            return ""
 
     @app.callback(
         Output('tumor-comparable-plot', 'figure'),
@@ -222,12 +213,62 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
+
     @app.callback(
-        Output('selected-mz-compare-value', 'children'),
-        [Input('compound-dropdown-compare', 'value')]
+        Output('tumor-linear-plot', 'figure'),
+        Output('normal-linear-plot', 'figure'),
+        [Input('compound-dropdown-linear', 'value')]
     )
-    def update_selected_meta_value(selected_meta):
-        if selected_meta:
-            return f"Selected meta Value: {selected_meta}"
+    def tumor_normal_linear_plot(selected_compound):
+        if selected_compound is not None:
+            # Fetch and process data based on selected values
+            selected_meta = selected_compound
+            # table_name = "tumor_comparable_plots"
+            query_tumor_linear_regions = []
+            query_normal_linear_regions = []
+            # vs_columnNames(selected_meta)
+            # Define a list of colors for each region
+
+            for i in region:
+                print(i)
+                print('\n')
+                
+                query_case, q_fdr_case = get_case_columns_linear_query(i, selected_meta, "tumor_linear_plots")
+                query_case = list(query_case[0])
+                query_tumor_linear_regions.extend(query_case)
+                print(query_tumor_linear_regions)
+                
+                query_control, q_fdr_control =  get_case_columns_linear_query(i, selected_meta, "tumor_linear_plots")
+                print("q_fdr_control", q_fdr_case[0][0])
+                query_control = list(query_control[0])
+                query_normal_linear_regions.extend(query_control)
+                print(query_normal_linear_regions)
+                
+
+            tumor_linear_plot_all_regions = make_subplots()
+            tumor_linear_plot_all_regions = all_regions_plots(
+                tumor_linear_plot_all_regions, query_tumor_linear_regions, "Tumor")
+            qFdrStars =''
+            if q_fdr_case[0][0] < 0.001:
+                qFdrStars = '***'
+                tumor_linear_plot_all_regions = addAnotations(
+                    tumor_linear_plot_all_regions, qFdrStars)
+            elif q_fdr_case[0][0] < 0.01:
+                qFdrStars = '**'
+                tumor_linear_plot_all_regions = addAnotations(
+                    tumor_linear_plot_all_regions, qFdrStars)
+            elif q_fdr_case[0][0] < 0.05:
+                qFdrStars = '*'
+                tumor_linear_plot_all_regions = addAnotations(
+                    tumor_linear_plot_all_regions, qFdrStars)
+            
+            normal_linear_plot_all_regions = make_subplots()
+            normal_linear_plot_all_regions = all_regions_plots(
+                normal_linear_plot_all_regions, query_normal_linear_regions, "Normal")
+
+            # Show the graph containers
+            return tumor_linear_plot_all_regions, normal_linear_plot_all_regions
         else:
-            return ""
+            # If dropdown is not selected, hide the containers
+            return go.Figure(), go.Figure()
+
