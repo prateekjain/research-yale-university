@@ -13,6 +13,8 @@ region_colors = {
     "sigmoid": 'yellow',
     "rectosigmoid": 'brown',
     "rectum": 'pink',
+    "rcc": 'gold',
+    "lcc": 'blue',
 }
 
 
@@ -180,19 +182,19 @@ def addAnotations(plot_all_regions, qFdrStars):
     return plot_all_regions
 
 
-def comparable_plots(plot_all_regions, query_regions, title, table_name, selected_meta):
+def comparable_plots(plot_all_regions, query_regions, title, table_name, selected_meta, region_call):
 
-    for i in range(len(region)):
+    for i in range(len(region_call)):
         # Create a separate trace for each region with different color
-        x_values = [f'{region[i]}' for _ in range(
-            len(query_regions)//len(region))]
+        x_values = [f'{region_call[i]}' for _ in range(
+            len(query_regions)//len(region_call))]
         plot_all_regions.add_trace(go.Box(
             x=x_values,
             y=query_regions[i*len(x_values):(i+1)*len(x_values)],
             boxpoints='all',
             fillcolor='white',
             line=dict(color='black'),
-            marker=dict(color=region_colors[region[i]]),
+            marker=dict(color=region_colors[region_call[i]]),
             jitter=0.1,
             pointpos=0,
             showlegend=False,

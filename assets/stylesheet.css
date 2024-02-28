@@ -59,7 +59,7 @@ body {
 .btn-row {
     display: flex;
     justify-content: center;
-    width: 45%;
+    width: 50%;
     margin: 0 auto;
     padding:5px;
 }
@@ -77,6 +77,16 @@ body {
     margin-left: 2%;
 
     font-size:17px;
+}
+
+.section-heading{
+    margin-left: 7.5%;
+    color: #009688;
+}
+.section-description{
+    margin-left: 7.5%;
+    margin-top: 1%;
+    margin-bottom:1%;
 }
 
 .divider{
