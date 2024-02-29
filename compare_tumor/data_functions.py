@@ -109,7 +109,7 @@ def get_case_columns_linear_query(columName, selected_mz, table_name):
     return case_results, qfdr_results
 
 
-def vs_columnNames(table_name, fig, selected_mz):
+def vs_columnNames(table_name, fig, selected_mz, region_call):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
     col_vs = []
@@ -128,10 +128,10 @@ def vs_columnNames(table_name, fig, selected_mz):
     index = 0
     vpos = 0.69
     hpos = 0.7
-    for i in range(len(region)):
-        for j in range(i+1, len(region)):
-            vs_value_name = region[i]+"_vs_"+region[j]
-            vs_value_name_neg = region[j]+"_vs_"+region[i]
+    for i in range(len(region_call)):
+        for j in range(i+1, len(region_call)):
+            vs_value_name = region_call[i]+"_vs_"+region_call[j]
+            vs_value_name_neg = region_call[j]+"_vs_"+region_call[i]
             print("vpos", vs_value_name, vs_value_name_neg)
 
             if vs_value_name in col_vs:
@@ -142,21 +142,18 @@ def vs_columnNames(table_name, fig, selected_mz):
 
                 if qFdr < 0.001:
                     qFdrStars = '***'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
                 elif qFdr < 0.01:
                     qFdrStars = '**'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
 
                 elif qFdr < 0.05:
                     qFdrStars = '*'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
 
@@ -167,28 +164,25 @@ def vs_columnNames(table_name, fig, selected_mz):
                 qFdr = query_q_vs_result[0][vs_value]
                 if qFdr < 0.001:
                     qFdrStars = '***'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
                 elif qFdr < 0.01:
                     qFdrStars = '**'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
 
                 elif qFdr < 0.05:
                     qFdrStars = '*'
-                    add_comparison_lines(fig, [region[i], region[j]], [
-                        vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     print("vpos", vpos+index, hpos+index)
     cursor.close()
     connection.close()
 
 
-def add_comparison_lines(fig, regions, y_range, symbol):
+def add_comparison_lines(fig, region_call, regions, y_range, symbol):
     print("com,ing here")
     fig.add_shape(
         type="line",
@@ -221,7 +215,7 @@ def add_comparison_lines(fig, regions, y_range, symbol):
         line=dict(color="black", width=0.5),
     )
 
-    bar_xcoord_map = {x: idx for idx, x in enumerate(region)}
+    bar_xcoord_map = {x: idx for idx, x in enumerate(region_call)}
     fig.add_annotation(
         dict(
             font=dict(color="black", size=14),

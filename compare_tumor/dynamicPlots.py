@@ -233,6 +233,6 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
         plot_bgcolor='white',
     )
 
-    vs_columnNames(table_name, plot_all_regions, selected_meta)
+    vs_columnNames(table_name, plot_all_regions, selected_meta, region_call)
 
     return plot_all_regions
