@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -48,7 +48,6 @@ def register_callbacks(app):
 
 
 # Callback to update the displayed mz value
-
 
     @app.callback(
         Output('tumor-plot', 'figure'),
@@ -125,6 +124,42 @@ def register_callbacks(app):
         else:
             # If dropdown is not selected, hide the container
             return [go.Figure()] * 7
+
+    @app.callback(
+        Output("compound-dropdown-meta", "options"),
+        Output("compound-dropdown-meta", "value"),
+        Input("filter-dropdown", "value")
+    )
+    def update_compound_dropdown(filter_value):
+        # Logic to update options based on the selected filter
+        if filter_value == "all":
+            options = [{"label": mz, "value": mz}
+                       for mz in get_mz_values("ascending_metabolites")]
+            default_value = get_mz_values("ascending_metabolites")[0]
+            
+        elif filter_value == "across_all":
+            options = [{"label": mz, "value": mz}
+                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites"]))]
+            default_value = list(get_cecum_and_ascending_mz_values(
+                ["cecum_metabolites", "ascending_metabolites"]))[0]
+            
+        elif filter_value == "specific_subsites":
+            options = [{"label": mz, "value": mz}
+                       for mz in list(get_cecum_and_ascending_mz_values(["descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
+            default_value = list(get_cecum_and_ascending_mz_values(
+                ["descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
+            
+        elif filter_value == "proximal_distal":
+            options = [{"label": mz, "value": mz}
+                       for mz in list(get_cecum_and_ascending_mz_values(["sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
+            default_value = list(get_cecum_and_ascending_mz_values(
+                ["sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
+        else:
+            # Default options and value
+            options = []
+            default_value = None
+
+        return options, default_value
 
     @app.callback(
         [Output(f'scatter-plot-meta-{i}', 'figure') for i in range(7)],

@@ -29,6 +29,43 @@ def get_mz_values(table_name):
     return mz_values
 
 
+# def get_subsite_mz_values(subsite):
+#     # Fetch Mz values for a specific subsite with q < 0.05
+#     mz_values = Metabolite.objects.filter(
+#         subsite=subsite, q_value__lt=0.05).values_list('mz_field', flat=True)
+#     return list(mz_values)
+
+# Define other filter functions as needed for the remaining filters
+
+
+def get_cecum_and_ascending_mz_values(regions):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+
+    # Initialize an empty set to store the Mz values
+    mz_values_set = set()
+
+    # Loop through each region and dynamically generate the SQL query
+    for region in regions:
+        # SQL query to get Mz values with q_fdr < 0.05 in the specified region
+        query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr < 0.05"
+        cursor.execute(query)
+        region_mz_values = {row[0] for row in cursor.fetchall()}
+
+        # If it's the first region, set the Mz values directly
+        if not mz_values_set:
+            mz_values_set = region_mz_values
+        else:
+            # If it's not the first region, take the intersection with the existing Mz values
+            mz_values_set &= region_mz_values
+
+    connection.close()
+    return mz_values_set
+
+
+
+
+
 def get_case_columns_query(table_name, selected_mz):
     # Connect to the database
     connection = psycopg2.connect(db_url)

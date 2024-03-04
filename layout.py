@@ -369,7 +369,7 @@ main_layout = dbc.Container(
                                         html.Span("|", className="divider"),
                                         html.A(
                                             "Mucosa2",
-                                            id="btn-mz-linear",
+                                            id="btn-mz-Mucosa2",
                                             n_clicks=0,
                                             className="btn-section btn-center",
                                             href="#section2",
@@ -394,7 +394,7 @@ main_layout = dbc.Container(
                                         html.Span("|", className="divider"),
                                         html.A(
                                             "Survival Metabolite",
-                                            id="btn-mz-linear",
+                                            id="btn-mz-Survival",
                                             n_clicks=0,
                                             className="btn-section btn-center",
                                             href="#section5",
@@ -448,40 +448,56 @@ main_layout = dbc.Container(
                     className="section-description",
                 ),
             ]),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-
-                        html.Label(
-                            "Select Compound meta:",
-                            id="meta-section",
-                            className="select-label",
-                        ),
-                        dcc.Dropdown(
-                            id="compound-dropdown-meta",
-                            options=[
-                                {"label": mz, "value": mz}
-                                for mz in get_mz_values("ascending_metabolites")
-                            ],
-                            placeholder="Select Mz Value",
-                            searchable=True,
-                            multi=False,
-                            style={"width": "100%"},
-                            className="select-input",
-                            value=get_mz_values(
-                                "ascending_metabolites")[0],
-                        ),
-                        html.Div(
-                            id="selected-meta-value",
-                            className="select-label",
-                        ),
+            dbc.Row([
+                dbc.Col([
+                html.Label(
+                "Select Filter:",
+                id="filter-section-meta",
+                className="select-label",
+                ),
+                dcc.Dropdown(
+                    id="filter-dropdown",
+                    options=[
+                        {"label": "All metabolites", "value": "all"},
+                        {"label": "Metabolites altered across all subsites", "value": "across_all"},
+                        {"label": "Subsites specific alterations", "value": "specific_subsites"},
+                        {"label": "Proximal or Distal subsites", "value": "proximal_distal"},
+                        ],
+                        placeholder="Select Filter",
+                        multi=False,
+                        style={"width": "100%"},
+                        className="select-input",
+                        value="all",
+                    ),
                     ],
+                md=4,
+                ),
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    html.Label(
+                        "Select Compound meta:",
+                        id="meta-section",
+                        className="select-label",
+                    ),
+                    dcc.Dropdown(
+                        id="compound-dropdown-meta",
+                        placeholder="Select Meta Value",
+                        searchable=True,
+                        multi=False,
+                        style={"width": "100%"},
+                        className="select-input",
+                    ),
+                    html.Div(
+                        id="selected-meta-value",
+                        className="select-label",
+                    ),
+                ],
                     md=12,
                 ),
-            ]
-        ),
-        dbc.Row(
+            ]),
+            
+            dbc.Row(
             [
                 dbc.Col(
                     [
@@ -516,27 +532,26 @@ main_layout = dbc.Container(
                 ),
             ]
         ),
+            html.Div(className="border-line"),
 
-        html.Div(className="border-line"),
-
-        dbc.Row(
-            [
-                html.H2(
-                    "Inter-subsite metabolites comparisons 3",
-                    className="section-heading",
-                    id="section3",
-                ),
-                html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
-                    className="section-description",
-                ),
-            ]
-        ),
-        dbc.Row(
-            [
-                dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
-            ]
-        ),
+            dbc.Row(
+                [
+                    html.H2(
+                        "Inter-subsite metabolites comparisons 3",
+                        className="section-heading",
+                        id="section3",
+                    ),
+                    html.P(
+                        "Your description goes here. Provide relevant details or information about the section.",
+                        className="section-description",
+                    ),
+                ]
+            ),
+            dbc.Row(
+                [
+                    dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
+                ]
+            ),
 
         html.Div(className="border-line"),
         dbc.Row(
