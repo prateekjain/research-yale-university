@@ -128,7 +128,7 @@ def register_callbacks(app):
     @app.callback(
         Output("compound-dropdown-meta", "options"),
         Output("compound-dropdown-meta", "value"),
-        Input("filter-dropdown", "value")
+        Input("filter-radio", "value")
     )
     def update_compound_dropdown(filter_value):
         # Logic to update options based on the selected filter

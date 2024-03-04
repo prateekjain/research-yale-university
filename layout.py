@@ -455,19 +455,17 @@ main_layout = dbc.Container(
                 id="filter-section-meta",
                 className="select-label",
                 ),
-                dcc.Dropdown(
-                    id="filter-dropdown",
+                    dcc.RadioItems(
+                    id="filter-radio",
                     options=[
                         {"label": "All metabolites", "value": "all"},
                         {"label": "Metabolites altered across all subsites", "value": "across_all"},
                         {"label": "Subsites specific alterations", "value": "specific_subsites"},
                         {"label": "Proximal or Distal subsites", "value": "proximal_distal"},
                         ],
-                        placeholder="Select Filter",
-                        multi=False,
-                        style={"width": "100%"},
-                        className="select-input",
                         value="all",
+                        inline=True,  # Display radio items horizontally
+                        className="select-input",
                     ),
                     ],
                 md=4,
