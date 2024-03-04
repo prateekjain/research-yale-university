@@ -38,28 +38,28 @@ def get_case_columns_query(table_name, selected_mz):
     all_columns = [desc[0] for desc in cursor.description]
     # print(all_columns)
     # Construct the SQL query dynamically
-    query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
-    query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = {selected_mz}"
-    get_side_val = f"SELECT q_fdr, log_fc_matched FROM {table_name} WHERE mz = {selected_mz}"
+    query_case = f"SELECT {', '.join([col for col in all_columns if '_case' in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
+    query_control = f"SELECT {', '.join([col for col in all_columns if '_control' in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
+    get_side_val = f"SELECT q_fdr, log_fc_matched FROM {table_name} WHERE mz = '{selected_mz}'"
     # print("query_case" ,query_case)
     # print("query_control", query_control)
 
     cursor.execute(query_case)
     case_results = cursor.fetchall()
-    print(case_results)
+    print("heelooo5",case_results)
 
     cursor.execute(query_control)
     control_results = cursor.fetchall()
-    print(control_results)
+    print("heelooo4",control_results)
 
     cursor.execute(get_side_val)
     final_get_side_val = cursor.fetchall()
-    print(final_get_side_val)
+    print("heelooo6",final_get_side_val)
 
     # Close the cursor and connection
     cursor.close()
     connection.close()
-
+    print("heelooo7",case_results, control_results, final_get_side_val)
     return case_results, control_results, final_get_side_val
 
 
@@ -70,7 +70,7 @@ def get_case_columns_vs_query(columName, selected_mz, table_name):
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
-    print("all_columns", all_columns)
+    # print("all_columns", all_columns)
     query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
 
     cursor.execute(query_case)
@@ -91,7 +91,7 @@ def get_case_columns_linear_query(columName, selected_mz, table_name):
 
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
-    print("all_columns", all_columns)
+    # print("all_columns", all_columns)
 
     query_case = f"SELECT {', '.join([col for col in all_columns if f'case_{columName}_' in col.lower() and 'vs' not in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
     cursor.execute(query_case)
@@ -119,7 +119,7 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
     query_q_vs = f"SELECT {', '.join([col for col in all_columns if 'vs' in col.lower()])} FROM {table_name} WHERE mz = '{selected_mz}'"
     cursor.execute(query_q_vs, (selected_mz,))
     query_q_vs_result = cursor.fetchall()
-    print("query_q_vs_result", query_q_vs_result)
+    # print("query_q_vs_result", query_q_vs_result)
 
     for col in all_columns:
         if 'vs' in col.lower():
@@ -132,58 +132,64 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
         for j in range(i+1, len(region_call)):
             vs_value_name = region_call[i]+"_vs_"+region_call[j]
             vs_value_name_neg = region_call[j]+"_vs_"+region_call[i]
-            print("vpos", vs_value_name, vs_value_name_neg)
+            # print("vpos", vs_value_name, vs_value_name_neg)
 
             if vs_value_name in col_vs:
                 vs_value = col_vs.index(vs_value_name)
-                print(query_q_vs_result[0][vs_value])
+                # print(query_q_vs_result[0][vs_value])
                 qFdr = query_q_vs_result[0][vs_value]
-                print("exist_", i)
+                # print("exist_", i)
 
                 if qFdr < 0.001:
                     qFdrStars = '***'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
                 elif qFdr < 0.01:
                     qFdrStars = '**'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
 
                 elif qFdr < 0.05:
                     qFdrStars = '*'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars, )
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
 
             elif vs_value_name_neg in col_vs:
                 vs_value = col_vs.index(vs_value_name_neg)
-                print(query_q_vs_result[0][vs_value])
-                print("exist_", i)
+                # print(query_q_vs_result[0][vs_value])
+                # print("exist_", i)
                 qFdr = query_q_vs_result[0][vs_value]
                 if qFdr < 0.001:
                     qFdrStars = '***'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
                 elif qFdr < 0.01:
                     qFdrStars = '**'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
 
                 elif qFdr < 0.05:
                     qFdrStars = '*'
-                    add_comparison_lines(fig,region_call, [region_call[i], region_call[j]], [vpos+index, hpos+index], symbol=qFdrStars)
+                    add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
+                                         vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
-                    print("vpos", vpos+index, hpos+index)
+                    # print("vpos", vpos+index, hpos+index)
     cursor.close()
     connection.close()
 
 
 def add_comparison_lines(fig, region_call, regions, y_range, symbol):
-    print("com,ing here")
+    # print("com,ing here")
     fig.add_shape(
         type="line",
         xref="x",

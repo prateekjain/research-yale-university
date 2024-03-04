@@ -25,7 +25,7 @@ region = [
 tabs_mz = dcc.Tabs(
     [
         dcc.Tab(
-            label="Mz-h",
+            label="Negative ions",
             value="mz-h-tab",
             children=[
                 dbc.Row(
@@ -115,7 +115,7 @@ tabs_mz = dcc.Tabs(
             ],
         ),
         dcc.Tab(
-            label="Mz+h",
+            label="Positive ions",
             value="mz-plus-tab",
             children=[
                 dbc.Row(
@@ -138,7 +138,8 @@ tabs_mz = dcc.Tabs(
                                     multi=False,
                                     style={"width": "100%"},
                                     className="select-input",
-                                    value=get_mz_values("ascending_m_plus_h")[0],
+                                    value=get_mz_values(
+                                        "ascending_m_plus_h")[0],
                                 ),
                                 html.Div(id="selected-mz-plus-value"),
                             ],
@@ -210,7 +211,7 @@ tabs_mz = dcc.Tabs(
 tabs_compare = dcc.Tabs(
     [
         dcc.Tab(
-            label="7 regions",
+            label="7 Subsites",
             value="compare-all",
             children=[
                 dbc.Row(
@@ -269,7 +270,7 @@ tabs_compare = dcc.Tabs(
             ],
         ),
         dcc.Tab(
-            label="3 regions",
+            label="LCC, RCC, Rectum",
             value="compare-rcc-lcc",
             children=[
                 dbc.Row(
@@ -293,38 +294,41 @@ tabs_compare = dcc.Tabs(
                                     multi=False,
                                     style={"width": "100%"},
                                     className="select-input",
-                                    value=get_mz_values("tumor_rcc_lcc_comparable_plots")[0],
+                                    value=get_mz_values(
+                                        "tumor_rcc_lcc_comparable_plots")[0],
                                 ),
-                                html.Div(id="selected-mz-compare-rcc-lcc-value"),
+                                html.Div(
+                                    id="selected-mz-compare-rcc-lcc-value"),
                                 dbc.Row(
-                            [
-                                dbc.Col(
                                     [
-                                        dcc.Loading(
-                                            id="outer-container-loading",
-                                            type="circle",
-                                            children=[
-                                                html.Div(
-                                                    [
-                                                        dcc.Graph(
-                                                            id="tumor-comparable-rcc-lcc-plot",
-                                                            className="tumor-comparable-rcc-lcc-plot",
-                                                        ),
-                                                        dcc.Graph(
-                                                            id="normal-comparable-rcc-lcc-plot",
-                                                            className="normal-omparable-rcc-lcc-plot",
+                                        dbc.Col(
+                                            [
+                                                dcc.Loading(
+                                                    id="outer-container-loading",
+                                                    type="circle",
+                                                    children=[
+                                                        html.Div(
+                                                            [
+                                                                dcc.Graph(
+                                                                    id="tumor-comparable-rcc-lcc-plot",
+                                                                    className="tumor-comparable-rcc-lcc-plot",
+                                                                ),
+                                                                dcc.Graph(
+                                                                    id="normal-comparable-rcc-lcc-plot",
+                                                                    className="normal-omparable-rcc-lcc-plot",
+                                                                ),
+                                                            ],
+                                                            style={
+                                                                "display": "flex"},
+                                                            className="outer-container with-shadow",
                                                         ),
                                                     ],
-                                                    style={"display": "flex"},
-                                                    className="outer-container with-shadow",
                                                 ),
                                             ],
+                                            md=12,
                                         ),
-                                    ],
-                                    md=12,
+                                    ]
                                 ),
-                            ]
-                        ),
                             ]
                         ),
                     ]
@@ -344,7 +348,8 @@ main_layout = dbc.Container(
                 dbc.Col(
                     [
                         html.Br(),
-                        html.H1("Colorectal Cancer Metabolome Database!", className="title"),
+                        html.H1("Colorectal Cancer Metabolome Database!",
+                                className="title"),
                         html.P("About", className="about-text"),
                         html.P(
                             "Unlocking the complexities of colorectal cancer (CRC) requires a deeper understanding of its molecular landscape across different subsites of the colorectum. Our database is designed to serve as a comprehensive resource for researchers, clinicians, and enthusiasts alike, providing invaluable insights into CRC metabolomics and its implications for diagnosis, prognosis, and treatment. Explore metabolite markers across different colorectal subsites and identify survival markers for precision medicine. Join us in unraveling the intricacies of CRC and translating findings into impactful outcomes. Welcome to the forefront of colorectal cancer research!",
@@ -363,20 +368,21 @@ main_layout = dbc.Container(
                                         ),
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Inter-subsite ",
-                                            id="btn-inter-subsite",
+                                            "Mucosa2",
+                                            id="btn-mz-linear",
                                             n_clicks=0,
                                             className="btn-section btn-center",
                                             href="#section2",
                                         ),
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Mz Linear",
-                                            id="btn-mz-linear",
+                                            "Inter-subsite ",
+                                            id="btn-inter-subsite",
                                             n_clicks=0,
                                             className="btn-section btn-center",
                                             href="#section3",
                                         ),
+                                        
                                         html.Span("|", className="divider"),
                                         html.A(
                                             "Linear metabolite",
@@ -407,19 +413,20 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Tumor vs. Normal Mucosa Metabolite features Comparison Across Subsites",
+                    "Tumor vs. Normal Mucosa Metabolic features Comparison Across Subsites 1",
                     className="section-heading",
                     id="section1",
                 ),
                 html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
+                    "In this Section, we present the comparison between tumors and matched normal mucosa across all seven subsites of CRC. This analysis encompasses 10,126 metabolic features in HILIC negative mode and 9,600 features in RPLC positive mode. Statistical significance was determined using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR).",
                     className="section-description",
                 ),
                 dbc.Col(
                     [
                         dbc.Row(
                             [
-                                dbc.Col([tabs_mz, html.Div(id="tabs-content")], md=12),
+                                dbc.Col(
+                                    [tabs_mz, html.Div(id="tabs-content")], md=12),
                             ]
                         ),
                     ],
@@ -432,9 +439,92 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Inter-subsite metabolites comparisons",
+                    "Tumor vs. Normal Mucosa Metabolite Comparison Across Subsites 2",
                     className="section-heading",
                     id="section2",
+                ),
+                html.P(
+                    "In this Section, we present the comparison between tumors and matched normal mucosa across all seven subsites of CRC. This analysis focuses on 409 annotated metabolites, with 220 annotated using standards and 190 annotated at level 3. Statistical significance was assessed using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR) method. Additionally, users can analyze the unique metabolite alteration specific to each subsite",
+                    className="section-description",
+                ),
+            ]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+
+                        html.Label(
+                            "Select Compound meta:",
+                            id="meta-section",
+                            className="select-label",
+                        ),
+                        dcc.Dropdown(
+                            id="compound-dropdown-meta",
+                            options=[
+                                {"label": mz, "value": mz}
+                                for mz in get_mz_values("ascending_metabolites")
+                            ],
+                            placeholder="Select Mz Value",
+                            searchable=True,
+                            multi=False,
+                            style={"width": "100%"},
+                            className="select-input",
+                            value=get_mz_values(
+                                "ascending_metabolites")[0],
+                        ),
+                        html.Div(
+                            id="selected-meta-value",
+                            className="select-label",
+                        ),
+                    ],
+                    md=12,
+                ),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Loading(
+                            id="outer-container-plus-loading",
+                            type="circle",
+                            children=[
+                                html.Div(
+                                    [
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    [
+                                                        dcc.Graph(
+                                                            id=f"scatter-plot-meta-{i}",
+                                                            className="scatter-plot",
+                                                        )
+                                                        for i in range(7)
+                                                    ],
+                                                    className="inner-container",
+                                                ),
+                                            ]
+                                        ),
+                                        
+                                    ],
+                                    className="outer-container with-shadow",
+                                ),
+                            ],
+                        ),
+                    ],
+                    md=12,
+                ),
+            ]
+        ),
+
+        html.Div(className="border-line"),
+
+        dbc.Row(
+            [
+                html.H2(
+                    "Inter-subsite metabolites comparisons 3",
+                    className="section-heading",
+                    id="section3",
                 ),
                 html.P(
                     "Your description goes here. Provide relevant details or information about the section.",
@@ -447,13 +537,14 @@ main_layout = dbc.Container(
                 dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
             ]
         ),
+
         html.Div(className="border-line"),
         dbc.Row(
             [
                 html.H2(
-                    "Tumor vs. Normal Mucosa Metabolite Comparison Across Subsites",
+                    "Linear metabolite gradient across colorectal subsites 4",
                     className="section-heading",
-                    id="section3",
+                    id="section4",
                 ),
                 html.P(
                     "Your description goes here. Provide relevant details or information about the section.",
@@ -515,21 +606,6 @@ main_layout = dbc.Container(
                 ),
             ]
         ),
-        
-        html.Div(className="border-line"),
-        
-        dbc.Row(
-            [
-                html.H2(
-                    "Section 4 : Linear metabolite gradient across colorectal subsites",
-                    className="section-heading",
-                    id="section4",
-                ),
-                html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
-                    className="section-description",
-                ),
-        ]),
         html.Div(className="border-line"),
         dbc.Row(
             [
@@ -542,9 +618,9 @@ main_layout = dbc.Container(
                     "Your description goes here. Provide relevant details or information about the section.",
                     className="section-description",
                 ),
-        ]),
+            ]),
         html.Div(className="border-line"),
-        
+
         dbc.Row(
             [
                 dbc.Col(

@@ -127,6 +127,38 @@ def register_callbacks(app):
             return [go.Figure()] * 7
 
     @app.callback(
+        [Output(f'scatter-plot-meta-{i}', 'figure') for i in range(7)],
+        [Input('compound-dropdown-meta', 'value')]
+    )
+    def tumor_vs_normal_plots(selected_compound):
+        if selected_compound is not None:
+            # Fetch and process data based on selected values
+            # Assuming you have a column named "mz" in your tables
+            selected_mz = selected_compound
+
+            figures = []
+
+            for i in range(len(region)):
+                # Fetch data from the database
+                query_case, query_control, final_get_side_val = get_case_columns_query(
+                    region[i]+"_metabolites", selected_mz)
+                query_case = list(query_case[0])
+                query_control = list(query_control[0])
+                final_get_side_val = list(final_get_side_val[0])
+
+                qFdr = final_get_side_val[0]
+                scatter_plot = tumor_vs_normal_plot(
+                    query_case, query_control, final_get_side_val,  region[i])
+
+                figures.append(scatter_plot)
+
+            # Show the graph container
+            return figures
+        else:
+            # If dropdown is not selected, hide the container
+            return [go.Figure()] * 7
+
+    @app.callback(
         Output('tumor-plus-plot', 'figure'),
         Output('normal-plus-plot', 'figure'),
         [Input('compound-dropdown-mz-plus', 'value')]
@@ -160,7 +192,6 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-
     @app.callback(
         Output('tumor-comparable-plot', 'figure'),
         Output('normal-comparable-plot', 'figure'),
@@ -188,17 +219,19 @@ def register_callbacks(app):
             for i in region:
                 print(i)
                 print('\n')
-                
-                query_case = get_case_columns_vs_query(i, selected_meta, "tumor_comparable_plots")
+
+                query_case = get_case_columns_vs_query(
+                    i, selected_meta, "tumor_comparable_plots")
                 query_case = list(query_case[0])
                 query_tumor_regions.extend(query_case)
-                print("123qwe",query_tumor_regions)
-                
-                query_control =  get_case_columns_vs_query(i, selected_meta, "normal_comparable_plots")
+                print("123qwe", query_tumor_regions)
+
+                query_control = get_case_columns_vs_query(
+                    i, selected_meta, "normal_comparable_plots")
                 query_control = list(query_control[0])
                 query_normal_regions.extend(query_control)
-                print("456qwe",query_normal_regions)
-                
+                print("456qwe", query_normal_regions)
+
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
                 tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_comparable_plots", selected_meta, region)
@@ -206,7 +239,7 @@ def register_callbacks(app):
             normal_plot_comparable_all_regions = make_subplots()
             normal_plot_comparable_all_regions = comparable_plots(
                 normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_comparable_plots", selected_meta, region)
-            
+
             # Show the graph containers
             return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
         else:
@@ -232,22 +265,24 @@ def register_callbacks(app):
                 "lcc": 'blue',
                 "rectum": 'pink',
             }
-            region_rcc_lcc = ["rectum", "rcc", "lcc"]
+            region_rcc_lcc = ["rcc", "lcc", "rectum"]
 
             for i in region_rcc_lcc:
                 print(i)
                 print('\n')
-                
-                query_case = get_case_columns_vs_query(i, selected_meta, "tumor_rcc_lcc_comparable_plots")
+
+                query_case = get_case_columns_vs_query(
+                    i, selected_meta, "tumor_rcc_lcc_comparable_plots")
                 query_case = list(query_case[0])
                 query_tumor_regions.extend(query_case)
                 print("query_tumor_regions2", query_tumor_regions)
-                
-                query_control =  get_case_columns_vs_query(i, selected_meta, "normal_rcc_lcc_comparable_plots")
+
+                query_control = get_case_columns_vs_query(
+                    i, selected_meta, "normal_rcc_lcc_comparable_plots")
                 query_control = list(query_control[0])
                 query_normal_regions.extend(query_control)
                 print("query_normal_regions2", query_normal_regions)
-                
+
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
                 tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_rcc_lcc_comparable_plots", selected_meta, region_rcc_lcc)
@@ -280,23 +315,24 @@ def register_callbacks(app):
             for i in region:
                 print(i)
                 print('\n')
-                
-                query_case, q_fdr_case = get_case_columns_linear_query(i, selected_meta, "tumor_linear_plots")
+
+                query_case, q_fdr_case = get_case_columns_linear_query(
+                    i, selected_meta, "tumor_linear_plots")
                 query_case = list(query_case[0])
                 query_tumor_linear_regions.extend(query_case)
                 # print(query_tumor_linear_regions)
-                
-                query_control, q_fdr_control =  get_case_columns_linear_query(i, selected_meta, "normal_linear_plots")
+
+                query_control, q_fdr_control = get_case_columns_linear_query(
+                    i, selected_meta, "normal_linear_plots")
                 print("q_fdr_control", q_fdr_case[0][0])
                 query_control = list(query_control[0])
                 query_normal_linear_regions.extend(query_control)
                 # print(query_normal_linear_regions)
-                
 
             tumor_linear_plot_all_regions = make_subplots()
             tumor_linear_plot_all_regions = all_regions_plots(
                 tumor_linear_plot_all_regions, query_tumor_linear_regions, "Tumor")
-            qFdrStars =''
+            qFdrStars = ''
             if q_fdr_case[0][0] < 0.001:
                 qFdrStars = '***'
                 tumor_linear_plot_all_regions = addAnotations(
@@ -307,10 +343,10 @@ def register_callbacks(app):
                     tumor_linear_plot_all_regions, qFdrStars)
             elif q_fdr_case[0][0] < 0.05:
                 qFdrStars = '*'
-                
+
                 tumor_linear_plot_all_regions = addAnotations(
                     tumor_linear_plot_all_regions, qFdrStars)
-            
+
             normal_linear_plot_all_regions = make_subplots()
             normal_linear_plot_all_regions = all_regions_plots(
                 normal_linear_plot_all_regions, query_normal_linear_regions, "Normal")
@@ -320,4 +356,3 @@ def register_callbacks(app):
         else:
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
-
