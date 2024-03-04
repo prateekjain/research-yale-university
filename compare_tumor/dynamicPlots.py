@@ -66,14 +66,14 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
     scatter_plot.update_yaxes(
         mirror=True,
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
 
     # Customize layout
@@ -135,14 +135,14 @@ def all_regions_plots(plot_all_regions, query_regions, title):
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
     plot_all_regions.update_yaxes(
         mirror=True,
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
     plot_all_regions.update_layout(
         width=600,
@@ -207,14 +207,14 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
     plot_all_regions.update_yaxes(
         mirror=True,
         ticks='outside',
         showline=True,
         linecolor='black',
-        gridcolor='lightgrey'
+        # gridcolor='lightgrey'
     )
     plot_all_regions.update_layout(
         width=600,

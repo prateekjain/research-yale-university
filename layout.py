@@ -10,6 +10,7 @@ from compare_tumor.data_functions import (
     get_case_columns_vs_query,
     vs_columnNames,
     add_comparison_lines,
+    get_cecum_and_ascending_mz_values,
 )
 
 region = [
@@ -287,6 +288,7 @@ tabs_compare = dcc.Tabs(
                                     options=[
                                         {"label": mz, "value": mz}
                                         for mz in get_mz_values("tumor_rcc_lcc_comparable_plots")
+                                        
                                     ],
                                     placeholder="Select Mz Value",
                                     searchable=True,
@@ -382,7 +384,7 @@ main_layout = dbc.Container(
                                             className="btn-section btn-center",
                                             href="#section3",
                                         ),
-                                        
+
                                         html.Span("|", className="divider"),
                                         html.A(
                                             "Linear metabolite",
@@ -448,30 +450,33 @@ main_layout = dbc.Container(
                     className="section-description",
                 ),
             ]),
-            dbc.Row([
+        dbc.Row([
                 dbc.Col([
-                html.Label(
-                "Select Filter:",
-                id="filter-section-meta",
-                className="select-label",
-                ),
+                    html.Label(
+                        "Select Filter:",
+                        id="filter-section-meta",
+                        className="select-label",
+                    ),
                     dcc.RadioItems(
-                    id="filter-radio",
-                    options=[
-                        {"label": "All metabolites", "value": "all"},
-                        {"label": "Metabolites altered across all subsites", "value": "across_all"},
-                        {"label": "Subsites specific alterations", "value": "specific_subsites"},
-                        {"label": "Proximal or Distal subsites", "value": "proximal_distal"},
+                        id="filter-radio",
+                        options=[
+                            {"label": "All metabolites", "value": "all"},
+                            {"label": "Metabolites altered across all subsites",
+                             "value": "across_all"},
+                            {"label": "Subsites specific alterations",
+                             "value": "specific_subsites"},
+                            {"label": "Proximal or Distal subsites",
+                             "value": "proximal_distal"},
                         ],
                         value="all",
                         inline=True,  # Display radio items horizontally
                         className="select-input",
                     ),
-                    ],
-                md=4,
+                ],
+                    md=4,
                 ),
-            ]),
-            dbc.Row([
+                ]),
+        dbc.Row([
                 dbc.Col([
                     html.Label(
                         "Select Compound meta:",
@@ -493,9 +498,9 @@ main_layout = dbc.Container(
                 ],
                     md=12,
                 ),
-            ]),
-            
-            dbc.Row(
+                ]),
+
+        dbc.Row(
             [
                 dbc.Col(
                     [
@@ -519,7 +524,7 @@ main_layout = dbc.Container(
                                                 ),
                                             ]
                                         ),
-                                        
+
                                     ],
                                     className="outer-container with-shadow",
                                 ),
@@ -530,26 +535,26 @@ main_layout = dbc.Container(
                 ),
             ]
         ),
-            html.Div(className="border-line"),
+        html.Div(className="border-line"),
 
-            dbc.Row(
-                [
-                    html.H2(
-                        "Inter-subsite metabolites comparisons 3",
-                        className="section-heading",
-                        id="section3",
-                    ),
-                    html.P(
-                        "Your description goes here. Provide relevant details or information about the section.",
-                        className="section-description",
-                    ),
-                ]
-            ),
-            dbc.Row(
-                [
-                    dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
-                ]
-            ),
+        dbc.Row(
+            [
+                html.H2(
+                    "Inter-subsite metabolites comparisons 3",
+                    className="section-heading",
+                    id="section3",
+                ),
+                html.P(
+                    "Your description goes here. Provide relevant details or information about the section.",
+                    className="section-description",
+                ),
+            ]
+        ),
+        dbc.Row(
+            [
+                dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
+            ]
+        ),
 
         html.Div(className="border-line"),
         dbc.Row(
@@ -574,7 +579,7 @@ main_layout = dbc.Container(
                             id="compound-dropdown-linear",
                             options=[
                                 {"label": mz, "value": mz}
-                                for mz in get_mz_values("tumor_linear_plots")
+                                for mz in list(get_cecum_and_ascending_mz_values(["tumor_linear_plots", "normal_linear_plots"]))
                             ],
                             placeholder="Select Mz Value",
                             searchable=True,
@@ -582,7 +587,8 @@ main_layout = dbc.Container(
                             multi=False,
                             style={"width": "100%"},
                             className="select-input",
-                            value=get_mz_values("tumor_linear_plots")[0],
+                            value=list(get_cecum_and_ascending_mz_values(
+                                ["tumor_linear_plots", "normal_linear_plots"]))[0],
                         ),
                         html.Div(id="selected-mz-linear-value"),
                     ],

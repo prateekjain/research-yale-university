@@ -385,6 +385,20 @@ def register_callbacks(app):
             normal_linear_plot_all_regions = make_subplots()
             normal_linear_plot_all_regions = all_regions_plots(
                 normal_linear_plot_all_regions, query_normal_linear_regions, "Normal")
+            qFdrStars1 = ''
+            if q_fdr_case[0][0] < 0.001:
+                qFdrStars1 = '***'
+                normal_linear_plot_all_regions = addAnotations(
+                    normal_linear_plot_all_regions, qFdrStars1)
+            elif q_fdr_case[0][0] < 0.01:
+                qFdrStars1 = '**'
+                normal_linear_plot_all_regions = addAnotations(
+                    normal_linear_plot_all_regions, qFdrStars1)
+            elif q_fdr_case[0][0] < 0.05:
+                qFdrStars1 = '*'
+
+                normal_linear_plot_all_regions = addAnotations(
+                    normal_linear_plot_all_regions, qFdrStars1)
 
             # Show the graph containers
             return tumor_linear_plot_all_regions, normal_linear_plot_all_regions
