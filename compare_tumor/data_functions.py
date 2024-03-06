@@ -62,7 +62,16 @@ def get_cecum_and_ascending_mz_values(regions):
     connection.close()
     return mz_values_set
 
-
+def get_q05_mz_values(region):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    
+    query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr <= 0.05"
+    cursor.execute(query)
+    q05_mz_values = {row[0] for row in cursor.fetchall()}
+    
+    connection.close()
+    return q05_mz_values
 
 
 

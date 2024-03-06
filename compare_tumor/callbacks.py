@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -136,19 +136,46 @@ def register_callbacks(app):
             options = [{"label": mz, "value": mz}
                        for mz in get_mz_values("ascending_metabolites")]
             default_value = get_mz_values("ascending_metabolites")[0]
-            
+
         elif filter_value == "across_all":
             options = [{"label": mz, "value": mz}
-                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites","descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
+                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
             default_value = list(get_cecum_and_ascending_mz_values(
-                ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites","descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
+                ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
             
         elif filter_value == "specific_subsites":
-            options = [{"label": mz, "value": mz}
-                       for mz in list(get_cecum_and_ascending_mz_values(["descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
-            default_value = list(get_cecum_and_ascending_mz_values(
-                ["descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
-            
+            print("not done")
+            # List of all regions
+            all_regions = ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites",
+                           "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]
+
+            # Get Mz values for each region
+            region_mz_values = {region: set(get_mz_values(region)) for region in all_regions}
+
+            # Find Mz values with q < 0.05 only in one region (not in other 6)
+            unique_specific_subsites_mz = set()
+            for current_region in all_regions:
+                other_regions = set(all_regions) - {current_region}
+                current_region_mz = region_mz_values[current_region]
+
+                # Find Mz values with q < 0.05 in the current region
+                current_region_q05_mz = set(get_q05_mz_values(current_region))
+
+                # Find Mz values with q < 0.05 in all other regions
+                other_regions_q05_mz = set()
+                for other_region in other_regions:
+                    other_regions_q05_mz |= set(get_q05_mz_values(other_region))
+
+                # Find Mz values with q < 0.05 only in the current region (not in other 6)
+                specific_subsites_mz = current_region_q05_mz - other_regions_q05_mz
+
+                # Update the set of unique Mz values
+                unique_specific_subsites_mz |= specific_subsites_mz
+
+            # Create options and default value
+            options = [{"label": mz, "value": mz} for mz in unique_specific_subsites_mz]
+            default_value = list(unique_specific_subsites_mz)[0] if unique_specific_subsites_mz else None
+
         elif filter_value == "proximal_distal":
             options = [{"label": mz, "value": mz}
                        for mz in list(get_cecum_and_ascending_mz_values(["sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
@@ -359,7 +386,7 @@ def register_callbacks(app):
 
                 query_control, q_fdr_control = get_case_columns_linear_query(
                     i, selected_meta, "normal_linear_plots")
-                
+
                 print("q_fdr_control", q_fdr_control[0][0])
                 query_control = list(query_control[0])
                 query_normal_linear_regions.extend(query_control)
