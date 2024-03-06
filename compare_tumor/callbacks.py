@@ -139,9 +139,9 @@ def register_callbacks(app):
             
         elif filter_value == "across_all":
             options = [{"label": mz, "value": mz}
-                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites"]))]
+                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites","descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
             default_value = list(get_cecum_and_ascending_mz_values(
-                ["cecum_metabolites", "ascending_metabolites"]))[0]
+                ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites","descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
             
         elif filter_value == "specific_subsites":
             options = [{"label": mz, "value": mz}
@@ -359,7 +359,8 @@ def register_callbacks(app):
 
                 query_control, q_fdr_control = get_case_columns_linear_query(
                     i, selected_meta, "normal_linear_plots")
-                print("q_fdr_control", q_fdr_case[0][0])
+                
+                print("q_fdr_control", q_fdr_control[0][0])
                 query_control = list(query_control[0])
                 query_normal_linear_regions.extend(query_control)
                 # print(query_normal_linear_regions)
@@ -368,17 +369,16 @@ def register_callbacks(app):
             tumor_linear_plot_all_regions = all_regions_plots(
                 tumor_linear_plot_all_regions, query_tumor_linear_regions, "Tumor")
             qFdrStars = ''
-            if q_fdr_case[0][0] < 0.001:
+            if q_fdr_case[0][0] <= 0.001:
                 qFdrStars = '***'
                 tumor_linear_plot_all_regions = addAnotations(
                     tumor_linear_plot_all_regions, qFdrStars)
-            elif q_fdr_case[0][0] < 0.01:
+            elif q_fdr_case[0][0] <= 0.01 and q_fdr_case[0][0] > 0.001:
                 qFdrStars = '**'
                 tumor_linear_plot_all_regions = addAnotations(
                     tumor_linear_plot_all_regions, qFdrStars)
-            elif q_fdr_case[0][0] < 0.05:
+            elif q_fdr_case[0][0] <= 0.05 and q_fdr_case[0][0] > 0.01:
                 qFdrStars = '*'
-
                 tumor_linear_plot_all_regions = addAnotations(
                     tumor_linear_plot_all_regions, qFdrStars)
 
@@ -386,20 +386,26 @@ def register_callbacks(app):
             normal_linear_plot_all_regions = all_regions_plots(
                 normal_linear_plot_all_regions, query_normal_linear_regions, "Normal")
             qFdrStars1 = ''
-            if q_fdr_case[0][0] < 0.001:
+            if q_fdr_control[0][0] <= 0.001:
                 qFdrStars1 = '***'
                 normal_linear_plot_all_regions = addAnotations(
                     normal_linear_plot_all_regions, qFdrStars1)
-            elif q_fdr_case[0][0] < 0.01:
+            elif q_fdr_control[0][0] <= 0.01 and q_fdr_control[0][0] > 0.001:
                 qFdrStars1 = '**'
                 normal_linear_plot_all_regions = addAnotations(
                     normal_linear_plot_all_regions, qFdrStars1)
-            elif q_fdr_case[0][0] < 0.05:
+            elif q_fdr_control[0][0] <= 0.05 and q_fdr_control[0][0] > 0.01:
                 qFdrStars1 = '*'
 
                 normal_linear_plot_all_regions = addAnotations(
                     normal_linear_plot_all_regions, qFdrStars1)
 
+    #             if qFdr <= 0.001:
+    #       qFdrStars = '***'
+    # elif 0.001 < qFdr <= 0.01:
+    #     qFdrStars = '**'
+    # elif 0.01 < qFdr <= 0.05:
+    #     qFdrStars = '*'
             # Show the graph containers
             return tumor_linear_plot_all_regions, normal_linear_plot_all_regions
         else:

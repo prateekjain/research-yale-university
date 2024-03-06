@@ -48,7 +48,7 @@ def get_cecum_and_ascending_mz_values(regions):
     # Loop through each region and dynamically generate the SQL query
     for region in regions:
         # SQL query to get Mz values with q_fdr < 0.05 in the specified region
-        query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr < 0.05"
+        query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr <= 0.05"
         cursor.execute(query)
         region_mz_values = {row[0] for row in cursor.fetchall()}
 
@@ -183,14 +183,14 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                                          vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01:
+                elif qFdr < 0.01 and qFdr > 0.001:
                     qFdrStars = '**'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
 
-                elif qFdr < 0.05:
+                elif qFdr < 0.05 and qFdr > 0.01:
                     qFdrStars = '*'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
@@ -208,14 +208,14 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01:
+                elif qFdr < 0.01  and qFdr > 0.001:
                     qFdrStars = '**'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
 
-                elif qFdr < 0.05:
+                elif qFdr < 0.05  and qFdr > 0.01:
                     qFdrStars = '*'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)

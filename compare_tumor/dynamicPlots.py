@@ -20,13 +20,13 @@ region_colors = {
 
 def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_name):
     qFdr = final_get_side_val[0]
-
+    print("qfdr first", qFdr)
     # Determine stars based on qFdr value
-    if 0.001 < qFdr < 0.01:
+    if qFdr <= 0.001:
         qFdrStars = '***'
-    elif 0.01 < qFdr < 0.05:
+    elif 0.001 < qFdr <= 0.01:
         qFdrStars = '**'
-    elif qFdr < 0.05:
+    elif 0.01 < qFdr <= 0.05:
         qFdrStars = '*'
     else:
         qFdrStars = 'NA'
