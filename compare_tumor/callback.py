@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -18,7 +18,7 @@ def register_callbacks(app):
         [Output(f'scatter-plot-mz_minus_h-{i}', 'figure') for i in range(7)],
         [Input('compound-dropdown', 'value')]
     )
-    def tumor_vs_normal_plots(selected_compound):
+    def tumor_vs_normal_m_mins_plots(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
             # Assuming you have a column named "mz" in your tables
@@ -30,6 +30,9 @@ def register_callbacks(app):
                 # Fetch data from the database
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i], selected_mz)
+                if not query_case or not query_control:
+                    figures.append(go.Figure())
+                    continue
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 final_get_side_val = list(final_get_side_val[0])
@@ -54,7 +57,7 @@ def register_callbacks(app):
         Output('normal-plot', 'figure'),
         [Input('compound-dropdown', 'value')]
     )
-    def tumor_normal_plot(selected_compound):
+    def tumor_normal_m_plus_plot(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
             selected_mz = float(selected_compound)
@@ -64,6 +67,7 @@ def register_callbacks(app):
             for i in range(len(region)):
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i], selected_mz)
+                
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 query_tumor_regions.extend(query_case)
@@ -109,6 +113,9 @@ def register_callbacks(app):
                 # Fetch data from the database
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i]+"_m_plus_h", selected_mz)
+                if not query_case or not query_control:
+                    figures.append(go.Figure())
+                    continue
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 final_get_side_val = list(final_get_side_val[0])
@@ -132,6 +139,7 @@ def register_callbacks(app):
     )
     def update_compound_dropdown(filter_value):
         # Logic to update options based on the selected filter
+        
         if filter_value == "all":
             options = [{"label": mz, "value": mz}
                        for mz in get_mz_values("ascending_metabolites")]
@@ -144,7 +152,7 @@ def register_callbacks(app):
                 ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
             
         elif filter_value == "specific_subsites":
-            print("not done")
+            # print("not done")
             # List of all regions
             all_regions = ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites",
                            "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]
@@ -192,18 +200,23 @@ def register_callbacks(app):
         [Output(f'scatter-plot-meta-{i}', 'figure') for i in range(7)],
         [Input('compound-dropdown-meta', 'value')]
     )
-    def tumor_vs_normal_plots(selected_compound):
+    def tumor_vs_normal_meta_plots(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
             # Assuming you have a column named "mz" in your tables
-            selected_mz = selected_compound
+            selected_mz = selected_mz_cleaning(selected_compound)
 
             figures = []
 
             for i in range(len(region)):
                 # Fetch data from the database
+                # print("meta_valyes")
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i]+"_metabolites", selected_mz)
+                if not query_case or not query_control :
+                    figures.append(go.Figure())
+                    continue
+                
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 final_get_side_val = list(final_get_side_val[0])
@@ -262,7 +275,7 @@ def register_callbacks(app):
     def tumor_normal_comparable_plot(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
-            selected_meta = selected_compound
+            selected_meta = selected_mz_cleaning(selected_compound)
             # table_name = "tumor_comparable_plots"
             query_tumor_regions = []
             query_normal_regions = []
@@ -279,20 +292,20 @@ def register_callbacks(app):
             }
 
             for i in region:
-                print(i)
-                print('\n')
+                # print(i)
+                # print('\n')
 
                 query_case = get_case_columns_vs_query(
                     i, selected_meta, "tumor_comparable_plots")
                 query_case = list(query_case[0])
                 query_tumor_regions.extend(query_case)
-                print("123qwe", query_tumor_regions)
+                # print("123qwe", query_tumor_regions)
 
                 query_control = get_case_columns_vs_query(
                     i, selected_meta, "normal_comparable_plots")
                 query_control = list(query_control[0])
                 query_normal_regions.extend(query_control)
-                print("456qwe", query_normal_regions)
+                # print("456qwe", query_normal_regions)
 
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
@@ -316,7 +329,7 @@ def register_callbacks(app):
     def tumor_normal_comparable_rcc_lcc_plot(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
-            selected_meta = selected_compound
+            selected_meta = selected_mz_cleaning(selected_compound)
             # table_name = "tumor_comparable_plots"
             query_tumor_regions = []
             query_normal_regions = []
@@ -330,20 +343,20 @@ def register_callbacks(app):
             region_rcc_lcc = ["rcc", "lcc", "rectum"]
 
             for i in region_rcc_lcc:
-                print(i)
-                print('\n')
+                # print(i)
+                # print('\n')
 
                 query_case = get_case_columns_vs_query(
                     i, selected_meta, "tumor_rcc_lcc_comparable_plots")
                 query_case = list(query_case[0])
                 query_tumor_regions.extend(query_case)
-                print("query_tumor_regions2", query_tumor_regions)
+                # print("query_tumor_regions2", query_tumor_regions)
 
                 query_control = get_case_columns_vs_query(
                     i, selected_meta, "normal_rcc_lcc_comparable_plots")
                 query_control = list(query_control[0])
                 query_normal_regions.extend(query_control)
-                print("query_normal_regions2", query_normal_regions)
+                # print("query_normal_regions2", query_normal_regions)
 
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
@@ -367,7 +380,7 @@ def register_callbacks(app):
     def tumor_normal_linear_plot(selected_compound):
         if selected_compound is not None:
             # Fetch and process data based on selected values
-            selected_meta = selected_compound
+            selected_meta = selected_mz_cleaning(selected_compound)
             # table_name = "tumor_comparable_plots"
             query_tumor_linear_regions = []
             query_normal_linear_regions = []
@@ -375,8 +388,8 @@ def register_callbacks(app):
             # Define a list of colors for each region
 
             for i in region:
-                print(i)
-                print('\n')
+                # print(i)
+                # print('\n')
 
                 query_case, q_fdr_case = get_case_columns_linear_query(
                     i, selected_meta, "tumor_linear_plots")
@@ -387,7 +400,7 @@ def register_callbacks(app):
                 query_control, q_fdr_control = get_case_columns_linear_query(
                     i, selected_meta, "normal_linear_plots")
 
-                print("q_fdr_control", q_fdr_control[0][0])
+                # print("q_fdr_control", q_fdr_control[0][0])
                 query_control = list(query_control[0])
                 query_normal_linear_regions.extend(query_control)
                 # print(query_normal_linear_regions)

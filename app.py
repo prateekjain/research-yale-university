@@ -1,7 +1,7 @@
 # app.py
 import dash
 from dash import dcc, html
-from compare_tumor.callbacks import register_callbacks
+from compare_tumor.callback import register_callbacks
 from layout import main_layout
 
 region = ["cecum", "ascending", "transverse",

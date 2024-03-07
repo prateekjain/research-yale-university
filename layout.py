@@ -3,7 +3,7 @@ import dash
 from dash import dcc, html
 import dash_bootstrap_components as dbc
 
-from compare_tumor.callbacks import register_callbacks
+from compare_tumor.callback import register_callbacks
 from compare_tumor.data_functions import (
     get_mz_values,
     get_case_columns_query,
@@ -11,6 +11,7 @@ from compare_tumor.data_functions import (
     vs_columnNames,
     add_comparison_lines,
     get_cecum_and_ascending_mz_values,
+    get_dropdown_options,
 )
 
 region = [
@@ -22,6 +23,9 @@ region = [
     "rectosigmoid",
     "rectum",
 ]
+
+
+
 
 tabs_mz = dcc.Tabs(
     [
@@ -288,7 +292,7 @@ tabs_compare = dcc.Tabs(
                                     options=[
                                         {"label": mz, "value": mz}
                                         for mz in get_mz_values("tumor_rcc_lcc_comparable_plots")
-                                        
+
                                     ],
                                     placeholder="Select Mz Value",
                                     searchable=True,
@@ -553,6 +557,8 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
+                dbc.Col([dcc.Dropdown(id="image-dropdown", options=get_dropdown_options(), value=0)], md=4),
+                dbc.Col([html.Img(id="selected-image", style={"width": "100%"})], md=8),
             ]
         ),
 

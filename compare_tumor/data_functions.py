@@ -14,6 +14,12 @@ load_dotenv()
 db_url = os.getenv('DATABASE_URL')
 
 
+def selected_mz_cleaning(selected_mz):
+    if "'" in selected_mz:
+        selected_mz = selected_mz.replace("'", "''")
+        print("updated mz value", selected_mz)
+    return selected_mz
+
 # add table name and column names for the function
 def get_mz_values(table_name):
     connection = psycopg2.connect(db_url)
@@ -25,7 +31,7 @@ def get_mz_values(table_name):
 
     cursor.close()
     connection.close()
-    print("mzval", mz_values[1])
+    # print("mzval", mz_values[1])
     return mz_values
 
 
@@ -92,20 +98,20 @@ def get_case_columns_query(table_name, selected_mz):
 
     cursor.execute(query_case)
     case_results = cursor.fetchall()
-    print("heelooo5",case_results)
+    # print("heelooo5",case_results)
 
     cursor.execute(query_control)
     control_results = cursor.fetchall()
-    print("heelooo4",control_results)
+    # print("heelooo4",control_results)
 
     cursor.execute(get_side_val)
     final_get_side_val = cursor.fetchall()
-    print("heelooo6",final_get_side_val)
+    # print("heelooo6",final_get_side_val)
 
     # Close the cursor and connection
     cursor.close()
     connection.close()
-    print("heelooo7",case_results, control_results, final_get_side_val)
+    # print("heelooo7",case_results, control_results, final_get_side_val)
     return case_results, control_results, final_get_side_val
 
 
@@ -113,7 +119,7 @@ def get_case_columns_vs_query(columName, selected_mz, table_name):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-
+    
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
     # print("all_columns", all_columns)
@@ -197,7 +203,8 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
-                    # print("vpos", vpos+index, hpos+index)
+                    # 
+                    # ("vpos", vpos+index, hpos+index)
 
                 elif qFdr < 0.05 and qFdr > 0.01:
                     qFdrStars = '*'
@@ -280,3 +287,16 @@ def add_comparison_lines(fig, region_call, regions, y_range, symbol):
             yref="paper",
         )
     )
+
+
+def get_dropdown_options():
+    image_urls = [
+        "assets/images/car.jpg",
+        "assets/images/car1.jpg",
+        "assets/images/car.jpg"
+    ]
+
+    # Create dropdown options
+    dropdown_options = [{"label": f"Image {i+1}", "value": i} for i in range(len(image_urls))]
+    
+    return dropdown_options
