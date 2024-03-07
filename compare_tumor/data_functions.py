@@ -295,8 +295,6 @@ def get_dropdown_options():
         "assets/images/car1.jpg",
         "assets/images/car.jpg"
     ]
-
-    # Create dropdown options
-    dropdown_options = [{"label": f"Image {i+1}", "value": i} for i in range(len(image_urls))]
-    
+    dropdown_options = [{"label": f"Image {i+1}", "value": image_urls[i]}
+                        for i in range(len(image_urls))]
     return dropdown_options

@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -321,6 +321,16 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
+    
+    @app.callback(Output("selected-image", "src"),
+              [Input("image-dropdown", "value")])
+    def update_selected_image(selected_value):
+        if selected_value is not None:
+            return selected_value
+        else:
+            return "assets/images/car.jpg"
+        
+    
     @app.callback(
         Output('tumor-comparable-rcc-lcc-plot', 'figure'),
         Output('normal-comparable-rcc-lcc-plot', 'figure'),

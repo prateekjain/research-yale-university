@@ -25,8 +25,6 @@ region = [
 ]
 
 
-
-
 tabs_mz = dcc.Tabs(
     [
         dcc.Tab(
@@ -557,8 +555,14 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
-                dbc.Col([dcc.Dropdown(id="image-dropdown", options=get_dropdown_options(), value=0)], md=4),
-                dbc.Col([html.Img(id="selected-image", style={"width": "100%"})], md=8),
+                dbc.Col([dcc.Dropdown(id="image-dropdown", className="select-input",
+                                      options=get_dropdown_options(),
+                                      value=get_dropdown_options()[0]["value"])], md=4),
+                dbc.Col([
+                    html.Div([
+                        html.Img(id="selected-image", style={"width": "80%"}),
+                    ], id="selected-image-container")
+                ], md=8),
             ]
         ),
 
