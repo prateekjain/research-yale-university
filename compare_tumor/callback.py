@@ -4,8 +4,13 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
-
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options
+import forestplot as fp
+import io
+import base64
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.tools as tls
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -52,6 +57,7 @@ def register_callbacks(app):
 
 # Callback to update the displayed mz value
 
+
     @app.callback(
         Output('tumor-plot', 'figure'),
         Output('normal-plot', 'figure'),
@@ -67,7 +73,7 @@ def register_callbacks(app):
             for i in range(len(region)):
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i], selected_mz)
-                
+
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 query_tumor_regions.extend(query_case)
@@ -139,7 +145,7 @@ def register_callbacks(app):
     )
     def update_compound_dropdown(filter_value):
         # Logic to update options based on the selected filter
-        
+
         if filter_value == "all":
             options = [{"label": mz, "value": mz}
                        for mz in get_mz_values("ascending_metabolites")]
@@ -150,7 +156,7 @@ def register_callbacks(app):
                        for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
             default_value = list(get_cecum_and_ascending_mz_values(
                 ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
-            
+
         elif filter_value == "specific_subsites":
             # print("not done")
             # List of all regions
@@ -158,7 +164,8 @@ def register_callbacks(app):
                            "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]
 
             # Get Mz values for each region
-            region_mz_values = {region: set(get_mz_values(region)) for region in all_regions}
+            region_mz_values = {region: set(
+                get_mz_values(region)) for region in all_regions}
 
             # Find Mz values with q < 0.05 only in one region (not in other 6)
             unique_specific_subsites_mz = set()
@@ -172,7 +179,8 @@ def register_callbacks(app):
                 # Find Mz values with q < 0.05 in all other regions
                 other_regions_q05_mz = set()
                 for other_region in other_regions:
-                    other_regions_q05_mz |= set(get_q05_mz_values(other_region))
+                    other_regions_q05_mz |= set(
+                        get_q05_mz_values(other_region))
 
                 # Find Mz values with q < 0.05 only in the current region (not in other 6)
                 specific_subsites_mz = current_region_q05_mz - other_regions_q05_mz
@@ -181,8 +189,10 @@ def register_callbacks(app):
                 unique_specific_subsites_mz |= specific_subsites_mz
 
             # Create options and default value
-            options = [{"label": mz, "value": mz} for mz in unique_specific_subsites_mz]
-            default_value = list(unique_specific_subsites_mz)[0] if unique_specific_subsites_mz else None
+            options = [{"label": mz, "value": mz}
+                       for mz in unique_specific_subsites_mz]
+            default_value = list(unique_specific_subsites_mz)[
+                0] if unique_specific_subsites_mz else None
 
         elif filter_value == "proximal_distal":
             options = [{"label": mz, "value": mz}
@@ -213,10 +223,10 @@ def register_callbacks(app):
                 # print("meta_valyes")
                 query_case, query_control, final_get_side_val = get_case_columns_query(
                     region[i]+"_metabolites", selected_mz)
-                if not query_case or not query_control :
+                if not query_case or not query_control:
                     figures.append(go.Figure())
                     continue
-                
+
                 query_case = list(query_case[0])
                 query_control = list(query_control[0])
                 final_get_side_val = list(final_get_side_val[0])
@@ -321,16 +331,14 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-    
     @app.callback(Output("selected-image", "src"),
-              [Input("image-dropdown", "value")])
+                  [Input("image-dropdown", "value")])
     def update_selected_image(selected_value):
         if selected_value is not None:
             return selected_value
         else:
             return "assets/images/car.jpg"
-        
-    
+
     @app.callback(
         Output('tumor-comparable-rcc-lcc-plot', 'figure'),
         Output('normal-comparable-rcc-lcc-plot', 'figure'),
@@ -450,14 +458,45 @@ def register_callbacks(app):
                 normal_linear_plot_all_regions = addAnotations(
                     normal_linear_plot_all_regions, qFdrStars1)
 
-    #             if qFdr <= 0.001:
-    #       qFdrStars = '***'
-    # elif 0.001 < qFdr <= 0.01:
-    #     qFdrStars = '**'
-    # elif 0.01 < qFdr <= 0.05:
-    #     qFdrStars = '*'
             # Show the graph containers
             return tumor_linear_plot_all_regions, normal_linear_plot_all_regions
         else:
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
+
+    @app.callback(
+        Output('forest-plot-image', 'src'),
+        [Input('compound-dropdown-forest', 'value')]
+    )
+    def update_forest_plot(selected_mz):
+        result_list = forest_plot(selected_mz)
+        # Convert the list of dictionaries to a Pandas DataFrame
+        result_df = pd.DataFrame(result_list)
+        # Update the forest plot based on the collected data
+        fig, ax = plt.subplots()  # Create a new figure and axes
+        fp.forestplot(
+            result_df,
+            estimate="HR",
+            ll="Low",
+            hl="High",
+            varlabel="region",
+            ylabel="confidence interval",
+            xlabel="pearson correlation",
+            colors="custom_colors",  # Use the custom color palette
+            rightannote=["Pval"],
+            right_annoteheaders=["Pvalue"],
+            ax=ax  # Pass the axes to forestplot
+        )
+
+        # Save the Matplotlib figure as bytes
+        img_bytes = io.BytesIO()
+        plt.savefig(img_bytes, format="png", bbox_inches="tight", pad_inches=0.1)
+        plt.close()  # Close the Matplotlib figure to free up resources
+
+        # Convert bytes to base64 string
+        img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+
+        # Create the image source for the html.Img component
+        image_src = f"data:assets/image/png;base64,{img_base64}"
+
+        return image_src

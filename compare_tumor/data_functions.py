@@ -4,6 +4,8 @@ import psycopg2
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 from dotenv import load_dotenv
+import pandas as pd
+
 
 all_columns = []
 
@@ -192,13 +194,13 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                 qFdr = query_q_vs_result[0][vs_value]
                 # print("exist_", i)
 
-                if qFdr < 0.001:
+                if qFdr <= 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01 and qFdr > 0.001:
+                elif qFdr <= 0.01 and qFdr > 0.001:
                     qFdrStars = '**'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
@@ -206,7 +208,7 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                     # 
                     # ("vpos", vpos+index, hpos+index)
 
-                elif qFdr < 0.05 and qFdr > 0.01:
+                elif qFdr <= 0.05 and qFdr > 0.01:
                     qFdrStars = '*'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
@@ -218,20 +220,20 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                 # print(query_q_vs_result[0][vs_value])
                 # print("exist_", i)
                 qFdr = query_q_vs_result[0][vs_value]
-                if qFdr < 0.001:
+                if qFdr <= 0.001:
                     qFdrStars = '***'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
-                elif qFdr < 0.01  and qFdr > 0.001:
+                elif qFdr <= 0.01  and qFdr > 0.001:
                     qFdrStars = '**'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
 
-                elif qFdr < 0.05  and qFdr > 0.01:
+                elif qFdr <= 0.05  and qFdr > 0.01:
                     qFdrStars = '*'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
@@ -298,3 +300,57 @@ def get_dropdown_options():
     dropdown_options = [{"label": f"Image {i+1}", "value": image_urls[i]}
                         for i in range(len(image_urls))]
     return dropdown_options
+
+
+def forest_plot(selected_mz):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    table_name = "forest_plot"
+
+    # Create a list to store dictionaries for all regions
+    result_list = []
+    regions = ['cecum', 'ascending', 'transeverse',
+               'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+
+    # Define custom colors for each region
+    custom_colors = ['red', 'blue', 'green',
+                     'purple', 'orange', 'pink', 'brown']
+
+    # Iterate over regions
+    for region in regions:
+        hr_column = f'HR_{region}'
+        pvalue_column = f'Pvalue_{region}'
+        low_column = f'Low_{region}'
+        high_column = f'High_{region}'
+
+        # Execute SQL queries to fetch data for the current region and selected mz
+        cursor.execute(
+            f"SELECT {hr_column}, {low_column}, {high_column}, {pvalue_column} FROM {table_name} WHERE mz = %s", (selected_mz,))
+        result = cursor.fetchone()
+
+        # Create a dictionary for the current region
+        result_dict = {
+            'mz': selected_mz,
+            'region': region,
+            'HR': result[0],
+            'Low': result[1],
+            'High': result[2],
+            'Pvalue': result[3],
+        }
+
+        # Determine qFdrStars1 based on Pvalue
+        if result[3] <= 0.001:
+            result_dict['Pval'] = '***'
+        elif 0.001 < result[3] <= 0.01:
+            result_dict['Pval'] = '**'
+        elif 0.01 < result[3] <= 0.05:
+            result_dict['Pval'] = '*'
+        else:
+            result_dict['Pval'] = 'NA'
+
+        print(result[3])
+        result_list.append(result_dict)
+
+    print("result", result_list)
+
+    return result_list

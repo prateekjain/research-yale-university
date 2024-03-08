@@ -46,6 +46,7 @@ tabs_mz = dcc.Tabs(
                                         {"label": mz, "value": mz}
                                         for mz in get_mz_values("ascending")
                                     ],
+
                                     placeholder="Select Mz Value",
                                     searchable=True,
                                     multi=False,
@@ -647,7 +648,58 @@ main_layout = dbc.Container(
                     "Your description goes here. Provide relevant details or information about the section.",
                     className="section-description",
                 ),
+                dbc.Col(
+                    [
+                        html.Label(
+                            "Select Forest Plot mx:",
+                            id="mz-forest-section",
+                            className="select-label",
+                        ),
+                        dcc.Dropdown(
+                            id="compound-dropdown-forest",
+                            options=[
+                                {"label": mz, "value": mz}
+                                for mz in get_mz_values("forest_plot")
+                            ],
+
+                            placeholder="Select Mz Value",
+                            searchable=True,
+                            multi=False,
+                            style={"width": "100%"},
+                            className="select-input",
+                            value=get_mz_values("forest_plot")[0],
+                        ),
+                        html.Div(id="selected-mz-forest-value"),
+                    ],
+                    md=12,
+                ),
             ]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Loading(
+                            id="outer-container-loading",
+                            type="circle",
+                            children=[
+                                html.Div(
+                                    [
+                                        html.Img(
+                                            id='forest-plot-image',
+                                            className="forest-plot",
+                                            style={'width': '100%', 'height': 'auto'}
+                                        )
+                                    ],
+                                    style={"display": "flex"},
+                                    className="outer-container with-shadow",
+                                ),
+                            ],
+                        ),
+                    ],
+                    md=12,
+                ),
+            ]
+        ),
         html.Div(className="border-line"),
 
         dbc.Row(
