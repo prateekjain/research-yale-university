@@ -195,10 +195,50 @@ def register_callbacks(app):
                 0] if unique_specific_subsites_mz else None
 
         elif filter_value == "proximal_distal":
-            options = [{"label": mz, "value": mz}
-                       for mz in list(get_cecum_and_ascending_mz_values(["sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
-            default_value = list(get_cecum_and_ascending_mz_values(
-                ["sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
+            regions = ["ascending_metabolites", "cecum_metabolites", "descending_metabolites", "sigmoid_metabolites", "transverse_metabolites",
+                       "rectosigmoid_metabolites", "rectum_metabolites"]
+            map_region = {}
+            for i in regions:
+                map_region[i] = get_q05_mz_values(i)
+            print("map_region", map_region)
+
+            # Display metabolites with q < 0.05 in cecum and ascending only and not in others
+            cecum_ascending_mz_values = list(
+                set(map_region["cecum_metabolites"]) & set(map_region["ascending_metabolites"])
+                - set(map_region["descending_metabolites"]) - set(map_region["sigmoid_metabolites"])
+                - set(map_region["rectosigmoid_metabolites"]) - set(map_region["rectum_metabolites"]) - set(map_region["transverse_metabolites"])
+            )
+
+            # Display metabolites with q < 0.05 in descending, sigmoid, rectosigmoid, and rectum only and not in others
+            descending_mz_values = list(
+                set(map_region["descending_metabolites"]) & set(map_region["sigmoid_metabolites"])
+                & set(map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
+                - set(map_region["cecum_metabolites"]) - set(map_region["ascending_metabolites"])- set(map_region["transverse_metabolites"])
+            )
+
+            # Display metabolites with q < 0.05 in sigmoid, rectosigmoid, and rectum only and not in others
+            sigmoid_recto_rectum_mz_values = list(
+                set(map_region["sigmoid_metabolites"]) & set(map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
+                - set(map_region["cecum_metabolites"]) - set(map_region["ascending_metabolites"])
+                - set(map_region["descending_metabolites"]) -
+                set(map_region["transverse_metabolites"])
+            )
+
+
+            print("type", type(descending_mz_values))
+
+            filter_list = []
+            cecum_ascending_mz_values.extend(set(descending_mz_values))
+            cecum_ascending_mz_values.extend(
+                set(sigmoid_recto_rectum_mz_values))
+
+            print("filter_list", cecum_ascending_mz_values)
+            options = [
+                {"label": mz, "value": mz} for mz in cecum_ascending_mz_values
+                # for mz_list in filter_list
+            ]
+            default_value = list(cecum_ascending_mz_values)[
+                0] if cecum_ascending_mz_values else None
         else:
             # Default options and value
             options = []
@@ -490,7 +530,8 @@ def register_callbacks(app):
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()
-        plt.savefig(img_bytes, format="png", bbox_inches="tight", pad_inches=0.1)
+        plt.savefig(img_bytes, format="png",
+                    bbox_inches="tight", pad_inches=0.1)
         plt.close()  # Close the Matplotlib figure to free up resources
 
         # Convert bytes to base64 string

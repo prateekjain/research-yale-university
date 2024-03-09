@@ -346,7 +346,7 @@ def forest_plot(selected_mz):
         elif 0.01 < result[3] <= 0.05:
             result_dict['Pval'] = '*'
         else:
-            result_dict['Pval'] = 'NA'
+            result_dict['Pval'] = ''
 
         print(result[3])
         result_list.append(result_dict)
