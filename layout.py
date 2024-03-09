@@ -346,6 +346,75 @@ tabs_compare = dcc.Tabs(
     className="tabs",
 )
 
+tabs_survival = dcc.Tabs(
+    [
+        dcc.Tab(
+            label="All Metabolites",
+            value="all-meta",
+            children=[
+                dbc.Col(
+                    [
+                        html.Label(
+                            "Select Forest Plot mx:",
+                            id="mz-forest-section",
+                            className="select-label",
+                        ),
+                        dcc.Dropdown(
+                            id="compound-dropdown-forest",
+                            options=[
+                                {"label": mz, "value": mz}
+                                for mz in get_mz_values("forest_plot")
+                            ],
+
+                            placeholder="Select Mz Value",
+                            searchable=True,
+                            multi=False,
+                            style={"width": "100%"},
+                            className="select-input",
+                            value=get_mz_values("forest_plot")[0],
+                        ),
+                        html.Div(id="selected-mz-forest-value"),
+                    ],
+                    md=12,
+                ),
+                dcc.Loading(
+                            id="outer-container-loading",
+                            type="circle",
+                            children=[
+                                html.Div(
+                                    [
+                                        html.Img(
+                                            id='forest-plot-image',
+                                            className="forest-plot",
+                                            style={'width': '100%', 'height': 'auto'}
+                                        )
+                                    ],
+                                    style={"display": "flex"},
+                                    className="outer-container with-shadow",
+                                ),
+                            ],
+                        ),
+                ]
+            ),
+        dcc.Tab(
+            label="Subsites specific survival markers",
+            value="less-subsites",
+            children=[
+
+            ]
+        ),
+        dcc.Tab(
+            label="RCC or LCC or Rectum",
+            value="survival-rcc-lcc-rectum",
+            children=[
+
+            ]
+        )
+        ],
+    id="tabs_survival",
+    value="all-meta",
+    className="tabs",
+    )
 main_layout = dbc.Container(
     [
         dbc.Row(
@@ -648,53 +717,15 @@ main_layout = dbc.Container(
                     "Your description goes here. Provide relevant details or information about the section.",
                     className="section-description",
                 ),
-                dbc.Col(
-                    [
-                        html.Label(
-                            "Select Forest Plot mx:",
-                            id="mz-forest-section",
-                            className="select-label",
-                        ),
-                        dcc.Dropdown(
-                            id="compound-dropdown-forest",
-                            options=[
-                                {"label": mz, "value": mz}
-                                for mz in get_mz_values("forest_plot")
-                            ],
-
-                            placeholder="Select Mz Value",
-                            searchable=True,
-                            multi=False,
-                            style={"width": "100%"},
-                            className="select-input",
-                            value=get_mz_values("forest_plot")[0],
-                        ),
-                        html.Div(id="selected-mz-forest-value"),
-                    ],
-                    md=12,
-                ),
+                
             ]),
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        dcc.Loading(
-                            id="outer-container-loading",
-                            type="circle",
-                            children=[
-                                html.Div(
-                                    [
-                                        html.Img(
-                                            id='forest-plot-image',
-                                            className="forest-plot",
-                                            style={'width': '100%', 'height': 'auto'}
-                                        )
-                                    ],
-                                    style={"display": "flex"},
-                                    className="outer-container with-shadow",
-                                ),
-                            ],
-                        ),
+                        dbc.Col([tabs_survival, html.Div(
+                            id="tabs-content")], md=12),
+                        
                     ],
                     md=12,
                 ),

@@ -57,7 +57,6 @@ def register_callbacks(app):
 
 # Callback to update the displayed mz value
 
-
     @app.callback(
         Output('tumor-plot', 'figure'),
         Output('normal-plot', 'figure'),
@@ -204,26 +203,32 @@ def register_callbacks(app):
 
             # Display metabolites with q < 0.05 in cecum and ascending only and not in others
             cecum_ascending_mz_values = list(
-                set(map_region["cecum_metabolites"]) & set(map_region["ascending_metabolites"])
-                - set(map_region["descending_metabolites"]) - set(map_region["sigmoid_metabolites"])
-                - set(map_region["rectosigmoid_metabolites"]) - set(map_region["rectum_metabolites"]) - set(map_region["transverse_metabolites"])
+                set(map_region["cecum_metabolites"]) & set(
+                    map_region["ascending_metabolites"])
+                - set(map_region["descending_metabolites"]) -
+                set(map_region["sigmoid_metabolites"])
+                - set(map_region["rectosigmoid_metabolites"]) - set(
+                    map_region["rectum_metabolites"]) - set(map_region["transverse_metabolites"])
             )
 
             # Display metabolites with q < 0.05 in descending, sigmoid, rectosigmoid, and rectum only and not in others
             descending_mz_values = list(
-                set(map_region["descending_metabolites"]) & set(map_region["sigmoid_metabolites"])
+                set(map_region["descending_metabolites"]) & set(
+                    map_region["sigmoid_metabolites"])
                 & set(map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
-                - set(map_region["cecum_metabolites"]) - set(map_region["ascending_metabolites"])- set(map_region["transverse_metabolites"])
+                - set(map_region["cecum_metabolites"]) - set(
+                    map_region["ascending_metabolites"]) - set(map_region["transverse_metabolites"])
             )
 
             # Display metabolites with q < 0.05 in sigmoid, rectosigmoid, and rectum only and not in others
             sigmoid_recto_rectum_mz_values = list(
-                set(map_region["sigmoid_metabolites"]) & set(map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
-                - set(map_region["cecum_metabolites"]) - set(map_region["ascending_metabolites"])
+                set(map_region["sigmoid_metabolites"]) & set(
+                    map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
+                - set(map_region["cecum_metabolites"]) -
+                set(map_region["ascending_metabolites"])
                 - set(map_region["descending_metabolites"]) -
                 set(map_region["transverse_metabolites"])
             )
-
 
             print("type", type(descending_mz_values))
 
@@ -510,9 +515,8 @@ def register_callbacks(app):
     )
     def update_forest_plot(selected_mz):
         result_list = forest_plot(selected_mz)
-        # Convert the list of dictionaries to a Pandas DataFrame
         result_df = pd.DataFrame(result_list)
-        # Update the forest plot based on the collected data
+
         fig, ax = plt.subplots()  # Create a new figure and axes
         fp.forestplot(
             result_df,
@@ -520,13 +524,19 @@ def register_callbacks(app):
             ll="Low",
             hl="High",
             varlabel="region",
-            ylabel="confidence interval",
-            xlabel="pearson correlation",
-            colors="custom_colors",  # Use the custom color palette
+            ylabel="HR 95%(CI)",
+            xlabel="Hazard Ratio",
+            flush=False,
+            capitalize="capitalize",
             rightannote=["Pval"],
-            right_annoteheaders=["Pvalue"],
-            ax=ax  # Pass the axes to forestplot
+            right_annoteheaders=["P-Value"],
+            table=True,
+            ax=ax,
+            xline_kwargs=dict(linewidth=2)
         )
+        # Adjust the layout of the subplot
+        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.35,
+                    right=0.7, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()
