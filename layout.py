@@ -378,24 +378,25 @@ tabs_survival = dcc.Tabs(
                     md=12,
                 ),
                 dcc.Loading(
-                            id="outer-container-loading",
-                            type="circle",
-                            children=[
-                                html.Div(
-                                    [
-                                        html.Img(
-                                            id='forest-plot-image',
-                                            className="forest-plot",
-                                            style={'width': '100%', 'height': 'auto'}
-                                        )
-                                    ],
-                                    style={"display": "flex"},
-                                    className="outer-container with-shadow",
-                                ),
+                    id="outer-container-loading",
+                    type="circle",
+                    children=[
+                        html.Div(
+                            [
+                                html.Img(
+                                    id='forest-plot-image',
+                                    className="forest-plot",
+                                    style={'width': '40%',
+                                           'height': '40%'}
+                                )
                             ],
+                            style={"display": "flex"},
+                            className="outer-container with-shadow",
                         ),
-                ]
-            ),
+                    ],
+                ),
+            ]
+        ),
         dcc.Tab(
             label="Subsites specific survival markers",
             value="less-subsites",
@@ -410,11 +411,11 @@ tabs_survival = dcc.Tabs(
 
             ]
         )
-        ],
+    ],
     id="tabs_survival",
     value="all-meta",
     className="tabs",
-    )
+)
 main_layout = dbc.Container(
     [
         dbc.Row(
@@ -717,7 +718,7 @@ main_layout = dbc.Container(
                     "Your description goes here. Provide relevant details or information about the section.",
                     className="section-description",
                 ),
-                
+
             ]),
         dbc.Row(
             [
@@ -725,7 +726,7 @@ main_layout = dbc.Container(
                     [
                         dbc.Col([tabs_survival, html.Div(
                             id="tabs-content")], md=12),
-                        
+
                     ],
                     md=12,
                 ),

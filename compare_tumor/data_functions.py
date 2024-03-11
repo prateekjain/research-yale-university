@@ -328,15 +328,23 @@ def forest_plot(selected_mz):
             f"SELECT {hr_column}, {low_column}, {high_column}, {pvalue_column} FROM {table_name} WHERE mz = %s", (selected_mz,))
         result = cursor.fetchone()
 
-        # Create a dictionary for the current region
-        result_dict = {
-            'mz': selected_mz,
-            'region': region,
-            'HR': result[0],
-            'Low': result[1],
-            'High': result[2],
-            'Pvalue': result[3],
-        }
+        if result:
+            # Calculate the HR value and its confidence interval
+            hr_value = result[0]
+            low_value = result[1]
+            high_value = result[2]
+            est_hr = f"{hr_value}({low_value} to {high_value})"
+
+            # Create a dictionary for the current region
+            result_dict = {
+                'mz': selected_mz,
+                'region': region,
+                'HR': hr_value,
+                'Low': low_value,
+                'High': high_value,
+                'Pvalue': result[3],
+                'est_hr': est_hr,
+            }
 
         # Determine qFdrStars1 based on Pvalue
         if result[3] <= 0.001:

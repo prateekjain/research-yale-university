@@ -524,8 +524,10 @@ def register_callbacks(app):
             ll="Low",
             hl="High",
             varlabel="region",
-            ylabel="HR 95%(CI)",
+            # ylabel="HR 95%(CI)",
             xlabel="Hazard Ratio",
+            annote=["est_hr"],
+            annoteheaders=["HR 95%(CI)"],
             flush=False,
             capitalize="capitalize",
             rightannote=["Pval"],
@@ -535,8 +537,8 @@ def register_callbacks(app):
             xline_kwargs=dict(linewidth=2)
         )
         # Adjust the layout of the subplot
-        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.35,
-                    right=0.7, hspace=0.2, wspace=0.2)
+        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
+                    right=0.830, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()
