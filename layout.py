@@ -11,6 +11,7 @@ from compare_tumor.data_functions import (
     vs_columnNames,
     add_comparison_lines,
     get_cecum_and_ascending_mz_values,
+    get_linear_values,
     get_dropdown_options,
 )
 
@@ -660,7 +661,7 @@ main_layout = dbc.Container(
                             id="compound-dropdown-linear",
                             options=[
                                 {"label": mz, "value": mz}
-                                for mz in list(get_cecum_and_ascending_mz_values(["tumor_linear_plots", "normal_linear_plots"]))
+                                for mz in list(get_linear_values(["tumor_linear_plots", "normal_linear_plots"]))
                             ],
                             placeholder="Select Mz Value",
                             searchable=True,
@@ -668,10 +669,11 @@ main_layout = dbc.Container(
                             multi=False,
                             style={"width": "100%"},
                             className="select-input",
-                            value=list(get_cecum_and_ascending_mz_values(
+                            value=list(get_linear_values(
                                 ["tumor_linear_plots", "normal_linear_plots"]))[0],
                         ),
                         html.Div(id="selected-mz-linear-value"),
+                        
                     ],
                     md=12,
                 ),

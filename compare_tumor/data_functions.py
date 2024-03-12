@@ -23,6 +23,8 @@ def selected_mz_cleaning(selected_mz):
     return selected_mz
 
 # add table name and column names for the function
+
+
 def get_mz_values(table_name):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -70,17 +72,38 @@ def get_cecum_and_ascending_mz_values(regions):
     connection.close()
     return mz_values_set
 
+
 def get_q05_mz_values(region):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-    
+
     query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr <= 0.05"
     cursor.execute(query)
     q05_mz_values = {row[0] for row in cursor.fetchall()}
-    
+
     connection.close()
     return q05_mz_values
 
+
+def get_linear_values(regions):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+
+    # Initialize an empty set to store the Mz values
+    mz_values_set = set()
+
+    # Loop through each region and dynamically generate the SQL query
+    for region in regions:
+        query = f"SELECT DISTINCT mz FROM {region} WHERE q_fdr <= 0.05"
+        cursor.execute(query)
+        region_mz_values = {row[0] for row in cursor.fetchall()}
+
+        # If it's the first region, set the Mz values directly
+        if not mz_values_set or region_mz_values:
+            mz_values_set |= region_mz_values
+
+    connection.close()
+    return mz_values_set
 
 
 def get_case_columns_query(table_name, selected_mz):
@@ -121,7 +144,7 @@ def get_case_columns_vs_query(columName, selected_mz, table_name):
     # Connect to the database
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
-    
+
     cursor.execute(f"SELECT * FROM {table_name} LIMIT 0")
     all_columns = [desc[0] for desc in cursor.description]
     # print("all_columns", all_columns)
@@ -205,7 +228,7 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars, )
                     index += 0.03
-                    # 
+                    #
                     # ("vpos", vpos+index, hpos+index)
 
                 elif qFdr <= 0.05 and qFdr > 0.01:
@@ -226,14 +249,14 @@ def vs_columnNames(table_name, fig, selected_mz, region_call):
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
-                elif qFdr <= 0.01  and qFdr > 0.001:
+                elif qFdr <= 0.01 and qFdr > 0.001:
                     qFdrStars = '**'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
                     index += 0.03
                     # print("vpos", vpos+index, hpos+index)
 
-                elif qFdr <= 0.05  and qFdr > 0.01:
+                elif qFdr <= 0.05 and qFdr > 0.01:
                     qFdrStars = '*'
                     add_comparison_lines(fig, region_call, [region_call[i], region_call[j]], [
                                          vpos+index, hpos+index], symbol=qFdrStars)
