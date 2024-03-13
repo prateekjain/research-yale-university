@@ -261,3 +261,21 @@ body {
 .outer-container.with-shadow .normal-comparable-plot {
     display: block;
 }
+
+
+/* Center align the image */
+#forest-plot-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Set correct width and height */
+.forest-plot {
+    width: 60%;
+    height: 40%;
+}
+
+.with-shadow {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
