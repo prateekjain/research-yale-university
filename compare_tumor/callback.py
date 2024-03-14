@@ -10,7 +10,7 @@ import base64
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.tools as tls
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot, get_one_qfdr_value
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -157,41 +157,11 @@ def register_callbacks(app):
                 ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
 
         elif filter_value == "specific_subsites":
-            # print("not done")
             # List of all regions
             all_regions = ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites",
-                           "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]
+                        "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]
+            options, default_value = get_one_qfdr_value(all_regions)
 
-            # Get Mz values for each region
-            region_mz_values = {region: set(
-                get_mz_values(region)) for region in all_regions}
-
-            # Find Mz values with q < 0.05 only in one region (not in other 6)
-            unique_specific_subsites_mz = set()
-            for current_region in all_regions:
-                other_regions = set(all_regions) - {current_region}
-                current_region_mz = region_mz_values[current_region]
-
-                # Find Mz values with q < 0.05 in the current region
-                current_region_q05_mz = set(get_q05_mz_values(current_region))
-
-                # Find Mz values with q < 0.05 in all other regions
-                other_regions_q05_mz = set()
-                for other_region in other_regions:
-                    other_regions_q05_mz |= set(
-                        get_q05_mz_values(other_region))
-
-                # Find Mz values with q < 0.05 only in the current region (not in other 6)
-                specific_subsites_mz = current_region_q05_mz - other_regions_q05_mz
-
-                # Update the set of unique Mz values
-                unique_specific_subsites_mz |= specific_subsites_mz
-
-            # Create options and default value
-            options = [{"label": mz, "value": mz}
-                       for mz in unique_specific_subsites_mz]
-            default_value = list(unique_specific_subsites_mz)[
-                0] if unique_specific_subsites_mz else None
 
         elif filter_value == "proximal_distal":
             regions = ["ascending_metabolites", "cecum_metabolites", "descending_metabolites", "sigmoid_metabolites", "transverse_metabolites",
@@ -514,6 +484,52 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest', 'value')]
     )
     def update_forest_plot(selected_mz):
+        result_list = forest_plot(selected_mz)
+        result_df = pd.DataFrame(result_list)
+
+        fig, ax = plt.subplots()  # Create a new figure and axes
+        fp.forestplot(
+            result_df,
+            estimate="HR",
+            ll="Low",
+            hl="High",
+            varlabel="region",
+            # ylabel="HR 95%(CI)",
+            xlabel="Hazard Ratio",
+            annote=["est_hr"],
+            annoteheaders=["HR (95%  CI)"],
+            flush=False,
+            ci_report=False,
+            capitalize="capitalize",
+            rightannote=["Pval"],
+            right_annoteheaders=["P-Value"],
+            table=True,
+            ax=ax,
+            xline_kwargs=dict(linewidth=2)
+        )
+        # Adjust the layout of the subplot
+        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
+                    right=0.830, hspace=0.2, wspace=0.2)
+
+        # Save the Matplotlib figure as bytes
+        img_bytes = io.BytesIO()
+        plt.savefig(img_bytes, format="png",
+                    bbox_inches="tight", pad_inches=0.1)
+        plt.close()  # Close the Matplotlib figure to free up resources
+
+        # Convert bytes to base64 string
+        img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+
+        # Create the image source for the html.Img component
+        image_src = f"data:assets/image/png;base64,{img_base64}"
+
+        return image_src
+    
+    @app.callback(
+        Output('forest-specific-plot-image', 'src'),
+        [Input('compound-dropdown-forest-specific', 'value')]
+    )
+    def update_forest_specific_plot(selected_mz):
         result_list = forest_plot(selected_mz)
         result_df = pd.DataFrame(result_list)
 

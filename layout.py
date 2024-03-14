@@ -13,6 +13,7 @@ from compare_tumor.data_functions import (
     get_cecum_and_ascending_mz_values,
     get_linear_values,
     get_dropdown_options,
+    get_q05_mz_forest_values
 )
 
 region = [
@@ -403,7 +404,48 @@ tabs_survival = dcc.Tabs(
             label="Subsites specific survival markers",
             value="less-subsites",
             children=[
+                dbc.Col(
+                    [
+                        html.Label(
+                            "Select Subsites Specific Survival:",
+                            id="mz-forest-specific-section",
+                            className="select-label",
+                        ),
+                        dcc.Dropdown(
+                            id="compound-dropdown-forest-specific",
+                            options=[
+                                {"label": mz, "value": mz}
+                                for mz in get_q05_mz_forest_values()
+                            ],
 
+                            placeholder="Select Mz Value",
+                            searchable=True,
+                            multi=False,
+                            style={"width": "100%"},
+                            className="select-input",
+                            value=list(get_q05_mz_forest_values())[0],
+                        ),
+                        html.Div(id="selected-mz-forest-specific-value"),
+                    ],
+                    md=12,
+                ),
+                dcc.Loading(
+                    id="outer-container-loading",
+                    type="circle",
+                    children=[
+                        html.Div(
+                            [
+                                html.Img(
+                                    id='forest-specific-plot-image',
+                                    className="forest-plot",
+                
+                                )
+                            ],
+                            style={"display": "flex"},
+                            className="outer-container with-shadow",
+                        ),
+                    ],
+                ),
             ]
         ),
         dcc.Tab(

@@ -73,6 +73,41 @@ def get_cecum_and_ascending_mz_values(regions):
     return mz_values_set
 
 
+def get_one_qfdr_value(all_regions):
+    # Get Mz values for each region
+    region_mz_values = {region: set(
+        get_mz_values(region)) for region in all_regions}
+
+    # Find Mz values with q < 0.05 only in one region (not in other 6)
+    unique_specific_subsites_mz = set()
+    for current_region in all_regions:
+        other_regions = set(all_regions) - {current_region}
+        current_region_mz = region_mz_values[current_region]
+
+        # Find Mz values with q < 0.05 in the current region
+        current_region_q05_mz = set(get_q05_mz_values(current_region))
+
+        # Find Mz values with q < 0.05 in all other regions
+        other_regions_q05_mz = set()
+        for other_region in other_regions:
+            other_regions_q05_mz |= set(
+                get_q05_mz_values(other_region))
+
+        # Find Mz values with q < 0.05 only in the current region (not in other 6)
+        specific_subsites_mz = current_region_q05_mz - other_regions_q05_mz
+
+        # Update the set of unique Mz values
+        unique_specific_subsites_mz |= specific_subsites_mz
+
+    # Create options and default value
+    options = [{"label": mz, "value": mz}
+               for mz in unique_specific_subsites_mz]
+    default_value = list(unique_specific_subsites_mz)[
+        0] if unique_specific_subsites_mz else None
+
+    return options, default_value
+
+
 def get_q05_mz_values(region):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
@@ -81,6 +116,40 @@ def get_q05_mz_values(region):
     cursor.execute(query)
     q05_mz_values = {row[0] for row in cursor.fetchall()}
 
+    connection.close()
+    return q05_mz_values
+
+
+def get_q05_mz_forest_values():
+    # Establish a connection to the database
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+
+    # List of columns to be selected based on the condition
+    columns = ["mz"]
+
+    # List of regions
+    regions = ["cecum", "ascending", "transverse", "descending", "sigmoid", "rectosigmoid", "rectum"]
+    # Construct the query for each region separately
+    for reg in regions:
+        # Construct the column name for the current region's Pvalue column
+        pvalue_column = f"Pvalue_{reg}"
+        # Construct the query to select distinct mz values where q_fdr <= 0.05 for the current region
+        query = f"SELECT DISTINCT mz FROM forest_plot WHERE {pvalue_column} <= 0.05"
+        # Exclude the current region's Pvalue column from the query conditions for other regions
+        other_regions = [other_reg for other_reg in regions if other_reg != reg]
+        for other_reg in other_regions:
+            other_pvalue_column = f"Pvalue_{other_reg}"
+            query += f" AND {other_pvalue_column} > 0.05"
+
+        # Append the constructed query to the list of queries
+        columns.append(pvalue_column)
+        cursor.execute(query)
+
+    # Fetch all the rows and extract the mz values
+    q05_mz_values = {row[0] for row in cursor.fetchall()}
+
+    # Close the database connection
     connection.close()
     return q05_mz_values
 
@@ -332,7 +401,7 @@ def forest_plot(selected_mz):
 
     # Create a list to store dictionaries for all regions
     result_list = []
-    regions = ['cecum', 'ascending', 'transeverse',
+    regions = ['cecum', 'ascending', 'transverse',
                'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
 
     # Define custom colors for each region
