@@ -19,7 +19,7 @@ db_url = os.getenv('DATABASE_URL')
 def selected_mz_cleaning(selected_mz):
     if "'" in selected_mz:
         selected_mz = selected_mz.replace("'", "''")
-        print("updated mz value", selected_mz)
+        # print("updated mz value", selected_mz)
     return selected_mz
 
 # add table name and column names for the function
@@ -151,10 +151,10 @@ def get_q05_mz_forest_values():
         columns.append(pvalue_column)
         # Fetch all the rows and extract the mz values
         q05_mz_values = {row[0] for row in cursor.fetchall()}
-        print("q05_mz_values", list(q05_mz_values))
-        print("\n")
+        # print("q05_mz_values", list(q05_mz_values))
+        # print("\n")
         values.extend(list(q05_mz_values))
-        print("values", values)
+        # print("values", values)
         
 
     # Close the database connection
@@ -456,9 +456,9 @@ def forest_plot(selected_mz):
         else:
             result_dict['Pval'] = ''
 
-        print(result[3])
+        # print(result[3])
         result_list.append(result_dict)
 
-    print("result", result_list)
+    # print("result", result_list)
 
     return result_list

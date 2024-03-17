@@ -10,7 +10,7 @@ import base64
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
+from PIL import Image
 
 import plotly.tools as tls
 from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot, get_one_qfdr_value
@@ -510,7 +510,7 @@ def register_callbacks(app):
             ax=ax,
             xline_kwargs=dict(linewidth=2)
         )
-        # Adjust the layout of the subplot
+         # Adjust the layout of the subplot
         plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
                             right=0.830, hspace=0.2, wspace=0.2)
 
@@ -522,21 +522,26 @@ def register_callbacks(app):
 
         # Convert bytes to base64 string
         img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
-        # Decode the base64 image string to bytes
-        img_data = base64.b64decode(img_base64)
 
-        img_np = np.frombuffer(img_data, np.uint8)
-        img = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
-        height, width = img.shape[:2]
+        # Open image with PIL
+        im = Image.open(io.BytesIO(img_bytes.getvalue()))
+
+        # Get image dimensions
+        width, height = im.size
+
+        # Crop the image (20% from the left)
         new_width = int(width * 0.17)
-        cropped_img = img[:, new_width:]
+        im1 = im.crop((new_width, 0, width, height))
 
-        _, img_base64_cropped = cv2.imencode('.png', cropped_img)
-        img_base64_cropped_str = base64.b64encode(img_base64_cropped).decode('utf-8')
+        # Save the cropped image
+        cropped_img_bytes = io.BytesIO()
+        im1.save(cropped_img_bytes, format='PNG')
+        cropped_img_base64 = base64.b64encode(cropped_img_bytes.getvalue()).decode('utf-8')
 
-        image_src_cropped = f"data:assets/image/png;base64,{img_base64_cropped_str}"
-        return image_src_cropped
-
+        # Create the image source for the cropped image
+        cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
+        return cropped_image_src
+    
     @app.callback(
         Output('forest-specific-plot-image', 'src'),
         [Input('compound-dropdown-forest-specific', 'value')]
@@ -577,17 +582,23 @@ def register_callbacks(app):
 
         # Convert bytes to base64 string
         img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
-        # Decode the base64 image string to bytes
-        img_data = base64.b64decode(img_base64)
 
-        img_np = np.frombuffer(img_data, np.uint8)
-        img = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
-        height, width = img.shape[:2]
+        # Open image with PIL
+        im = Image.open(io.BytesIO(img_bytes.getvalue()))
+
+        # Get image dimensions
+        width, height = im.size
+
+        # Crop the image (20% from the left)
         new_width = int(width * 0.17)
-        cropped_img = img[:, new_width:]
+        im1 = im.crop((new_width, 0, width, height))
 
-        _, img_base64_cropped = cv2.imencode('.png', cropped_img)
-        img_base64_cropped_str = base64.b64encode(img_base64_cropped).decode('utf-8')
+        # Save the cropped image
+        cropped_img_bytes = io.BytesIO()
+        im1.save(cropped_img_bytes, format='PNG')
+        cropped_img_base64 = base64.b64encode(
+            cropped_img_bytes.getvalue()).decode('utf-8')
 
-        image_src_cropped = f"data:assets/image/png;base64,{img_base64_cropped_str}"
-        return image_src_cropped
+        # Create the image source for the cropped image
+        cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
+        return cropped_image_src
