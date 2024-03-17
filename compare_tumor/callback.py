@@ -482,69 +482,11 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-    # @app.callback(
-    #     Output('forest-plot-image', 'src'),
-    #     [Input('compound-dropdown-forest', 'value')]
-    # )
-    # def update_forest_plot(selected_mz):
-    #     result_list = forest_plot(selected_mz)
-    #     result_df = pd.DataFrame(result_list)
-
-    #     fig, ax = plt.subplots()  # Create a new figure and axes
-    #     fp.forestplot(
-    #         result_df,
-    #         estimate="HR",
-    #         ll="Low",
-    #         hl="High",
-    #         varlabel="region",
-    #         # ylabel="HR 95%(CI)",
-    #         xlabel="Hazard Ratio",
-    #         annote=["region", "est_hr"],
-    #         annoteheaders=["Metabolites", "HR (95%  CI)"],
-    #         flush=False,
-    #         ci_report=False,
-    #         capitalize="capitalize",
-    #         rightannote=["Pval"],
-    #         right_annoteheaders=["P-Value"],
-    #         table=True,
-    #         ax=ax,
-    #         xline_kwargs=dict(linewidth=2)
-    #     )
-    #     # Adjust the layout of the subplot
-    #     plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
-    #                         right=0.830, hspace=0.2, wspace=0.2)
-
-    #     # Save the Matplotlib figure as bytes
-    #     img_bytes = io.BytesIO()
-    #     plt.savefig(img_bytes, format="png",
-    #                 bbox_inches="tight", pad_inches=0.1)
-    #     plt.close()  # Close the Matplotlib figure to free up resources
-
-    #     # Convert bytes to base64 string
-    #     img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
-
-    #     # Create the image source for the html.Img component
-    #     image_src = f"data:assets/image/png;base64,{img_base64}"
-    #     # Decode the base64 image string to bytes
-    #     img_data = base64.b64decode(img_base64)
-
-    #     img_np = np.frombuffer(img_data, np.uint8)
-    #     img = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
-    #     height, width = img.shape[:2]
-    #     new_width = int(width * 0.17)
-    #     cropped_img = img[:, new_width:]
-
-    #     _, img_base64_cropped = cv2.imencode('.png', cropped_img)
-    #     img_base64_cropped_str = base64.b64encode(
-    #         img_base64_cropped).decode('utf-8')
-
-    #     image_src_cropped = f"data:assets/image/png;base64,{img_base64_cropped_str}"
-    #     return image_src_cropped
 
     @app.callback(
         Output('forest-plot-image', 'src'),
         [Input('compound-dropdown-forest', 'value')],
-        allow_duplicate=True
+
     )
     def update_forest_plot(selected_mz):
         return generate_and_crop_plot(selected_mz)
@@ -552,7 +494,7 @@ def register_callbacks(app):
     @app.callback(
         Output('forest-specific-plot-image', 'src'),
         [Input('compound-dropdown-forest-specific', 'value')],
-        allow_duplicate=True
+
     )
     def update_forest_plot(selected_mz):
         return generate_and_crop_plot(selected_mz)
