@@ -1,6 +1,13 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from compare_tumor.data_functions import vs_columnNames
+from compare_tumor.data_functions import vs_columnNames, forest_plot
+import pandas as pd
+import matplotlib.pyplot as plt
+import forestplot as fp
+import io
+import base64
+import numpy as np
+import cv2
 
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
@@ -236,3 +243,59 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
     vs_columnNames(table_name, plot_all_regions, selected_meta, region_call)
 
     return plot_all_regions
+
+
+def generate_and_crop_plot(selected_mz):
+    result_list = forest_plot(selected_mz)
+    result_df = pd.DataFrame(result_list)
+
+    fig, ax = plt.subplots()  # Create a new figure and axes
+    fp.forestplot(
+        result_df,
+        estimate="HR",
+        ll="Low",
+        hl="High",
+        varlabel="region",
+        xlabel="Hazard Ratio",
+        annote=["region", "est_hr"],
+        annoteheaders=["Metabolites", "HR (95%  CI)"],
+        flush=False,
+        ci_report=False,
+        capitalize="capitalize",
+        rightannote=["Pval"],
+        right_annoteheaders=["P-Value"],
+        table=True,
+        ax=ax,
+        xline_kwargs=dict(linewidth=2)
+    )
+    # Adjust the layout of the subplot
+    plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
+                        right=0.830, hspace=0.2, wspace=0.2)
+
+    # Save the Matplotlib figure as bytes
+    img_bytes = io.BytesIO()
+    plt.savefig(img_bytes, format="png",
+                bbox_inches="tight", pad_inches=0.1)
+    plt.close()  # Close the Matplotlib figure to free up resources
+
+    # Convert bytes to base64 string
+    img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+
+    # Decode the base64 image string to bytes
+    img_data = base64.b64decode(img_base64)
+    img_np = np.frombuffer(img_data, np.uint8)
+    img = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
+
+    # Crop the image
+    height, width = img.shape[:2]
+    new_width = int(width * 0.17)  # Crop 17% from the left
+    cropped_img = img[:, new_width:]
+
+    # Encode the cropped image back to base64 string
+    _, img_base64_cropped = cv2.imencode('.png', cropped_img)
+    img_base64_cropped_str = base64.b64encode(
+        img_base64_cropped).decode('utf-8')
+
+    # Create the image source for the html.Img component
+    image_src_cropped = f"data:assets/image/png;base64,{img_base64_cropped_str}"
+    return image_src_cropped
