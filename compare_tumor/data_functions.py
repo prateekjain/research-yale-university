@@ -129,29 +129,37 @@ def get_q05_mz_forest_values():
     columns = ["mz"]
 
     # List of regions
-    regions = ["cecum", "ascending", "transverse", "descending", "sigmoid", "rectosigmoid", "rectum"]
+    regions = ["cecum", "ascending", "transverse",
+               "descending", "sigmoid", "rectosigmoid", "rectum"]
+    values = []
+    
     # Construct the query for each region separately
     for reg in regions:
         # Construct the column name for the current region's Pvalue column
         pvalue_column = f"Pvalue_{reg}"
+
         # Construct the query to select distinct mz values where q_fdr <= 0.05 for the current region
         query = f"SELECT DISTINCT mz FROM forest_plot WHERE {pvalue_column} <= 0.05"
-        # Exclude the current region's Pvalue column from the query conditions for other regions
-        other_regions = [other_reg for other_reg in regions if other_reg != reg]
-        for other_reg in other_regions:
-            other_pvalue_column = f"Pvalue_{other_reg}"
-            query += f" AND {other_pvalue_column} > 0.05"
+        # Add conditions for other regions
+        for other_reg in regions:
+            if other_reg != reg:
+                other_pvalue_column = f"Pvalue_{other_reg}"
+                query += f" AND {other_pvalue_column} > 0.05"
 
-        # Append the constructed query to the list of queries
-        columns.append(pvalue_column)
+        # Execute the query
         cursor.execute(query)
-
-    # Fetch all the rows and extract the mz values
-    q05_mz_values = {row[0] for row in cursor.fetchall()}
+        columns.append(pvalue_column)
+        # Fetch all the rows and extract the mz values
+        q05_mz_values = {row[0] for row in cursor.fetchall()}
+        print("q05_mz_values", list(q05_mz_values))
+        print("\n")
+        values.extend(list(q05_mz_values))
+        print("values", values)
+        
 
     # Close the database connection
     connection.close()
-    return q05_mz_values
+    return values
 
 
 def get_linear_values(regions):

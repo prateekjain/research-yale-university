@@ -438,6 +438,9 @@ tabs_survival = dcc.Tabs(
                                 html.Img(
                                     id='forest-specific-plot-image',
                                     className="forest-plot",
+                                    style={'width': '60%',
+                                           'height': '40%',
+                                           'align-item': 'center', }
                 
                                 )
                             ],

@@ -270,6 +270,12 @@ body {
     margin-right: auto;
 }
 
+#forest-specific-plot-image{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Set correct width and height */
 .forest-plot {
     width: 60%;
