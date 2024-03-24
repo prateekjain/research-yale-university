@@ -560,7 +560,9 @@ def register_callbacks(app):
             right_annoteheaders=["P-Value"],
             table=True,
             ax=ax,
-            xline_kwargs=dict(linewidth=2)
+            xline_kwargs=dict(linewidth=2),
+            **{'fontfamily': 'arial'}  
+            
         )
         # Adjust the layout of the subplot
         plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
