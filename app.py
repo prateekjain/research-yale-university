@@ -12,9 +12,15 @@ region = ["cecum", "ascending", "transverse",
 external_stylesheets = ['assets/stylesheet.css', 'dbc.themes.BOOTSTRAP']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
                 suppress_callback_exceptions=True)
+app.title = 'Colorectal Cancer Metabolome'
 server = app.server
 app.layout = main_layout
 app.head = [html.Link(rel='stylesheet', href='assets/stylesheet.css')]
+
+app2 = dash.Dash(__name__, external_stylesheets=external_stylesheets,
+                 suppress_callback_exceptions=True)
+server = app2.server
+app2.layout = main_layout404
 
 
 @app.callback(Output('yale-university', 'children'), [Input('url', 'pathname')])
@@ -22,7 +28,7 @@ def display_page(pathname):
     if pathname == '/yale-university':
         return app.layout
     elif pathname == '/':
-        return main_layout404
+        return app2.layout
     else:
         return '404 - page not found'
 
