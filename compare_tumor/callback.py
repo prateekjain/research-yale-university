@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
+from compare_tumor.constant import *
 
 import plotly.tools as tls
 from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot, get_one_qfdr_value
@@ -217,6 +218,9 @@ def register_callbacks(app):
             ]
             default_value = list(cecum_ascending_mz_values)[
                 0] if cecum_ascending_mz_values else None
+            print("options1",options)
+            print("default_value1",default_value)
+            
         else:
             # Default options and value
             options = []
@@ -309,15 +313,7 @@ def register_callbacks(app):
             query_normal_regions = []
             # vs_columnNames(selected_meta)
             # Define a list of colors for each region
-            region_colors = {
-                "cecum": 'gold',
-                "ascending": 'blue',
-                "transverse": 'cyan',
-                "descending": 'mistyrose',
-                "sigmoid": 'yellow',
-                "rectosigmoid": 'brown',
-                "rectum": 'pink',
-            }
+
 
             for i in region:
                 # print(i)
@@ -371,11 +367,7 @@ def register_callbacks(app):
             query_normal_regions = []
             # vs_columnNames(selected_meta)
             # Define a list of colors for each region
-            region_colors = {
-                "rcc": 'gold',
-                "lcc": 'blue',
-                "rectum": 'pink',
-            }
+
             region_rcc_lcc = ["rcc", "lcc", "rectum"]
 
             for i in region_rcc_lcc:

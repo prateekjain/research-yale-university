@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 import plotly.graph_objs as go
 from dotenv import load_dotenv
 import pandas as pd
-
+from compare_tumor.constant import *
 
 all_columns = []
 
@@ -36,16 +36,8 @@ def get_mz_values(table_name):
     cursor.close()
     connection.close()
     # print("mzval", mz_values[1])
+    mz_values = sorted(mz_values)
     return mz_values
-
-
-# def get_subsite_mz_values(subsite):
-#     # Fetch Mz values for a specific subsite with q < 0.05
-#     mz_values = Metabolite.objects.filter(
-#         subsite=subsite, q_value__lt=0.05).values_list('mz_field', flat=True)
-#     return list(mz_values)
-
-# Define other filter functions as needed for the remaining filters
 
 
 def get_cecum_and_ascending_mz_values(regions):
@@ -70,6 +62,8 @@ def get_cecum_and_ascending_mz_values(regions):
             mz_values_set &= region_mz_values
 
     connection.close()
+    mz_values_set = sorted(mz_values_set)
+
     return mz_values_set
 
 
@@ -101,8 +95,10 @@ def get_one_qfdr_value(all_regions):
 
     # Create options and default value
     options = [{"label": mz, "value": mz}
-               for mz in unique_specific_subsites_mz]
-    default_value = list(unique_specific_subsites_mz)[
+               for mz in sorted(unique_specific_subsites_mz)]
+    # options = sorted(options)
+
+    default_value = sorted(list(unique_specific_subsites_mz))[
         0] if unique_specific_subsites_mz else None
 
     return options, default_value
@@ -117,6 +113,8 @@ def get_q05_mz_values(region):
     q05_mz_values = {row[0] for row in cursor.fetchall()}
 
     connection.close()
+    q05_mz_values = sorted(q05_mz_values)
+    
     return q05_mz_values
 
 
@@ -132,7 +130,7 @@ def get_q05_mz_forest_values():
     regions = ["cecum", "ascending", "transverse",
                "descending", "sigmoid", "rectosigmoid", "rectum"]
     values = []
-    
+
     # Construct the query for each region separately
     for reg in regions:
         # Construct the column name for the current region's Pvalue column
@@ -155,10 +153,10 @@ def get_q05_mz_forest_values():
         # print("\n")
         values.extend(list(q05_mz_values))
         # print("values", values)
-        
 
     # Close the database connection
     connection.close()
+    values = sorted(values)
     return values
 
 
@@ -180,6 +178,8 @@ def get_linear_values(regions):
             mz_values_set |= region_mz_values
 
     connection.close()
+    mz_values_set = sorted(mz_values_set)
+
     return mz_values_set
 
 
@@ -392,11 +392,11 @@ def add_comparison_lines(fig, region_call, regions, y_range, symbol):
 
 
 def get_dropdown_options():
-    image_urls = [
-        "assets/images/car.jpg",
-        "assets/images/car1.jpg",
-        "assets/images/car.jpg"
-    ]
+    # image_urls = [
+    #     "assets/images/car.jpg",
+    #     "assets/images/car1.jpg",
+    #     "assets/images/car.jpg"
+    # ]
     dropdown_options = [{"label": f"Image {i+1}", "value": image_urls[i]}
                         for i in range(len(image_urls))]
     return dropdown_options
@@ -460,5 +460,5 @@ def forest_plot(selected_mz):
         result_list.append(result_dict)
 
     # print("result", result_list)
-
+    # result_list = sorted(result_list)
     return result_list

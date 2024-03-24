@@ -1,26 +1,27 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from compare_tumor.data_functions import vs_columnNames
+from compare_tumor.constant import *
 
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
-region_colors = {
-    "cecum": 'aliceblue',
-    "ascending": 'blue',
-    "transverse": 'cyan',
-    "descending": 'mistyrose',
-    "sigmoid": 'yellow',
-    "rectosigmoid": 'brown',
-    "rectum": 'pink',
-    "rcc": 'gold',
-    "lcc": 'blue',
-}
+# region_colors = {
+#     "cecum": 'green',
+#     "ascending": 'blue',
+#     "transverse": 'cyan',
+#     "descending": 'orange',
+#     "sigmoid": 'yellow',
+#     "rectosigmoid": 'brown',
+#     "rectum": 'red',
+#     "rcc": 'gold',
+#     "lcc": 'blue',
+# }
 
 
 def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_name):
     qFdr = final_get_side_val[0]
-    # print("qfdr first", qFdr)
+    print("qfdr first", qFdr)
     # Determine stars based on qFdr value
     if qFdr <= 0.001:
         qFdrStars = '***'
@@ -41,7 +42,7 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
         boxpoints='all',
         fillcolor='white',
         line=dict(color='black'),
-        marker=dict(color='rgba(255, 0, 0, 1)'),
+        marker=dict(color='rgba(255, 0, 0, 1)', opacity=0.5),
         jitter=0.1,
         pointpos=0,
         showlegend=False,
@@ -55,7 +56,7 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
         boxpoints='all',
         fillcolor='white',
         line=dict(color='black'),
-        marker=dict(color='rgba(0, 255, 0, 0.8)'),
+        marker=dict(color='rgba(0, 255, 0, 0.8)', opacity=0.5),
         jitter=0.1,
         pointpos=0,
         showlegend=False,
@@ -122,7 +123,7 @@ def all_regions_plots(plot_all_regions, query_regions, title):
             boxpoints='all',
             fillcolor='white',
             line=dict(color='black'),
-            marker=dict(color=region_colors[region[i]]),
+            marker=dict(color=region_colors[region[i]],opacity=0.5),
             jitter=0.1,
             pointpos=0,
             showlegend=False,
@@ -194,7 +195,7 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
             boxpoints='all',
             fillcolor='white',
             line=dict(color='black'),
-            marker=dict(color=region_colors[region_call[i]]),
+            marker=dict(color=region_colors[region_call[i]], opacity=0.5),
             jitter=0.1,
             pointpos=0,
             showlegend=False,
