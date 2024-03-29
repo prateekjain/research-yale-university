@@ -18,8 +18,6 @@ app.layout = main_layout
 app.head = [html.Link(rel='stylesheet', href='assets/stylesheet.css')]
 
 
-
-
 @app.callback(Output('yale-university', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/yale-university':

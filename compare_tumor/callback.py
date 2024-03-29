@@ -61,7 +61,6 @@ def register_callbacks(app):
 
 # Callback to update the displayed mz value
 
-
     @app.callback(
         Output('tumor-plot', 'figure'),
         Output('normal-plot', 'figure'),
@@ -218,9 +217,9 @@ def register_callbacks(app):
             ]
             default_value = list(cecum_ascending_mz_values)[
                 0] if cecum_ascending_mz_values else None
-            print("options1",options)
-            print("default_value1",default_value)
-            
+            print("options1", options)
+            print("default_value1", default_value)
+
         else:
             # Default options and value
             options = []
@@ -313,7 +312,6 @@ def register_callbacks(app):
             query_normal_regions = []
             # vs_columnNames(selected_meta)
             # Define a list of colors for each region
-
 
             for i in region:
                 # print(i)
@@ -482,7 +480,7 @@ def register_callbacks(app):
         result_list = forest_plot(selected_mz)
         result_df = pd.DataFrame(result_list)
 
-        fig, ax = plt.subplots()  # Create a new figure and axes
+        fig, ax = plt.subplots(figsize=(6.5, 5),)  # Create a new figure and axes
         fp.forestplot(
             result_df,
             estimate="HR",
@@ -492,7 +490,7 @@ def register_callbacks(app):
             # ylabel="HR 95%(CI)",
             xlabel="Hazard Ratio",
             annote=["region", "est_hr"],
-            annoteheaders=["Metabolites", "HR (95%  CI)"],
+            annoteheaders=["          ", "HR (95%  CI)"],
             flush=False,
             ci_report=False,
             capitalize="capitalize",
@@ -502,9 +500,9 @@ def register_callbacks(app):
             ax=ax,
             xline_kwargs=dict(linewidth=2)
         )
-         # Adjust the layout of the subplot
-        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
-                            right=0.830, hspace=0.2, wspace=0.2)
+        # Adjust the layout of the subplot
+        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.510,
+                            right=0.835, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()
@@ -528,12 +526,13 @@ def register_callbacks(app):
         # Save the cropped image
         cropped_img_bytes = io.BytesIO()
         im1.save(cropped_img_bytes, format='PNG')
-        cropped_img_base64 = base64.b64encode(cropped_img_bytes.getvalue()).decode('utf-8')
+        cropped_img_base64 = base64.b64encode(
+            cropped_img_bytes.getvalue()).decode('utf-8')
 
         # Create the image source for the cropped image
         cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
         return cropped_image_src
-    
+
     @app.callback(
         Output('forest-specific-plot-image', 'src'),
         [Input('compound-dropdown-forest-specific', 'value')]
@@ -561,8 +560,8 @@ def register_callbacks(app):
             table=True,
             ax=ax,
             xline_kwargs=dict(linewidth=2),
-            **{'fontfamily': 'arial'}  
-            
+            **{'fontfamily': 'arial'}
+
         )
         # Adjust the layout of the subplot
         plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
