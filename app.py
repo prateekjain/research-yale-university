@@ -1,6 +1,6 @@
-# app.py
 import dash
 from dash import dcc, html
+from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output
 from compare_tumor.callback import register_callbacks
 from layout import main_layout
@@ -14,17 +14,22 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
                 suppress_callback_exceptions=True)
 app.title = 'Colorectal Cancer Metabolome'
 server = app.server
-app.layout = main_layout
-app.head = [html.Link(rel='stylesheet', href='assets/stylesheet.css')]
+
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
+])
 
 
-@app.callback(Output('yale-university', 'children'), [Input('url', 'pathname')])
+@app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/yale-university':
-        return app.layout 
+        return main_layout
+    elif pathname == '/':
+        # Redirect to '/yale-university' when visiting '/'
+        return dcc.Location(pathname='/yale-university', id='redirect')
     else:
         return main_layout404
-
 
 register_callbacks(app)
 
