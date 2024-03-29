@@ -17,17 +17,15 @@ server = app.server
 app.layout = main_layout
 app.head = [html.Link(rel='stylesheet', href='assets/stylesheet.css')]
 
-app2 = dash.Dash(__name__, external_stylesheets=external_stylesheets,
-                 suppress_callback_exceptions=True)
-app2.layout = main_layout404
+
 
 
 @app.callback(Output('yale-university', 'children'), [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == '/yale-university':
-        return app.layout
+        return app.layout 
     else:
-        return app2.layout
+        return main_layout404
 
 
 register_callbacks(app)

@@ -98,7 +98,7 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
                 y=0.94,
                 xref='paper',
                 yref='paper',
-                text=f"q:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
+                text=f"FDR:{qFdrStars}<br>LogFC:{final_get_side_val[1]:.2f}",
                 align='left',
                 showarrow=False,
                 font={'size': 12, 'color': 'black'},
