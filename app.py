@@ -15,9 +15,10 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
 app.title = 'Colorectal Cancer Metabolome'
 server = app.server
 
+
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
+    html.Div(id='page-content'),
 ])
 
 

@@ -21,7 +21,7 @@ region = ["cecum", "ascending", "transverse",
 
 def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_name):
     qFdr = final_get_side_val[0]
-    print("qfdr first", qFdr)
+    # print("qfdr first", qFdr)
     # Determine stars based on qFdr value
     if qFdr <= 0.001:
         qFdrStars = '***'
@@ -123,7 +123,7 @@ def all_regions_plots(plot_all_regions, query_regions, title):
             boxpoints='all',
             fillcolor='white',
             line=dict(color='black'),
-            marker=dict(color=region_colors[region[i]],opacity=0.5),
+            marker=dict(color=region_colors[region[i]], opacity=0.5),
             jitter=0.1,
             pointpos=0,
             showlegend=False,
@@ -222,7 +222,7 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
         height=500,
         xaxis=dict(
             title=dict(
-                text=f'<b>All Regions Comparable {title}</b>',
+                text=f'<b>All Regions {title}</b>',
                 font=dict(
                     size=14, family='Arial, sans-serif', color='black')
             ),

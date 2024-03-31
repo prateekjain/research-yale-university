@@ -36,7 +36,8 @@ def get_mz_values(table_name):
     cursor.close()
     connection.close()
     # print("mzval", mz_values[1])
-    mz_values = sorted(mz_values)
+    mz_values = sorted(mz_values, key=lambda s: str(s).casefold() if isinstance(s, str) else s)
+    # print("mz_values", mz_values)
     return mz_values
 
 
@@ -62,7 +63,7 @@ def get_cecum_and_ascending_mz_values(regions):
             mz_values_set &= region_mz_values
 
     connection.close()
-    mz_values_set = sorted(mz_values_set)
+    mz_values_set = sorted(mz_values_set, key=lambda s: s.casefold())
 
     return mz_values_set
 
@@ -95,7 +96,7 @@ def get_one_qfdr_value(all_regions):
 
     # Create options and default value
     options = [{"label": mz, "value": mz}
-               for mz in sorted(unique_specific_subsites_mz)]
+               for mz in sorted(unique_specific_subsites_mz, key=lambda s: s.casefold())]
     # options = sorted(options)
 
     default_value = sorted(list(unique_specific_subsites_mz))[
@@ -113,7 +114,7 @@ def get_q05_mz_values(region):
     q05_mz_values = {row[0] for row in cursor.fetchall()}
 
     connection.close()
-    q05_mz_values = sorted(q05_mz_values)
+    q05_mz_values = sorted(q05_mz_values,key=lambda s: str(s).casefold() if isinstance(s, str) else s)
     
     return q05_mz_values
 
@@ -156,7 +157,7 @@ def get_q05_mz_forest_values():
 
     # Close the database connection
     connection.close()
-    values = sorted(values)
+    values = sorted(values, key=lambda s: str(s).casefold() if isinstance(s, str) else s)
     return values
 
 
@@ -178,7 +179,7 @@ def get_linear_values(regions):
             mz_values_set |= region_mz_values
 
     connection.close()
-    mz_values_set = sorted(mz_values_set)
+    mz_values_set = sorted(mz_values_set,key=lambda s: str(s).casefold() if isinstance(s, str) else s)
 
     return mz_values_set
 

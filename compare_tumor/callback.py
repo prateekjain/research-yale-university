@@ -61,6 +61,7 @@ def register_callbacks(app):
 
 # Callback to update the displayed mz value
 
+
     @app.callback(
         Output('tumor-plot', 'figure'),
         Output('normal-plot', 'figure'),
@@ -156,9 +157,9 @@ def register_callbacks(app):
 
         elif filter_value == "across_all":
             options = [{"label": mz, "value": mz}
-                       for mz in list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))]
-            default_value = list(get_cecum_and_ascending_mz_values(
-                ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"]))[0]
+                       for mz in sorted(list(get_cecum_and_ascending_mz_values(["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"])), key=lambda s: str(s).casefold() if isinstance(s, str) else s)]
+            default_value = sorted(list(get_cecum_and_ascending_mz_values(
+                ["cecum_metabolites", "ascending_metabolites", "transverse_metabolites", "descending_metabolites", "sigmoid_metabolites", "rectosigmoid_metabolites", "rectum_metabolites"])), key=lambda s: str(s).casefold() if isinstance(s, str) else s)[0]
 
         elif filter_value == "specific_subsites":
             # List of all regions
@@ -172,53 +173,53 @@ def register_callbacks(app):
             map_region = {}
             for i in regions:
                 map_region[i] = get_q05_mz_values(i)
-            print("map_region", map_region)
+            # print("map_region", map_region)
 
             # Display metabolites with q < 0.05 in cecum and ascending only and not in others
-            cecum_ascending_mz_values = list(
+            cecum_ascending_mz_values = sorted(list(
                 set(map_region["cecum_metabolites"]) & set(
                     map_region["ascending_metabolites"])
                 - set(map_region["descending_metabolites"]) -
                 set(map_region["sigmoid_metabolites"])
                 - set(map_region["rectosigmoid_metabolites"]) - set(
                     map_region["rectum_metabolites"]) - set(map_region["transverse_metabolites"])
-            )
+            ), key=lambda s: str(s).casefold() if isinstance(s, str) else s)
 
             # Display metabolites with q < 0.05 in descending, sigmoid, rectosigmoid, and rectum only and not in others
-            descending_mz_values = list(
+            descending_mz_values = sorted(list(
                 set(map_region["descending_metabolites"]) & set(
                     map_region["sigmoid_metabolites"])
                 & set(map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
                 - set(map_region["cecum_metabolites"]) - set(
                     map_region["ascending_metabolites"]) - set(map_region["transverse_metabolites"])
-            )
+            ), key=lambda s: str(s).casefold() if isinstance(s, str) else s)
 
             # Display metabolites with q < 0.05 in sigmoid, rectosigmoid, and rectum only and not in others
-            sigmoid_recto_rectum_mz_values = list(
+            sigmoid_recto_rectum_mz_values = sorted(list(
                 set(map_region["sigmoid_metabolites"]) & set(
                     map_region["rectosigmoid_metabolites"]) & set(map_region["rectum_metabolites"])
                 - set(map_region["cecum_metabolites"]) -
                 set(map_region["ascending_metabolites"])
                 - set(map_region["descending_metabolites"]) -
                 set(map_region["transverse_metabolites"])
-            )
+            ), key=lambda s: str(s).casefold() if isinstance(s, str) else s)
 
-            print("type", type(descending_mz_values))
+            # print("type", type(descending_mz_values))
 
             filter_list = []
             cecum_ascending_mz_values.extend(set(descending_mz_values))
             cecum_ascending_mz_values.extend(
                 set(sigmoid_recto_rectum_mz_values))
 
-            print("filter_list", cecum_ascending_mz_values)
+            # print("filter_list", cecum_ascending_mz_values)
             options = [
                 {"label": mz, "value": mz} for mz in cecum_ascending_mz_values
                 # for mz_list in filter_list
             ]
             default_value = list(cecum_ascending_mz_values)[
                 0] if cecum_ascending_mz_values else None
-            print("options1", options)
-            print("default_value1", default_value)
+            # print("options1", options)
+            # print("default_value1", default_value)
 
         else:
             # Default options and value
@@ -480,7 +481,8 @@ def register_callbacks(app):
         result_list = forest_plot(selected_mz)
         result_df = pd.DataFrame(result_list)
 
-        fig, ax = plt.subplots(figsize=(6.5, 5),)  # Create a new figure and axes
+        # Create a new figure and axes
+        fig, ax = plt.subplots(figsize=(6.5, 5),)
         fp.forestplot(
             result_df,
             estimate="HR",
@@ -551,7 +553,7 @@ def register_callbacks(app):
             # ylabel="HR 95%(CI)",
             xlabel="Hazard Ratio",
             annote=["region", "est_hr"],
-            annoteheaders=["Metabolites", "HR (95%  CI)"],
+            annoteheaders=["          ", "HR (95%  CI)"],
             flush=False,
             ci_report=False,
             capitalize="capitalize",
@@ -559,13 +561,11 @@ def register_callbacks(app):
             right_annoteheaders=["P-Value"],
             table=True,
             ax=ax,
-            xline_kwargs=dict(linewidth=2),
-            **{'fontfamily': 'arial'}
-
+            xline_kwargs=dict(linewidth=2)
         )
         # Adjust the layout of the subplot
-        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.450,
-                            right=0.830, hspace=0.2, wspace=0.2)
+        plt.subplots_adjust(top=0.855, bottom=0.165, left=0.510,
+                            right=0.835, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()

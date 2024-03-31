@@ -441,7 +441,7 @@ tabs_survival = dcc.Tabs(
                                     style={'width': '60%',
                                            'height': '40%',
                                            'align-item': 'center', }
-                
+
                                 )
                             ],
                             style={"display": "flex"},
@@ -463,8 +463,96 @@ tabs_survival = dcc.Tabs(
     value="all-meta",
     className="tabs",
 )
+study_info_dropdown = html.Div(
+    className='dropdown',
+    children=[
+        html.Button('Study Information', className='dropbtn'),
+        html.Div(
+            className='dropdown-content',
+            children=[
+                html.Div(
+                    className='row',
+                    children=[
+                        dbc.Col(
+                            [
+                                html.Div(
+                                    className='column left-column',
+                                    children=[
+                                        html.H3(
+                                            'Sample Cohort Information', id='sample-cohort'),
+                                        html.H3(
+                                            'Sample Preparation and LC-MS Analysis', id='sample-preparation'),
+                                        html.H3(
+                                            'Metabolic Feature Identification', id='metabolic-feature'),
+                                        html.H3(
+                                            'Link to Publication and Citing the Database', id='link-to-publication'),
+                                        html.H3(
+                                            'Project and Funding Information', id='project-funding'),
+                                    ]
+                                )
+                            ],
+                            width=6
+                        ),
+                        dbc.Col(
+                            [
+                                html.Div(
+                                    className='column right-column',
+                                    children=[
+                                        html.Div(id='sample-cohort-info', className='content hidden',
+                                                 children=[
+                                                     html.P("Patient-matched tumor tissues and normal mucosa tissues (collected furthest away from tumor within the subsite) were surgically removed during colectomy for colorectal cancer in the operating room at Memorial Sloan Kettering Cancer Center (MSKCC), New York, NY, USA, frozen immediately in liquid nitrogen and stored at -80oC before analysis. Sample were collected in 1991-2001. The Yale University Institutional Review Board (IRB) determined that the study conducted in this publication was not considered to be Human Subjects Research and did not require an IRB review (IRB/HSC# 1612018746). Patient characteristics can be found in supplementary table 1 in our publication: (link).")
+                                                 ]),
+                                        html.Div(id='sample-preparation-info', className='content hidden',
+                                                 children=[
+                                                     html.P("Detailed sample preparation and LC-MS information can be found in our publication here (link). The data displayed in this database was acquired from the analysis of patient-matched tumor tissues and normal mucosa using a UPLC-ESI-QTOFMS (H-Class ACQUITY and Xevo G2-XS; Waters Corporation, Milford, MA, USA) was used for MS data acquisitionby RPLC ESI positive and HILIC ESI negative mode. We chose to make our data available in the format of this database, other data requests, along with protocols and codes can be made by email, please see contact us section.")
+                                                 ]),
+                                        html.Div(id='metabolic-feature-info', className='content hidden',
+                                                 children=[
+                                                     html.P("In this database we have displayed all metabolite features generated from the analysis of the tumor tissues and normal mucosa tissues, by electrospray ionization (ESI) mode; negative or positive. These features are displayed in Section 1. For subsequent sections we only display annotated metabolites. The level of annotation is defined by the metabolomics standards initiative (MSI) levels; Level 1:…….Level 2:…….Level 3:……..Metabolite identification methods are published in Jain. Et al…..(paper under submission).")
+                                                 ]),
+                                        html.Div(id='link-to-publication-info', className='content hidden',
+                                                 children=[
+                                                     html.P(
+                                                         "Please cite the following: Jain A,...paper details here")
+                                                 ]),
+                                        html.Div(id='project-funding-info', className='content hidden',
+                                                 children=[
+                                                     html.P(
+                                                         "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain.")
+                                                 ]),
+                                    ]
+                                )
+                            ],
+                            width=6
+                        ),
+                    ]
+                )
+            ]
+        )
+    ]
+)
+
+
+mega_menu = html.Div(
+    className='navbar',
+    children=[
+        html.Div(
+            className='dropdown',
+            children=[
+                study_info_dropdown,
+            ]
+        )
+    ]
+)
+
 main_layout = dbc.Container(
     [
+        html.Div(
+            className='header-bar',
+            children=[
+                mega_menu,
+            ]
+        ),
         dbc.Row(
             [
                 dbc.Col(
@@ -482,7 +570,7 @@ main_layout = dbc.Container(
                                 html.Div(
                                     [
                                         html.A(
-                                            "Mz-h",
+                                            "Tumor vs Normal (Metabolite features)",
                                             id="btn-mz-h",
                                             n_clicks=0,
                                             className="btn-section btn-center",
@@ -490,7 +578,7 @@ main_layout = dbc.Container(
                                         ),
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Mucosa2",
+                                            "Tumor vs Normal (Annotated Metabolites)",
                                             id="btn-mz-Mucosa2",
                                             n_clicks=0,
                                             className="btn-section btn-center",
@@ -498,7 +586,7 @@ main_layout = dbc.Container(
                                         ),
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Inter-subsite ",
+                                            "Inter-subsite comparisons",
                                             id="btn-inter-subsite",
                                             n_clicks=0,
                                             className="btn-section btn-center",
@@ -507,7 +595,7 @@ main_layout = dbc.Container(
 
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Linear metabolite",
+                                            "Concentration gradient of metabolites",
                                             id="btn-mz-linear",
                                             n_clicks=0,
                                             className="btn-section btn-center",
@@ -515,7 +603,7 @@ main_layout = dbc.Container(
                                         ),
                                         html.Span("|", className="divider"),
                                         html.A(
-                                            "Survival Metabolite",
+                                            "Survival markers",
                                             id="btn-mz-Survival",
                                             n_clicks=0,
                                             className="btn-section btn-center",
@@ -535,7 +623,7 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Tumor vs. Normal Mucosa Metabolic features Comparison Across Subsites 1",
+                    "Tumor vs. Normal Mucosa Metabolic features Comparison Across Subsites",
                     className="section-heading",
                     id="section1",
                 ),
@@ -561,7 +649,7 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Tumor vs. Normal Mucosa Metabolite Comparison Across Subsites 2",
+                    "Tumor vs. Normal Mucosa Metabolite Comparison Across Subsites",
                     className="section-heading",
                     id="section2",
                 ),
@@ -660,7 +748,7 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Inter-subsite metabolites comparisons 3",
+                    "Inter-subsite metabolites comparisons",
                     className="section-heading",
                     id="section3",
                 ),
@@ -688,7 +776,7 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Linear metabolite gradient across colorectal subsites 4",
+                    "Linear metabolite gradient across colorectal subsites",
                     className="section-heading",
                     id="section4",
                 ),
@@ -719,7 +807,7 @@ main_layout = dbc.Container(
                                 ["tumor_linear_plots", "normal_linear_plots"]))[0],
                         ),
                         html.Div(id="selected-mz-linear-value"),
-                        
+
                     ],
                     md=12,
                 ),
@@ -758,7 +846,7 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 html.H2(
-                    "Section 5 : Survival Metabolite Marker Comparison Across Colorectal Subsites",
+                    "Survival Metabolite Marker Comparison Across Colorectal Subsites",
                     className="section-heading",
                     id="section5",
                 ),
