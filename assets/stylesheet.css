@@ -31,13 +31,13 @@ body {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 500px;
+    min-width: 800px;
     max-height: 300px; /* Set a maximum height for the dropdown content */
     overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     right: 0; /* Position the dropdown on the right side */
-    margin-left: 225px; /* Ensure proper spacing from the tab */ /* Enable vertical scrolling if content exceeds max height */
+    margin-left: 355px; /* Ensure proper spacing from the tab */ /* Enable vertical scrolling if content exceeds max height */
 }
 
 /* Show dropdown content on hover */
@@ -47,7 +47,7 @@ body {
 
 /* Style for the options inside the dropdown */
 .options-column {
-    flex: 30%; /* Each column takes 50% width */
+    flex:250%; /* Each column takes 50% width */
     border-right: 1px solid #ccc; /* Border between columns */
     overflow-x: auto; /* Enable horizontal scrolling */
 }

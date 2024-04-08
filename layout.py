@@ -483,7 +483,9 @@ mega_menu = html.Div([
                     html.Div(className="option", children=[
                              "Link to publication and citing the database"], id="link-option"),
                     html.Div(className="option", children=[
-                             "Project and funding information"], id="project-option")
+                             "Project and funding information"], id="project-option"),
+                    html.Div(className="option", children=[
+                             "Contact"], id="contact-option")
                 ]),
                 html.Div(className="options-column", children=[
                     html.Div(className="option-details", children=[
@@ -494,10 +496,12 @@ mega_menu = html.Div([
                     html.Div(className="option-details", children=[
                              "Please cite the following: Jain A, ...paper details here"], id="link-details"),
                     html.Div(className="option-details", children=[
-                             "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain."], id="project-details")
+                             "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain."], id="project-details"),
+                    html.Div(className="option-details", children=[
+                             "Please contact Caroline Johnson: caroline.johnson@yale.edu  or Abhishek Jain: a.jain@yale.edu for any inquiries"], id="contact-details"),
                 ])
             ])
-        ]),
+        ],),
     ]),
 ])
 

@@ -31,32 +31,37 @@ def register_callbacks(app):
             Output("preparation-details", "style"),
             Output("feature-details", "style"),
             Output("link-details", "style"),
-            Output("project-details", "style")
+            Output("project-details", "style"),
+            Output("contact-details", "style")
         ],
         [
             Input("cohort-option", "n_clicks"),
             Input("preparation-option", "n_clicks"),
             Input("feature-option", "n_clicks"),
             Input("link-option", "n_clicks"),
-            Input("project-option", "n_clicks")
+            Input("project-option", "n_clicks"),
+            Input("contact-option", "n_clicks")
+            
         ]
     )
-    def show_details(n_cohort, n_preparation, n_feature, n_link, n_project):
+    def show_details(n_cohort, n_preparation, n_feature, n_link, n_project, n_contact):
         ctx = dash.callback_context
         if not ctx.triggered:
-            return [{"display": "none"}] * 5
+            return [{"display": "none"}] * 6
         else:
             triggered_id = ctx.triggered[0]["prop_id"].split(".")[0]
             if triggered_id == "cohort-option":
-                return [{"display": "block"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"}]
+                return [{"display": "block"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"},]
             elif triggered_id == "preparation-option":
-                return [{"display": "none"}, {"display": "block"}, {"display": "none"}, {"display": "none"}, {"display": "none"}]
+                return [{"display": "none"}, {"display": "block"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"}]
             elif triggered_id == "feature-option":
-                return [{"display": "none"}, {"display": "none"}, {"display": "block"}, {"display": "none"}, {"display": "none"}]
+                return [{"display": "none"}, {"display": "none"}, {"display": "block"}, {"display": "none"}, {"display": "none"}, {"display": "none"}]
             elif triggered_id == "link-option":
-                return [{"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "block"}, {"display": "none"}]
+                return [{"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "block"}, {"display": "none"}, {"display": "none"},]
             elif triggered_id == "project-option":
-                return [{"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "block"}]
+                return [{"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "block"}, {"display": "none"}]
+            elif triggered_id == "contact-option":
+                return [{"display": "none"}, {"display": "none"}, {"display": "none"}, {"display": "none"},{"display": "none"}, {"display": "block"}]
 
 
     @app.callback(
