@@ -11,6 +11,64 @@ body {
     color: #333;
 }
 
+
+.navbar {
+    display: flex;
+    justify-content: left;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+/* Style for the tabs */
+.tab {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Dropdown content */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 500px;
+    max-height: 300px; /* Set a maximum height for the dropdown content */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0; /* Position the dropdown on the right side */
+    margin-left: 225px; /* Ensure proper spacing from the tab */ /* Enable vertical scrolling if content exceeds max height */
+}
+
+/* Show dropdown content on hover */
+.tab:hover .dropdown-content {
+    display: flex; /* Display dropdown content as flex on hover */
+}
+
+/* Style for the options inside the dropdown */
+.options-column {
+    flex: 30%; /* Each column takes 50% width */
+    border-right: 1px solid #ccc; /* Border between columns */
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+/* Style for main options */
+.option {
+    padding: 10px;
+    border-bottom: 1px solid #ddd; /* Border between options */
+    color: black; /* Main options in red */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+/* Style for option details */
+.option-details {
+    display: none;
+    padding: 10px;
+    font-style: italic;
+    color: black; /* Details in green */
+    flex: 1; /* Take up the whole space in the column */
+}
+
 /* Header bar */
 .header-bar {
   display: flex;
@@ -156,10 +214,39 @@ body {
 .button-container button:last-child {
     border-right: none; /* Remove divider for the last button */
 }
+
+
+.divider::before {
+    content: "|"; /* Unicode character for bullet point */
+    margin: 30px 10px; /* Adjust spacing between the separator and buttons */
+    color: #009688; /* Color of the separator */
+    font-size:65px;
+}
+/* Style for the buttons */
+.btn-section {
+    display: inline-flex;
+    align-items: center;
+    outline: 0.3rem solid;
+    outline-color: transparent;
+    color: #009688; 
+    margin-left: 10px; /* Adjust margin to separate the first button from the separator */
+    margin-top: 200px;
+    text-decoration: none; /* Remove default underline */
+    padding: 10px 20px; /* Add padding to the buttons */
+    border-radius: 5px; 
+}
+
+.btn-section:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
+
+.btn-section:last-child {
+    margin-right: 0; /* Remove right margin for the last button */
+}
 .btn-row {
     display: flex;
     justify-content: center;
-    width: 50%;
+    width: 80%;
     margin: 0 auto;
     padding:5px;
 }
@@ -168,14 +255,28 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center; /* Center the text within the button */
+    padding: 10px 20px; /* Add padding to the buttons */
+    border-radius: 5px; /* Add border radius for rounded corners */
+    color: #009688; /* Change text color */
+    text-decoration: none; /* Remove default underline */
+    margin: 0 10px; 
+}
+.btn-center:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
+
+.btn-center:last-child {
+    margin-right: 0; /* Remove right margin for the last button */
 }
 .btn-section {
+    display: inline-flex;
+    align-items: center;
     outline: 0.3rem solid;
     outline-color: transparent;
     color: #009688; 
     margin-right: 2%;
     margin-left: 2%;
-
     font-size:17px;
 }
 

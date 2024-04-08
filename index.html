@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Basic styling for the navigation bar */
+    .navbar {
+        display: flex;
+        justify-content: left;
+        background-color: #333;
+        color: white;
+        padding: 10px;
+    }
+
+    /* Style for the tabs */
+    .tab {
+        position: relative;
+        cursor: pointer;
+    }
+
+    /* Dropdown content */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 500px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    /* Show dropdown content on hover */
+    .tab:hover .dropdown-content {
+        display: flex; /* Display dropdown content as flex on hover */
+    }
+
+    /* Style for the options inside the dropdown */
+    .options-column {
+        flex: 70%; /* Each column takes 50% width */
+        border-right: 1px solid #ccc; /* Border between columns */
+        overflow-x: auto; /* Enable horizontal scrolling */
+    }
+
+    /* Style for main options */
+    .option {
+        padding: 10px;
+        border-bottom: 1px solid #ddd; /* Border between options */
+        color: red; /* Main options in red */
+        cursor: pointer; /* Change cursor to pointer on hover */
+    }
+
+    /* Style for option details */
+    .option-details {
+        display: none;
+        padding: 10px;
+        font-style: italic;
+        color: green; /* Details in green */
+        flex: 1; /* Take up the whole space in the column */
+    }
+</style>
+</head>
+<body>
+<div class="navbar">
+    <div class="tab">
+        Tab 1
+        <div class="dropdown-content">
+            <div class="options-column">
+                <div class="option" onmouseover="showDetails('1a')">1a</div>
+                <div class="option" onmouseover="showDetails('1b')">1b</div>
+            </div>
+            <div class="options-column">
+                <div class="option-details" id="1a-details">data = response.json()
+                    print(f"Data Output:{data}")
+                    name = data["data"]["Users"]["firstName"]
+                    username = data["data"]["Users"]["userName"]
+                
+                    print(f"Name: {name}")
+                    print(f"Username: {username}")
+                </div>
+                <div class="option-details" id="1b-details">Details of 1b</div>
+            </div>
+        </div>
+    </div>
+    <div class="tab">
+        Tab 2
+        <div class="dropdown-content">
+            <div class="options-column">
+                <div class="option" onmouseover="showDetails('2a')">2a</div>
+                <div class="option" onmouseover="showDetails('2b')">2b</div>
+            </div>
+            <div class="options-column">
+                <div class="option-details" id="2a-details">Details of 2a</div>
+                <div class="option-details" id="2b-details">data = response.json()
+                    print(f"Data Output:{data}")
+                    name = data["data"]["Users"]["firstName"]
+                    username = data["data"]["Users"]["userName"]
+                
+                    print(f"Name: {name}")
+                    print(f"Username: {username}")</div>
+            </div>
+        </div>
+    </div>
+    <!-- Add more tabs here -->
+</div>
+
+<div class="content">
+    <!-- Content area on the right side -->
+    <h1>Content Area</h1>
+    <p>This is where your content goes.</p>
+</div>
+
+<script>
+    function showDetails(id) {
+        // Hide all details first
+        var allDetails = document.querySelectorAll('.option-details');
+        allDetails.forEach(function(detail) {
+            detail.style.display = 'none';
+        });
+
+        // Show details of the hovered option
+        var details = document.getElementById(id + "-details");
+        details.style.display = "block";
+    }
+</script>
+</body>
+</html>

@@ -465,85 +465,43 @@ tabs_survival = dcc.Tabs(
 )
 study_info_dropdown = html.Div(
     className='dropdown',
-    children=[
-        html.Button('Study Information', className='dropbtn'),
-        html.Div(
-            className='dropdown-content',
-            children=[
-                html.Div(
-                    className='row',
-                    children=[
-                        dbc.Col(
-                            [
-                                html.Div(
-                                    className='column left-column',
-                                    children=[
-                                        html.H3(
-                                            'Sample Cohort Information', id='sample-cohort'),
-                                        html.H3(
-                                            'Sample Preparation and LC-MS Analysis', id='sample-preparation'),
-                                        html.H3(
-                                            'Metabolic Feature Identification', id='metabolic-feature'),
-                                        html.H3(
-                                            'Link to Publication and Citing the Database', id='link-to-publication'),
-                                        html.H3(
-                                            'Project and Funding Information', id='project-funding'),
-                                    ]
-                                )
-                            ],
-                            width=6
-                        ),
-                        dbc.Col(
-                            [
-                                html.Div(
-                                    className='column right-column',
-                                    children=[
-                                        html.Div(id='sample-cohort-info', className='content hidden',
-                                                 children=[
-                                                     html.P("Patient-matched tumor tissues and normal mucosa tissues (collected furthest away from tumor within the subsite) were surgically removed during colectomy for colorectal cancer in the operating room at Memorial Sloan Kettering Cancer Center (MSKCC), New York, NY, USA, frozen immediately in liquid nitrogen and stored at -80oC before analysis. Sample were collected in 1991-2001. The Yale University Institutional Review Board (IRB) determined that the study conducted in this publication was not considered to be Human Subjects Research and did not require an IRB review (IRB/HSC# 1612018746). Patient characteristics can be found in supplementary table 1 in our publication: (link).")
-                                                 ]),
-                                        html.Div(id='sample-preparation-info', className='content hidden',
-                                                 children=[
-                                                     html.P("Detailed sample preparation and LC-MS information can be found in our publication here (link). The data displayed in this database was acquired from the analysis of patient-matched tumor tissues and normal mucosa using a UPLC-ESI-QTOFMS (H-Class ACQUITY and Xevo G2-XS; Waters Corporation, Milford, MA, USA) was used for MS data acquisitionby RPLC ESI positive and HILIC ESI negative mode. We chose to make our data available in the format of this database, other data requests, along with protocols and codes can be made by email, please see contact us section.")
-                                                 ]),
-                                        html.Div(id='metabolic-feature-info', className='content hidden',
-                                                 children=[
-                                                     html.P("In this database we have displayed all metabolite features generated from the analysis of the tumor tissues and normal mucosa tissues, by electrospray ionization (ESI) mode; negative or positive. These features are displayed in Section 1. For subsequent sections we only display annotated metabolites. The level of annotation is defined by the metabolomics standards initiative (MSI) levels; Level 1:…….Level 2:…….Level 3:……..Metabolite identification methods are published in Jain. Et al…..(paper under submission).")
-                                                 ]),
-                                        html.Div(id='link-to-publication-info', className='content hidden',
-                                                 children=[
-                                                     html.P(
-                                                         "Please cite the following: Jain A,...paper details here")
-                                                 ]),
-                                        html.Div(id='project-funding-info', className='content hidden',
-                                                 children=[
-                                                     html.P(
-                                                         "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain.")
-                                                 ]),
-                                    ]
-                                )
-                            ],
-                            width=6
-                        ),
-                    ]
-                )
-            ]
-        )
-    ]
 )
 
 
-mega_menu = html.Div(
-    className='navbar',
-    children=[
-        html.Div(
-            className='dropdown',
-            children=[
-                study_info_dropdown,
-            ]
-        )
-    ]
-)
+mega_menu = html.Div([
+    html.Div(className="navbar", children=[
+        html.Div(className="tab", children=[
+            "Study Information 1",
+            html.Div(className="dropdown-content", id="dropdown-content-1", children=[
+                html.Div(className="options-column", children=[
+                    html.Div(className="option", children=[
+                             "Sample cohort informatio"], id="cohort-option"),
+                    html.Div(className="option", children=[
+                             "Sample preparation and LC-MS Analysis"], id="preparation-option"),
+                    html.Div(className="option", children=[
+                             "Metabolic feature identification"], id="feature-option"),
+                    html.Div(className="option", children=[
+                             "Link to publication and citing the database"], id="link-option"),
+                    html.Div(className="option", children=[
+                             "Project and funding information"], id="project-option")
+                ]),
+                html.Div(className="options-column", children=[
+                    html.Div(className="option-details", children=[
+                        "Patient-matched tumor tissues and normal mucosa tissues (collected furthest away from tumor within the subsite) were surgically removed during colectomy for colorectal cancer in the operating room at Memorial Sloan Kettering Cancer Center (MSKCC), New York, NY, USA, frozen immediately in liquid nitrogen and stored at -80oC before analysis. Sample were collected in 1991-2001. The Yale University Institutional Review Board (IRB) determined that the study conducted in this publication was not considered to be Human Subjects Research and did not require an IRB review (IRB/HSC# 1612018746). Patient characteristics can be found in supplementary table 1 in our publication: (link)."
+                    ], id="cohort-details"),
+                    html.Div(className="option-details", children=["Detailed sample preparation and LC-MS information can be found in our publication here (link). The data displayed in this database was acquired from the analysis of patient-matched tumor tissues and normal mucosa using a UPLC-ESI-QTOFMS (H-Class ACQUITY and Xevo G2-XS; Waters Corporation, Milford, MA, USA) was used for MS data acquisitionby RPLC ESI positive and HILIC ESI negative mode. We chose to make our data available in the format of this database, other data requests, along with protocols and codes can be made by email, please see contact us section."], id="preparation-details"),
+                    html.Div(className="option-details", children=["In this database we have displayed all metabolite features generated from the analysis of the tumor tissues and normal mucosa tissues, by electrospray ionization (ESI) mode; negative or positive. These features are displayed in Section 1. For subsequent sections we only display annotated metabolites. The level of annotation is defined by the metabolomics standards initiative (MSI) levels; Level 1:…….Level 2:…….Level 3:……..Metabolite identification methods are published in Jain. Et al…..(paper under submission)."], id="feature-details"),
+                    html.Div(className="option-details", children=[
+                             "Please cite the following: Jain A, ...paper details here"], id="link-details"),
+                    html.Div(className="option-details", children=[
+                             "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain."], id="project-details")
+                ])
+            ])
+        ]),
+    ]),
+])
+
+
 
 main_layout = dbc.Container(
     [
@@ -576,7 +534,7 @@ main_layout = dbc.Container(
                                             className="btn-section btn-center",
                                             href="#section1",
                                         ),
-                                        html.Span("|", className="divider"),
+                                        html.Span( className="divider"),
                                         html.A(
                                             "Tumor vs Normal (Annotated Metabolites)",
                                             id="btn-mz-Mucosa2",
@@ -584,7 +542,7 @@ main_layout = dbc.Container(
                                             className="btn-section btn-center",
                                             href="#section2",
                                         ),
-                                        html.Span("|", className="divider"),
+                                        html.Span( className="divider"),
                                         html.A(
                                             "Inter-subsite comparisons",
                                             id="btn-inter-subsite",
@@ -593,7 +551,7 @@ main_layout = dbc.Container(
                                             href="#section3",
                                         ),
 
-                                        html.Span("|", className="divider"),
+                                        html.Span(className="divider"),
                                         html.A(
                                             "Concentration gradient of metabolites",
                                             id="btn-mz-linear",
@@ -601,7 +559,7 @@ main_layout = dbc.Container(
                                             className="btn-section btn-center",
                                             href="#section4",
                                         ),
-                                        html.Span("|", className="divider"),
+                                        html.Span(className="divider"),
                                         html.A(
                                             "Survival markers",
                                             id="btn-mz-Survival",
