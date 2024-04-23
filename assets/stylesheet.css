@@ -2,6 +2,7 @@
 body, h1, h2, h3, p {
     margin: 0;
     padding: 0;
+    font-family: 'Inter', sans-serif; 
 }
 
 body {
@@ -408,7 +409,9 @@ body {
 }
 
 .tumor-comparable-plot,
-.normal-comparable-plot {
+.normal-comparable-plot,
+.tumor-comparable-rcc-lcc-plot,
+.normal-comparable-rcc-lcc-plot {
     width: 48%;
 }
 
@@ -451,19 +454,55 @@ body {
 .tumor-plot,
 .normal-plot,
 .tumor-comparable-plot,
+.normal-comparable-plot,
+.tumor-comparable-rcc-lcc-plot,
+.normal-comparable-rcc-lcc-plot  {
+    width: 100%; /* Set width to 100% for responsiveness */
+    height: auto; /* Allow height to adjust automatically */
+    display: block;
+
+}
+
+.normal-plot,
 .normal-comparable-plot {
-    display: none;
+    width: 48%;
+    margin-left: 80px; /* Add margin-left of 80px */
 }
 
 .outer-container.with-shadow .scatter-plot,
 .outer-container.with-shadow .tumor-plot,
 .outer-container.with-shadow .normal-plot,
 .outer-container.with-shadow .tumor-comparable-plot,
-.outer-container.with-shadow .normal-comparable-plot {
+.outer-container.with-shadow .normal-comparable-plot 
+.outer-container.with-shadow .tumor-comparable-rcc-lcc-plo,
+.outer-container.with-shadow .normal-comparable-rcc-lcc-plot {
     display: block;
+    flex-wrap: wrap; /* Allow plots to wrap to the next line if needed */
+    justify-content: center; /* Center align the plots */
+    margin: 20px 0; 
 }
 
+.scatter-plot,
+.tumor-plot,
+.normal-plot,
+.tumor-comparable-plot,
+.normal-comparable-plot,
+.tumor-comparable-rcc-lcc-plot,
+.normal-comparable-rcc-lcc-plot  {
+    max-width: 45%; /* Limit maximum width of each plot */
+}
 
+@media screen and (max-width: 992px) {
+    .scatter-plot,
+    .tumor-plot,
+    .normal-plot,
+    .tumor-comparable-plot,
+    .normal-comparable-plot,
+    .tumor-comparable-rcc-lcc-plot,
+    .normal-comparable-rcc-lcc-plot  {
+        max-width: 100%; /* Set maximum width to 100% on smaller screens */
+    }
+}
 /* Center align the image */
 #forest-plot-image {
     display: block;
@@ -485,4 +524,115 @@ body {
 
 .with-shadow {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+/* Footer */
+.footer {
+    background-color: #009688; /* Set the background color to green */
+    color: white; /* Set text color to white */
+    padding: 20px 0; /* Add padding to top and bottom */
+}
+
+/* Container */
+.container {
+    display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Align items to the start and end of container */
+    align-items: center; /* Center items vertically */
+    max-width: 1200px; /* Set maximum width */
+    margin: 0 auto; /* Center container horizontally */
+}
+
+/* Menu Sections */
+.menu-section {
+    margin-right: 20px; /* Add margin to create space between menu sections */
+}
+
+/* Menu Items */
+.menu-section ul {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.menu-section ul li {
+    display: block; /* Display menu items as block elements (one under the other) */
+    margin-bottom: 10px; /* Add margin between menu items */
+}
+
+/* Menu Links */
+.menu-section ul li a {
+    color: white; /* Set link color to white */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Popup Overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 9999; /* Ensure the popup is on top of other content */
+}
+
+.popup-overlay:target {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Popup Content */
+.popup {
+    margin: 70px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+
+.popup h2 {
+    margin-top: 0;
+    /* color: #333; */
+    color: #009688;
+
+    font-family: Tahoma, Arial, sans-serif;
+
+}
+
+.popup .close {
+    font-family: sans-serif;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 19px;
+    text-decoration: none;
+    color: #333;
+}
+
+.popup .close:hover {
+    color: #009688;
+}
+
+.popup .content {
+    max-height: 30%;
+    overflow: auto;
+    color: #000000;
+    
+}
+
+@media screen and (max-width: 700px) {
+    .box {
+        width: 70%;
+    }
+    .popup {
+        width: 70%;
+    }
 }

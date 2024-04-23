@@ -12,7 +12,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from compare_tumor.constant import *
-
+from dash.exceptions import PreventUpdate
+import json
 import plotly.tools as tls
 from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot, get_one_qfdr_value
 
@@ -636,3 +637,4 @@ def register_callbacks(app):
         # Create the image source for the cropped image
         cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
         return cropped_image_src
+
