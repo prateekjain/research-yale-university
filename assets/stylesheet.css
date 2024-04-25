@@ -544,10 +544,10 @@ body {
 /* Container */
 .container {
     display: flex; /* Use flexbox layout */
-    /* justify-content: space-between; Align items to the start and end of container */
     align-items: center; /* Center items vertically */
-    max-width: 1200px; /* Set maximum width */
-    margin-left: 9%;
+    max-width: 100%; /* Set maximum width to 100% */
+    margin-left: 9%; /* Adjust margin as needed */
+    margin-right: 9%; /* Adjust margin as needed */
 }
 
 /* Menu Sections */
@@ -648,7 +648,6 @@ body {
 
 .copyright {
     position: static;
-    width: 100%;
     color: #000000;
     line-height: 40px;
     font-size: 12px;
