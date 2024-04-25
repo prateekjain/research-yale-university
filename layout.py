@@ -504,14 +504,13 @@ mega_menu = html.Div([
         ],),
     ]),
 ])
-
 footer_layout = html.Footer(
     className='footer',
     children=[
         html.Div(className="container", children=[
             html.Div(className="footer-mega-menu", children=[
                 html.Div(className="menu-section", children=[
-                    html.H3("Study Information"),
+                    html.H2("Study Information"),
                     html.Br(),
                     html.Ul([
                         html.Li(html.A("Sample cohort information", href="#cohort-popup")),
@@ -571,7 +570,9 @@ footer_layout = html.Footer(
                     html.A("x", className='close', href="#footer"),
                 ])
             ]),
-        ])
+            
+        ]),
+        html.P("The colorectal cancer metabolome database was designed by Abhishek Jain © Johnson-lab 2024 Yale University", className="copyright"),
     ]
 )
 
@@ -666,7 +667,7 @@ main_layout = dbc.Container(
                     id="section1",
                 ),
                 html.P(
-                    "In this Section, we present the comparison between tumors and matched normal mucosa across all seven subsites of CRC. This analysis encompasses 10,126 metabolic features in HILIC negative mode and 9,600 features in RPLC positive mode. Statistical significance was determined using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR).",
+                    "In this Section, we present the comparison of metabolite features between patient-matched tumor tissues and matched normal mucosa tissues by anatomical subsite of the colorectum, and across tumor tissues or normal mucosa tissues along the length of the colorectum. This analysis encompasses 10,126 metabolic features acquired in HILIC ESI negative mode and 9,600 features acquired in RPLC ESI positive mode. Statistical significance was determined using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR).",
                     className="section-description",
                 ),
                 dbc.Col(
@@ -692,7 +693,7 @@ main_layout = dbc.Container(
                     id="section2",
                 ),
                 html.P(
-                    "In this Section, we present the comparison between tumors and matched normal mucosa across all seven subsites of CRC. This analysis focuses on 409 annotated metabolites, with 220 annotated using standards and 190 annotated at level 3. Statistical significance was assessed using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR) method. Additionally, users can analyze the unique metabolite alteration specific to each subsite",
+                    "In this Section, we present the comparison of identified metabolites between patient-matched tumor tissues and normal mucosa tissues in each of the seven subsites of the colorectum. This analysis focuses on 409 annotated metabolites; 220 were annotated using authentic standards by LC-MS (MSI levels 1 and 2), and 190 annotated were annotated using in silico methods (MSI level 3). Statistical significance was assessed using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR) method. Additionally, users can analyze the unique metabolite alteration specific to each subsite.",
                     className="section-description",
                 ),
             ]),
@@ -791,7 +792,7 @@ main_layout = dbc.Container(
                     id="section3",
                 ),
                 html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
+                    "This section facilitates a comparative analysis of metabolite profiles within tumors and normal tissues separately, enabling users to explore inter-subsite metabolite variations across the seven CRC subsites. Moreover, users can discern differences in metabolite abundances among right-sided colorectal cancer, left-sided colorectal cancer, and rectal cancer, encompassing both tumor-tumor and normal-normal comparisons. Statistical significance was determined using Kruskal-Wallis ANOVA with Dunn’s post hoc test, with a two-sided adjusted p-value ≤ 0.05 indicating statistical significance.",
                     className="section-description",
                 ),
             ]
@@ -819,7 +820,7 @@ main_layout = dbc.Container(
                     id="section4",
                 ),
                 html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
+                    "This section enables users to analyze metabolite concentration gradients across the colorectum. A linear regression analysis was conducted between subsites and metabolite abundance to assess the presence of a consistent linear trend from the cecum to the rectum. A p-value ≤ 0.05 indicates a statistically significant linear relationship of the CRC subsites with metabolite abundance, suggesting a linear change in metabolite concentrations along the colorectal tract.",
                     className="section-description",
                 ),
                 dbc.Col(
@@ -889,7 +890,7 @@ main_layout = dbc.Container(
                     id="section5",
                 ),
                 html.P(
-                    "Your description goes here. Provide relevant details or information about the section.",
+                    "In this section, we present the comparison of survival metabolite markers between colorectal subsites. Cox proportional hazard regression analysis was performed to identify the association between log2 abundances of individual metabolites and 5-year overall survival in each subsite, adjusting for age, sex chemotherapy, and stage. A two-sided p-value less than 0.05 was considered statistically significant. Additionally, users can analyze the unique survival markers specific to each subsite",
                     className="section-description",
                 ),
 

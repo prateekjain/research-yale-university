@@ -230,7 +230,8 @@ body {
     outline: 0.3rem solid;
     outline-color: transparent;
     color: #009688; 
-    margin-left: 10px; /* Adjust margin to separate the first button from the separator */
+    margin-right: 2%;
+    margin-left:  2%; /* Adjust margin to separate the first button from the separator */
     margin-top: 200px;
     text-decoration: none; /* Remove default underline */
     padding: 10px 20px; /* Add padding to the buttons */
@@ -247,7 +248,7 @@ body {
 .btn-row {
     display: flex;
     justify-content: center;
-    width: 80%;
+    width: 84%;
     margin: 0 auto;
     padding:5px;
 }
@@ -267,9 +268,7 @@ body {
     background-color: #e0e0e0; /* Change background color on hover */
 }
 
-.btn-center:last-child {
-    margin-right: 0; /* Remove right margin for the last button */
-}
+
 .btn-section {
     display: inline-flex;
     align-items: center;
@@ -279,6 +278,8 @@ body {
     margin-right: 2%;
     margin-left: 2%;
     font-size:17px;
+    flex: 1;
+    text-align: center;
 }
 
 .section-heading{
@@ -294,6 +295,7 @@ body {
 
 .divider{
     font-size: 34px;
+    margin: 0 10px;
 }
 .outer-container {
     width: 80%;
@@ -529,23 +531,30 @@ body {
 
 /* Footer */
 .footer {
+    position: static; 
+    bottom: 0; 
     background-color: #009688; /* Set the background color to green */
+    height: 300px;
+    width: 100%;
     color: white; /* Set text color to white */
     padding: 20px 0; /* Add padding to top and bottom */
+    z-index: 999;
 }
 
 /* Container */
 .container {
     display: flex; /* Use flexbox layout */
-    justify-content: space-between; /* Align items to the start and end of container */
+    /* justify-content: space-between; Align items to the start and end of container */
     align-items: center; /* Center items vertically */
     max-width: 1200px; /* Set maximum width */
-    margin: 0 auto; /* Center container horizontally */
+    margin-left: 9%;
 }
 
 /* Menu Sections */
 .menu-section {
-    margin-right: 20px; /* Add margin to create space between menu sections */
+     margin-top: 35px;
+    /* margin-right: auto; Add margin to the right to move the section to the left */
+    margin-left: 0;  
 }
 
 /* Menu Items */
@@ -635,4 +644,17 @@ body {
     .popup {
         width: 70%;
     }
+}
+
+.copyright {
+    position: static;
+    width: 100%;
+    color: #000000;
+    line-height: 40px;
+    font-size: 12px;
+    margin-top:20px;
+    margin-left: 9%;
+    text-align: left;
+    bottom: 0;
+    left: 5px;
 }
