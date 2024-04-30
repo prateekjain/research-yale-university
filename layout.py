@@ -589,7 +589,7 @@ main_layout = dbc.Container(
                 dbc.Col(
                     [
                         html.Br(),
-                        html.H1("Colorectal Cancer Metabolome Database!",
+                        html.H1("Colorectal Cancer Metabolome Database",
                                 className="title"),
                         html.P("About", className="about-text"),
                         html.P(
