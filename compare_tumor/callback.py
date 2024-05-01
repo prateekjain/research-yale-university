@@ -692,7 +692,7 @@ def register_callbacks(app):
         width, height = im.size
 
         # Crop the image (20% from the left)
-        new_width = int(width * 0.125)
+        new_width = int(width * 0.129)
         im1 = im.crop((new_width, 0, width, height))
 
         # Save the cropped image
