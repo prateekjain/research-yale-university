@@ -248,7 +248,7 @@ body {
 .btn-row {
     display: flex;
     justify-content: center;
-    width: 84%;
+    width: 70%;
     margin: 0 auto;
     padding:5px;
 }
