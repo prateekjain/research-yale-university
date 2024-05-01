@@ -671,9 +671,10 @@ def register_callbacks(app):
             ax=ax,
             xline_kwargs=dict(linewidth=2)
         )
+        plt.ylim(-0.2884800000000002, 3.01652)
         # Adjust the layout of the subplot
-        plt.subplots_adjust(top=0.785, bottom=0.165, left=0.665,
-                            right=0.860, hspace=0.2, wspace=0.2)
+        plt.subplots_adjust(top=0.735, bottom=0.160, left=0.565,
+                            right=0.850, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes
         img_bytes = io.BytesIO()
@@ -691,7 +692,7 @@ def register_callbacks(app):
         width, height = im.size
 
         # Crop the image (20% from the left)
-        new_width = int(width * 0.115)
+        new_width = int(width * 0.125)
         im1 = im.crop((new_width, 0, width, height))
 
         # Save the cropped image
