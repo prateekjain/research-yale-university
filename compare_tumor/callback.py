@@ -15,7 +15,7 @@ from compare_tumor.constant import *
 from dash.exceptions import PreventUpdate
 import json
 import plotly.tools as tls
-from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot, get_one_qfdr_value
+from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot,forest_plot_rcc_lcc, get_one_qfdr_value
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
 
@@ -520,7 +520,9 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest', 'value')]
     )
     def update_forest_plot(selected_mz):
-        result_list = forest_plot(selected_mz)
+        regions = ['cecum', 'ascending', 'transverse',
+                   'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+        result_list = forest_plot(selected_mz, regions)
         result_df = pd.DataFrame(result_list)
 
         # Create a new figure and axes
@@ -582,7 +584,9 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest-specific', 'value')]
     )
     def update_forest_specific_plot(selected_mz):
-        result_list = forest_plot(selected_mz)
+        regions = ['cecum', 'ascending', 'transverse',
+                   'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+        result_list = forest_plot(selected_mz, regions)
         result_df = pd.DataFrame(result_list)
 
         fig, ax = plt.subplots()  # Create a new figure and axes
@@ -638,3 +642,64 @@ def register_callbacks(app):
         cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
         return cropped_image_src
 
+    @app.callback(
+        Output('forest-rcc-lcc-plot-image', 'src'),
+        [Input('compound-dropdown-forest-rcc-lcc', 'value')]
+    )
+    def update_forest_lcc_rcc_specific_plot(selected_mz):
+        regions = ['rcc','lcc','rectum']
+        result_list = forest_plot_rcc_lcc(selected_mz, regions)
+        result_df = pd.DataFrame(result_list)
+
+        fig, ax = plt.subplots()  # Create a new figure and axes
+        fp.forestplot(
+            result_df,
+            estimate="HR",
+            ll="Low",
+            hl="High",
+            varlabel="region",
+            # ylabel="HR 95%(CI)",
+            xlabel="Hazard Ratio",
+            annote=["region", "est_hr"],
+            annoteheaders=["          ", "HR (95%  CI)"],
+            flush=False,
+            ci_report=False,
+            capitalize="capitalize",
+            rightannote=["Pval"],
+            right_annoteheaders=["P-Value"],
+            table=True,
+            ax=ax,
+            xline_kwargs=dict(linewidth=2)
+        )
+        # Adjust the layout of the subplot
+        plt.subplots_adjust(top=0.785, bottom=0.165, left=0.665,
+                            right=0.860, hspace=0.2, wspace=0.2)
+
+        # Save the Matplotlib figure as bytes
+        img_bytes = io.BytesIO()
+        plt.savefig(img_bytes, format="png",
+                    bbox_inches="tight", pad_inches=0.1)
+        plt.close()  # Close the Matplotlib figure to free up resources
+
+        # Convert bytes to base64 string
+        img_base64 = base64.b64encode(img_bytes.getvalue()).decode('utf-8')
+
+        # Open image with PIL
+        im = Image.open(io.BytesIO(img_bytes.getvalue()))
+
+        # Get image dimensions
+        width, height = im.size
+
+        # Crop the image (20% from the left)
+        new_width = int(width * 0.115)
+        im1 = im.crop((new_width, 0, width, height))
+
+        # Save the cropped image
+        cropped_img_bytes = io.BytesIO()
+        im1.save(cropped_img_bytes, format='PNG')
+        cropped_img_base64 = base64.b64encode(
+            cropped_img_bytes.getvalue()).decode('utf-8')
+
+        # Create the image source for the cropped image
+        cropped_image_src = f"data:assets/image/png;base64,{cropped_img_base64}"
+        return cropped_image_src

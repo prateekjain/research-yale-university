@@ -456,6 +456,50 @@ tabs_survival = dcc.Tabs(
             value="survival-rcc-lcc-rectum",
             children=[
 
+                dbc.Col(
+                    [
+                        html.Label(
+                            "Select Forest Plot mx:",
+                            id="mz-forest-section",
+                            className="select-label",
+                        ),
+                        dcc.Dropdown(
+                            id="compound-dropdown-forest-rcc-lcc",
+                            options=[
+                                {"label": mz, "value": mz}
+                                for mz in get_mz_values("forest_rcc_lcc_plot")
+                            ],
+
+                            placeholder="Select Mz Value",
+                            searchable=True,
+                            multi=False,
+                            style={"width": "100%"},
+                            className="select-input",
+                            value=get_mz_values("forest_rcc_lcc_plot")[0],
+                        ),
+                        html.Div(id="selected-mz-forest-value"),
+                    ],
+                    md=12,
+                ),
+                dcc.Loading(
+                    id="outer-container-loading",
+                    type="circle",
+                    children=[
+                        html.Div(
+                            [
+                                html.Img(
+                                    id='forest-rcc-lcc-plot-image',
+                                    className="forest-plot",
+                                    style={'width': '60%',
+                                           'height': '40%',
+                                           'align-item': 'center', }
+                                )
+                            ],
+                            style={"display": "flex"},
+                            className="outer-container with-shadow",
+                        ),
+                    ],
+                ),
             ]
         )
     ],

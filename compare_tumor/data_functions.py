@@ -403,17 +403,79 @@ def get_dropdown_options():
     return dropdown_options
 
 
-def forest_plot(selected_mz):
+def forest_plot(selected_mz, regions):
     connection = psycopg2.connect(db_url)
     cursor = connection.cursor()
     table_name = "forest_plot"
 
     # Create a list to store dictionaries for all regions
     result_list = []
-    regions = ['cecum', 'ascending', 'transverse',
-               'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+    # regions = ['cecum', 'ascending', 'transverse',
+    #            'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
 
-    # Define custom colors for each region
+    # Define custom colors foreach region
+    custom_colors = ['red', 'blue', 'green',
+                     'purple', 'orange', 'pink', 'brown']
+
+    # Iterate over regions
+    for region in regions:
+        hr_column = f'HR_{region}'
+        pvalue_column = f'Pvalue_{region}'
+        low_column = f'Low_{region}'
+        high_column = f'High_{region}'
+
+        # Execute SQL queries to fetch data for the current region and selected mz
+        cursor.execute(
+            f"SELECT {hr_column}, {low_column}, {high_column}, {pvalue_column} FROM {table_name} WHERE mz = %s", (selected_mz,))
+        result = cursor.fetchone()
+
+        if result:
+            # Calculate the HR value and its confidence interval
+            hr_value = result[0]
+            low_value = result[1]
+            high_value = result[2]
+            est_hr = f"{hr_value}({low_value} to {high_value})"
+
+            # Create a dictionary for the current region
+            result_dict = {
+                'mz': selected_mz,
+                'region': region,
+                'HR': hr_value,
+                'Low': low_value,
+                'High': high_value,
+                'Pvalue': result[3],
+                'est_hr': est_hr,
+            }
+
+        # Determine qFdrStars1 based on Pvalue
+        if result[3] <= 0.001:
+            result_dict['Pval'] = '***'
+        elif 0.001 < result[3] <= 0.01:
+            result_dict['Pval'] = '**'
+        elif 0.01 < result[3] <= 0.05:
+            result_dict['Pval'] = '*'
+        else:
+            result_dict['Pval'] = ''
+
+        # print(result[3])
+        result_list.append(result_dict)
+
+    # print("result", result_list)
+    # result_list = sorted(result_list)
+    return result_list
+
+
+def forest_plot_rcc_lcc(selected_mz, regions):
+    connection = psycopg2.connect(db_url)
+    cursor = connection.cursor()
+    table_name = "forest_rcc_lcc_plot"
+
+    # Create a list to store dictionaries for all regions
+    result_list = []
+    # regions = ['cecum', 'ascending', 'transverse',
+    #            'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+
+    # Define custom colors foreach region
     custom_colors = ['red', 'blue', 'green',
                      'purple', 'orange', 'pink', 'brown']
 

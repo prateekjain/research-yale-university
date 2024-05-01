@@ -517,7 +517,11 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
-
+#forest-rcc-lcc-plot-image{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 /* Set correct width and height */
 .forest-plot {
     width: 60%;
