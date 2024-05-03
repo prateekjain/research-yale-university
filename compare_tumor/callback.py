@@ -673,7 +673,7 @@ def register_callbacks(app):
         )
         plt.ylim(-0.2884800000000002, 3.01652)
         # Adjust the layout of the subplot
-        plt.subplots_adjust(top=0.735, bottom=0.160, left=0.565,
+        plt.subplots_adjust(top=0.735, bottom=0.230, left=0.450,
                             right=0.850, hspace=0.2, wspace=0.2)
 
         # Save the Matplotlib figure as bytes

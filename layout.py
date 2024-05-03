@@ -711,7 +711,7 @@ main_layout = dbc.Container(
                     id="section1",
                 ),
                 html.P(
-                    "In this Section, we present the comparison of metabolite features between patient-matched tumor tissues and matched normal mucosa tissues by anatomical subsite of the colorectum, and across tumor tissues or normal mucosa tissues along the length of the colorectum. This analysis encompasses 10,126 metabolic features acquired in HILIC ESI negative mode and 9,600 features acquired in RPLC ESI positive mode. Statistical significance was determined using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR).",
+                    "In this section, we present the comparison of metabolite features between patient-matched tumor tissues and matched normal mucosa tissues by anatomical subsite of the colorectum, and across tumor tissues or normal mucosa tissues along the length of the colorectum. This analysis encompasses 10,126 metabolic features acquired in HILIC ESI negative mode and 9,600 features acquired in RPLC ESI positive mode. Statistical significance was determined using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR).",
                     className="section-description",
                 ),
                 dbc.Col(
@@ -737,7 +737,7 @@ main_layout = dbc.Container(
                     id="section2",
                 ),
                 html.P(
-                    "In this Section, we present the comparison of identified metabolites between patient-matched tumor tissues and normal mucosa tissues in each of the seven subsites of the colorectum. This analysis focuses on 409 annotated metabolites; 220 were annotated using authentic standards by LC-MS (MSI levels 1 and 2), and 190 annotated were annotated using in silico methods (MSI level 3). Statistical significance was assessed using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR) method. Additionally, users can analyze the unique metabolite alteration specific to each subsite.",
+                    "In this section, we present the comparison of identified metabolites between patient-matched tumor tissues and normal mucosa tissues in each of the seven subsites of the colorectum. This analysis focuses on 409 annotated metabolites; 220 were annotated using authentic standards by LC-MS (MSI levels 1 and 2), and 190 annotated were annotated using in silico methods (MSI level 3). Statistical significance was assessed using a paired Mann-Whitney U test, with all p-values adjusted for multiple comparisons using the Benjamini-Hochberg (BH) false discovery rate (FDR) method. Additionally, users can analyze the unique metabolite alteration specific to each subsite.",
                     className="section-description",
                 ),
             ]),
