@@ -550,6 +550,8 @@ mega_menu = html.Div([
 ])
 footer_layout = html.Footer(
     className='footer',
+    id='footer',
+    
     children=[
         html.Div(className="container", children=[
             html.Div(className="footer-mega-menu", children=[
@@ -619,13 +621,81 @@ footer_layout = html.Footer(
         html.P("The colorectal cancer metabolome database was designed by Abhishek Jain © Johnson-lab 2024 Yale University", className="copyright"),
     ]
 )
+# Define your buttons
+button1 = html.A(
+    "Tumor vs Normal (Metabolite features)",
+    id="btn-mz-h",
+    n_clicks=0,
+    className="btn-section btn-center",
+    href="#section1",
+)
+button2 = html.A(
+    "Tumor vs Normal (Annotated Metabolites)",
+    id="btn-mz-Mucosa2",
+    n_clicks=0,
+    className="btn-section btn-center",
+    href="#section2",
+)
+button3 = html.A(
+    "Inter-subsite comparisons",
+    id="btn-inter-subsite",
+    n_clicks=0,
+    className="btn-section btn-center",
+    href="#section3",
+)
+button4 = html.A(
+    "Concentration gradient of metabolites",
+    id="btn-mz-linear",
+    n_clicks=0,
+    className="btn-section btn-center",
+    href="#section4",
+)
+button5 = html.A(
+    "Survival markers",
+    id="btn-mz-Survival",
+    n_clicks=0,
+    className="btn-section btn-center",
+    href="#section5",
+)
+# Put buttons in a table
+button_table = html.Table(
+    [
+        html.Tr(
+            [
+                html.Td(button1, ),  # This cell spans 1 column
+                html.Td(button2, ),  # This cell spans 1 column
+                html.Td(button3, ),  # This cell spans 1 column
+            ]
+        ),],
+    className="table-container"
+)
 
+button_table2 = html.Table([
+        html.Tr(
+            [
+                # This cell spans 1 column
+                html.Td(button4,  className="cell21"),
+                html.Td(button5, className="cell22"),  # This cell spans 1 column
+            ]
+        ),
+    ],
+    className="table-container2"
+)
 main_layout = dbc.Container(
     [
         html.Div(
             className='header-bar',
             children=[
                 mega_menu,
+                dbc.Row(
+                [
+                    html.Div(className="tab", children=[
+                        html.A("More Information",
+                               href="#footer",)
+                        ]
+                    ),
+                ]
+                ),
             ]
         ),
         dbc.Row(
@@ -640,63 +710,8 @@ main_layout = dbc.Container(
                             "Unlocking the complexities of colorectal cancer (CRC) requires a deeper understanding of its molecular landscape across different subsites of the colorectum. Our database is designed to serve as a comprehensive resource for researchers, clinicians, and enthusiasts alike, providing invaluable insights into CRC metabolomics and its implications for diagnosis, prognosis, and treatment. Explore metabolite markers across different colorectal subsites and identify survival markers for precision medicine. Join us in unraveling the intricacies of CRC and translating findings into impactful outcomes. Welcome to the forefront of colorectal cancer research!",
                             className="para",
                         ),
-                        dbc.Row(
-    [
-        html.Div(
-            [
-                html.Div(
-                    [
-                        html.A(
-                            "Tumor vs Normal (Metabolite features)",
-                            id="btn-mz-h",
-                            n_clicks=0,
-                            className="btn-section btn-center",
-                            href="#section1",
-                        ),
-                        html.Span(className="divider"),
-                        html.A(
-                            "Tumor vs Normal (Annotated Metabolites)",
-                            id="btn-mz-Mucosa2",
-                            n_clicks=0,
-                            className="btn-section btn-center",
-                            href="#section2",
-                        ),
-                        html.Span(className="divider"),
-                        html.A(
-                            "Inter-subsite comparisons",
-                            id="btn-inter-subsite",
-                            n_clicks=0,
-                            className="btn-section btn-center",
-                            href="#section3",
-                        ),
-                    ],
-                    className="btn-row",
-                ),
-                html.Div(
-                    [
-                        html.A(
-                            "Concentration gradient of metabolites",
-                            id="btn-mz-linear",
-                            n_clicks=0,
-                            className="btn-section btn-center",
-                            href="#section4",
-                        ),
-                        html.Span(className="divider"),
-                        html.A(
-                            "Survival markers",
-                            id="btn-mz-Survival",
-                            n_clicks=0,
-                            className="btn-section btn-center",
-                            href="#section5",
-                        ),
-                    ],
-                    className="btn-row",
-                ),
-            ],
-            className="col-md-12",  # Take up full width on small screens
-        ),
-    ]
-),
+                        button_table,
+                        button_table2,
                         html.Div(className="border-line"),
                     ],
                     md=12,

@@ -230,14 +230,23 @@ body {
     outline: 0.3rem solid;
     outline-color: transparent;
     color: #009688; 
-    margin-right: 2%;
-    margin-left:  2%; /* Adjust margin to separate the first button from the separator */
+    /* margin-right: 2%;
+    margin-left:  2%; Adjust margin to separate the first button from the separator */
     margin-top: 200px;
     text-decoration: none; /* Remove default underline */
-    padding: 10px 20px; /* Add padding to the buttons */
+    padding: 10px 10px; /* Add padding to the buttons */
     border-radius: 5px; 
 }
 
+.btn-section {
+
+    color: #009688; 
+    /* margin-right: 2%;
+    margin-left: 2%; */
+    font-size:17px;
+    flex: 1;
+    text-align: center;
+}
 .btn-section:hover {
     background-color: #e0e0e0; /* Change background color on hover */
 }
@@ -248,7 +257,7 @@ body {
 .btn-row {
     display: flex;
     justify-content: center;
-    width: 70%;
+    /* width: 70%; */
     margin: 0 auto;
     padding:5px;
 }
@@ -258,7 +267,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center; /* Center the text within the button */
-    padding: 10px 20px; /* Add padding to the buttons */
+    padding: 10px 10px; /* Add padding to the buttons */
     border-radius: 5px; /* Add border radius for rounded corners */
     color: #009688; /* Change text color */
     text-decoration: none; /* Remove default underline */
@@ -268,18 +277,50 @@ body {
     background-color: #e0e0e0; /* Change background color on hover */
 }
 
+.table-container {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    width: 80%;
+    margin: 0 auto;
+    padding:5px;
+    table-layout: fixed;
+}
 
-.btn-section {
-    display: inline-flex;
-    align-items: center;
-    outline: 0.3rem solid;
-    outline-color: transparent;
-    color: #009688; 
-    margin-right: 2%;
-    margin-left: 2%;
-    font-size:17px;
-    flex: 1;
-    text-align: center;
+.table-container td, .table-container th {
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 50%;
+    justify-content: space-evenly;
+
+}
+
+.table-container th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+
+.table-container2 {
+    border-collapse: collapse;
+    border: 1px solid #ccc;
+    width: 80%;
+    margin: 0 auto;
+    padding:5px;
+    table-layout: fixed;
+
+}
+
+.table-container2 td, .table-container2 th {
+    border: 1px solid #ccc;
+    padding: 8px;
+    width: 48.5%;
+    /* justify-content: space-evenly; */
+
+}
+
+.table-container2 th {
+    background-color: #f2f2f2;
+    font-weight: bold;
 }
 
 .section-heading{
