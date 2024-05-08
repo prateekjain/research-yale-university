@@ -691,6 +691,7 @@ main_layout = dbc.Container(
                 [
                     html.Div(className="tab", children=[
                         html.A("More Information",
+                               className = "moreinfo",
                                href="#footer",)
                         ]
                     ),
@@ -859,14 +860,14 @@ main_layout = dbc.Container(
         dbc.Row(
             [
                 dbc.Col([tabs_compare, html.Div(id="tabs-content")], md=12),
-                dbc.Col([dcc.Dropdown(id="image-dropdown", className="select-input",
-                                      options=get_dropdown_options(),
-                                      value=get_dropdown_options()[0]["value"])], md=4),
-                dbc.Col([
-                    html.Div([
-                        html.Img(id="selected-image", style={"width": "80%"}),
-                    ], id="selected-image-container")
-                ], md=8),
+                # dbc.Col([dcc.Dropdown(id="image-dropdown", className="select-input",
+                #                       options=get_dropdown_options(),
+                #                       value=get_dropdown_options()[0]["value"])], md=4),
+                # dbc.Col([
+                #     html.Div([
+                #         html.Img(id="selected-image", style={"width": "80%"}),
+                #     ], id="selected-image-container")
+                # ], md=8),
             ]
         ),
 

@@ -111,7 +111,7 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
     return scatter_plot
 
 
-def all_regions_plots(plot_all_regions, query_regions, title):
+def all_regions_plots(plot_all_regions, query_regions, title, title_y='Relative Abundance'):
 
     for i in range(len(region)):
         # Create a separate trace for each region with different color
@@ -157,7 +157,7 @@ def all_regions_plots(plot_all_regions, query_regions, title):
             tickangle=90,
         ),
         yaxis=dict(
-            title='Relative Abundance',
+            title=title_y,
         ),
         plot_bgcolor='white',
     )
@@ -183,7 +183,7 @@ def addAnotations(plot_all_regions, qFdrStars):
     return plot_all_regions
 
 
-def comparable_plots(plot_all_regions, query_regions, title, table_name, selected_meta, region_call):
+def comparable_plots(plot_all_regions, query_regions, title, table_name, selected_meta, region_call, title_y='Relative Abundance'):
 
     for i in range(len(region_call)):
         # Create a separate trace for each region with different color
@@ -229,7 +229,7 @@ def comparable_plots(plot_all_regions, query_regions, title, table_name, selecte
             tickangle=90,
         ),
         yaxis=dict(
-            title='Relative Abundance',
+            title=title_y,
         ),
         plot_bgcolor='white',
     )

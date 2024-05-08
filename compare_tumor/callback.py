@@ -374,11 +374,11 @@ def register_callbacks(app):
 
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
-                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_comparable_plots", selected_meta, region)
+                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_comparable_plots", selected_meta, region,'Relative Abundance(log)')
 
             normal_plot_comparable_all_regions = make_subplots()
             normal_plot_comparable_all_regions = comparable_plots(
-                normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_comparable_plots", selected_meta, region)
+                normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_comparable_plots", selected_meta, region, 'Relative Abundance(log)')
 
             # Show the graph containers
             return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
@@ -386,13 +386,13 @@ def register_callbacks(app):
             # If dropdown is not selected, hide the containers
             return go.Figure(), go.Figure()
 
-    @app.callback(Output("selected-image", "src"),
-                  [Input("image-dropdown", "value")])
-    def update_selected_image(selected_value):
-        if selected_value is not None:
-            return selected_value
-        else:
-            return "assets/images/car.jpg"
+    # @app.callback(Output("selected-image", "src"),
+    #               [Input("image-dropdown", "value")])
+    # def update_selected_image(selected_value):
+    #     if selected_value is not None:
+    #         return selected_value
+    #     else:
+    #         return "assets/images/car.jpg"
 
     @app.callback(
         Output('tumor-comparable-rcc-lcc-plot', 'figure'),
@@ -429,11 +429,11 @@ def register_callbacks(app):
 
             tumor_plot_comparable_all_regions = make_subplots()
             tumor_plot_comparable_all_regions = comparable_plots(
-                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_rcc_lcc_comparable_plots", selected_meta, region_rcc_lcc)
+                tumor_plot_comparable_all_regions, query_tumor_regions, "Tumor", "tumor_rcc_lcc_comparable_plots", selected_meta, region_rcc_lcc, 'Relative Abundance(log)')
 
             normal_plot_comparable_all_regions = make_subplots()
             normal_plot_comparable_all_regions = comparable_plots(
-                normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_rcc_lcc_comparable_plots", selected_meta, region_rcc_lcc)
+                normal_plot_comparable_all_regions, query_normal_regions, "Normal", "normal_rcc_lcc_comparable_plots", selected_meta, region_rcc_lcc, 'Relative Abundance(log)')
 
             # Show the graph containers
             return tumor_plot_comparable_all_regions, normal_plot_comparable_all_regions
@@ -476,7 +476,7 @@ def register_callbacks(app):
 
             tumor_linear_plot_all_regions = make_subplots()
             tumor_linear_plot_all_regions = all_regions_plots(
-                tumor_linear_plot_all_regions, query_tumor_linear_regions, "Tumor")
+                tumor_linear_plot_all_regions, query_tumor_linear_regions, "Tumor", 'Relative Abundance(log)')
             qFdrStars = ''
             if q_fdr_case[0][0] <= 0.001:
                 qFdrStars = '***'
@@ -493,7 +493,7 @@ def register_callbacks(app):
 
             normal_linear_plot_all_regions = make_subplots()
             normal_linear_plot_all_regions = all_regions_plots(
-                normal_linear_plot_all_regions, query_normal_linear_regions, "Normal")
+                normal_linear_plot_all_regions, query_normal_linear_regions, "Normal", 'Relative Abundance(log)')
             qFdrStars1 = ''
             if q_fdr_control[0][0] <= 0.001:
                 qFdrStars1 = '***'
@@ -520,8 +520,8 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest', 'value')]
     )
     def update_forest_plot(selected_mz):
-        regions = ['cecum', 'ascending', 'transverse',
-                   'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+        regions = ['Cecum', 'Ascending', 'Transverse',
+                   'Descending', 'Sigmoid', 'Rectosigmoid', 'Rectum']
         result_list = forest_plot(selected_mz, regions)
         result_df = pd.DataFrame(result_list)
 
@@ -584,8 +584,8 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest-specific', 'value')]
     )
     def update_forest_specific_plot(selected_mz):
-        regions = ['cecum', 'ascending', 'transverse',
-                   'descending', 'sigmoid', 'Rectosigmoid', 'Rectum']
+        regions = ['Cecum', 'Ascending', 'Transverse',
+                   'Descending', 'Sigmoid', 'Rectosigmoid', 'Rectum']
         result_list = forest_plot(selected_mz, regions)
         result_df = pd.DataFrame(result_list)
 
@@ -647,7 +647,7 @@ def register_callbacks(app):
         [Input('compound-dropdown-forest-rcc-lcc', 'value')]
     )
     def update_forest_lcc_rcc_specific_plot(selected_mz):
-        regions = ['rcc','lcc','rectum']
+        regions = ['RCC','LCC ','Rectum']
         result_list = forest_plot_rcc_lcc(selected_mz, regions)
         result_df = pd.DataFrame(result_list)
 
