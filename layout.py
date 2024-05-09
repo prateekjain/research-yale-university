@@ -215,131 +215,131 @@ tabs_mz = dcc.Tabs(
 )
 
 tabs_compare = dcc.Tabs(
-    [
-        dcc.Tab(
-            label="7 Subsites",
-            value="compare-all",
-            children=[
-                dbc.Row(
-                    [
-                        html.Label(
-                            "Select Compound mz Compare:",
-                            id="mz-compare-section",
-                            className="select-label",
-                        ),
-                        dcc.Dropdown(
-                            id="compound-dropdown-compare",
-                            options=[
-                                {"label": mz, "value": mz}
-                                for mz in get_mz_values("tumor_comparable_plots")
-                            ],
-                            placeholder="Select Mz Value",
-                            searchable=True,
-                            clearable=True,
-                            multi=False,
-                            style={"width": "100%"},
-                            className="select-input",
-                            value=get_mz_values("tumor_comparable_plots")[0],
-                        ),
-                        html.Div(id="selected-mz-compare-value"),
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        dcc.Loading(
-                                            id="outer-container-loading",
-                                            type="circle",
-                                            children=[
-                                                html.Div(
-                                                    [
-                                                        dcc.Graph(
-                                                            id="tumor-comparable-plot",
-                                                            className="tumor-comparable-plot",
-                                                        ),
-                                                        dcc.Graph(
-                                                            id="normal-comparable-plot",
-                                                            className="normal-comparable-plot",
-                                                        ),
-                                                    ],
-                                                    style={"display": "flex"},
-                                                    className="outer-container with-shadow",
-                                                ),
-                                            ],
-                                        ),
-                                    ],
-                                    md=12,
-                                ),
-                            ]
-                        ),
-                    ]
-                ),
-            ],
-        ),
-        dcc.Tab(
-            label="LCC, RCC, Rectum",
-            value="compare-rcc-lcc",
-            children=[
-                dbc.Row(
-                    [
-                        dbc.Col(
-                            [
-                                html.Label(
-                                    "Select Compound RCC LCC mz Compare:",
-                                    id="mz-compare-rcc-lcc-section",
-                                    className="select-label",
-                                ),
-                                dcc.Dropdown(
-                                    id="compound-dropdown-compare-rcc-lcc",
-                                    options=[
-                                        {"label": mz, "value": mz}
-                                        for mz in get_mz_values("tumor_rcc_lcc_comparable_plots")
+            [
+                dcc.Tab(
+                    label="7 Subsites",
+                value="compare-all",
+                children=[
+                    dbc.Row(
+                        [
+                            html.Label(
+                                "Select Compound mz Compare:",
+                                id="mz-compare-section",
+                                className="select-label",
+                            ),
+                            dcc.Dropdown(
+                                id="compound-dropdown-compare",
+                                options=[
+                                    {"label": mz, "value": mz}
+                                    for mz in get_mz_values("tumor_comparable_plots")
+                                ],
+                                placeholder="Select Mz Value",
+                                searchable=True,
+                                clearable=True,
+                                multi=False,
+                                style={"width": "100%"},
+                                className="select-input",
+                                value=get_mz_values("tumor_comparable_plots")[0],
+                            ),
+                            html.Div(id="selected-mz-compare-value"),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        [
+                                            dcc.Loading(
+                                                id="outer-container-loading",
+                                                type="circle",
+                                                children=[
+                                                    html.Div(
+                                                        [
+                                                            dcc.Graph(
+                                                                id="tumor-comparable-plot",
+                                                                className="tumor-comparable-plot",
+                                                            ),
+                                                            dcc.Graph(
+                                                                id="normal-comparable-plot",
+                                                                className="normal-comparable-plot",
+                                                            ),
+                                                        ],
+                                                        style={"display": "flex"},
+                                                        className="outer-container with-shadow",
+                                                    ),
+                                                ],
+                                            ),
+                                        ],
+                                        md=12,
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                ],
+            ),
+            dcc.Tab(
+                label="LCC, RCC, Rectum",
+                value="compare-rcc-lcc",
+                children=[
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                [
+                                    html.Label(
+                                        "Select Compound RCC LCC mz Compare:",
+                                        id="mz-compare-rcc-lcc-section",
+                                        className="select-label",
+                                    ),
+                                    dcc.Dropdown(
+                                        id="compound-dropdown-compare-rcc-lcc",
+                                        options=[
+                                            {"label": mz, "value": mz}
+                                            for mz in get_mz_values("tumor_rcc_lcc_comparable_plots")
 
-                                    ],
-                                    placeholder="Select Mz Value",
-                                    searchable=True,
-                                    clearable=True,
-                                    multi=False,
-                                    style={"width": "100%"},
-                                    className="select-input",
-                                    value=get_mz_values(
-                                        "tumor_rcc_lcc_comparable_plots")[0],
-                                ),
-                                html.Div(
-                                    id="selected-mz-compare-rcc-lcc-value"),
-                                dbc.Row(
-                                    [
-                                        dbc.Col(
-                                            [
-                                                dcc.Loading(
-                                                    id="outer-container-loading",
-                                                    type="circle",
-                                                    children=[
-                                                        html.Div(
-                                                            [
-                                                                dcc.Graph(
-                                                                    id="tumor-comparable-rcc-lcc-plot",
-                                                                    className="tumor-comparable-rcc-lcc-plot",
-                                                                ),
-                                                                dcc.Graph(
-                                                                    id="normal-comparable-rcc-lcc-plot",
-                                                                    className="normal-comparable-rcc-lcc-plot",
-                                                                ),
-                                                            ],
-                                                            style={
-                                                                "display": "flex"},
-                                                            className="outer-container with-shadow",
-                                                        ),
-                                                    ],
-                                                ),
-                                            ],
-                                            md=12,
-                                        ),
-                                    ]
-                                ),
-                            ]
-                        ),
-                    ]
-                ),
+                                        ],
+                                        placeholder="Select Mz Value",
+                                        searchable=True,
+                                        clearable=True,
+                                        multi=False,
+                                        style={"width": "100%"},
+                                        className="select-input",
+                                        value=get_mz_values(
+                                            "tumor_rcc_lcc_comparable_plots")[0],
+                                    ),
+                                    html.Div(
+                                        id="selected-mz-compare-rcc-lcc-value"),
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                [
+                                                    dcc.Loading(
+                                                        id="outer-container-loading",
+                                                        type="circle",
+                                                        children=[
+                                                            html.Div(
+                                                                [
+                                                                    dcc.Graph(
+                                                                        id="tumor-comparable-rcc-lcc-plot",
+                                                                        className="tumor-comparable-rcc-lcc-plot",
+                                                                    ),
+                                                                    dcc.Graph(
+                                                                        id="normal-comparable-rcc-lcc-plot",
+                                                                        className="normal-comparable-rcc-lcc-plot",
+                                                                    ),
+                                                                ],
+                                                                style={
+                                                                    "display": "flex"},
+                                                                className="outer-container with-shadow",
+                                                            ),
+                                                        ],
+                                                    ),
+                                                ],
+                                                md=12,
+                                            ),
+                                        ]
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
             ],
         ),
     ],

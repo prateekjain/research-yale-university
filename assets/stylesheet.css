@@ -351,6 +351,8 @@ a:active { text-decoration: none; }
     margin: 0 auto;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 8px;
+    overflow-x: auto; 
+    white-space: nowrap;
 }
 
 .inner-container {
@@ -524,7 +526,7 @@ a:active { text-decoration: none; }
 .outer-container.with-shadow .normal-plot,
 .outer-container.with-shadow .tumor-comparable-plot,
 .outer-container.with-shadow .normal-comparable-plot 
-.outer-container.with-shadow .tumor-comparable-rcc-lcc-plo,
+.outer-container.with-shadow .tumor-comparable-rcc-lcc-plot,
 .outer-container.with-shadow .normal-comparable-rcc-lcc-plot {
     display: block;
     flex-wrap: wrap; /* Allow plots to wrap to the next line if needed */
@@ -540,8 +542,17 @@ a:active { text-decoration: none; }
 .tumor-comparable-rcc-lcc-plot,
 .normal-comparable-rcc-lcc-plot  {
     max-width: 45%; /* Limit maximum width of each plot */
+    padding-left: 5%;
 }
 
+.normal-comparable-rcc-lcc-plot  {
+    padding-left: 5%; /* Limit maximum width of each plot */
+    margin-bottom: 1.8%;
+}
+.normal-comparable-plot,
+.tumor-comparable-rcc-lcc-plot  {
+    margin-top: 2%; /* Limit maximum width of each plot */
+}
 @media screen and (max-width: 992px) {
     .scatter-plot,
     .tumor-plot,
