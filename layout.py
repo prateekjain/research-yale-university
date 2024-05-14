@@ -38,7 +38,7 @@ tabs_mz = dcc.Tabs(
                         dbc.Col(
                             [
                                 html.Label(
-                                    "Select Compound mz-h:",
+                                    "Select Compound mz:",
                                     id="mz-h-section",
                                     className="select-label",
                                 ),
@@ -129,7 +129,7 @@ tabs_mz = dcc.Tabs(
                         dbc.Col(
                             [
                                 html.Label(
-                                    "Select Compound mz+h:",
+                                    "Select Compound mz:",
                                     id="mz-plus-section",
                                     className="select-label",
                                 ),
