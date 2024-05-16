@@ -597,7 +597,7 @@ a:active { text-decoration: none; }
 .footer {
     position: static; 
     bottom: 0; 
-    background-color: #009688; /* Set the background color to green */
+    background-color: #333; /* Set the background color to green */
     height: 300px;
     width: 100%;
     color: white; /* Set text color to white */
@@ -712,7 +712,7 @@ a:active { text-decoration: none; }
 
 .copyright {
     position: static;
-    color: #000000;
+    color: #FFFFFF;
     line-height: 40px;
     font-size: 12px;
     margin-top:20px;
