@@ -512,42 +512,43 @@ study_info_dropdown = html.Div(
 )
 
 
-mega_menu = html.Div([
-    html.Div(className="navbar", children=[
-        html.Div(className="tab", children=[
-            "Study Information 1",
-            html.Div(className="dropdown-content", id="dropdown-content-1", children=[
-                html.Div(className="options-column", children=[
-                    html.Div(className="option", children=[
-                             "Sample cohort informatio"], id="cohort-option"),
-                    html.Div(className="option", children=[
-                             "Sample preparation and LC-MS Analysis"], id="preparation-option"),
-                    html.Div(className="option", children=[
-                             "Metabolic feature identification"], id="feature-option"),
-                    html.Div(className="option", children=[
-                             "Link to publication and citing the database"], id="link-option"),
-                    html.Div(className="option", children=[
-                             "Project and funding information"], id="project-option"),
-                    html.Div(className="option", children=[
-                             "Contact"], id="contact-option")
-                ]),
-                html.Div(className="options-column", children=[
-                    html.Div(className="option-details", children=[
-                        "Patient-matched tumor tissues and normal mucosa tissues (collected furthest away from tumor within the subsite) were surgically removed during colectomy for colorectal cancer in the operating room at Memorial Sloan Kettering Cancer Center (MSKCC), New York, NY, USA, frozen immediately in liquid nitrogen and stored at -80oC before analysis. Sample were collected in 1991-2001. The Yale University Institutional Review Board (IRB) determined that the study conducted in this publication was not considered to be Human Subjects Research and did not require an IRB review (IRB/HSC# 1612018746). Patient characteristics can be found in supplementary table 1 in our publication: (link)."
-                    ], id="cohort-details"),
-                    html.Div(className="option-details", children=["Detailed sample preparation and LC-MS information can be found in our publication here (link). The data displayed in this database was acquired from the analysis of patient-matched tumor tissues and normal mucosa using a UPLC-ESI-QTOFMS (H-Class ACQUITY and Xevo G2-XS; Waters Corporation, Milford, MA, USA) was used for MS data acquisitionby RPLC ESI positive and HILIC ESI negative mode. We chose to make our data available in the format of this database, other data requests, along with protocols and codes can be made by email, please see contact us section."], id="preparation-details"),
-                    html.Div(className="option-details", children=["In this database we have displayed all metabolite features generated from the analysis of the tumor tissues and normal mucosa tissues, by electrospray ionization (ESI) mode; negative or positive. These features are displayed in Section 1. For subsequent sections we only display annotated metabolites. The level of annotation is defined by the metabolomics standards initiative (MSI) levels; Level 1:…….Level 2:…….Level 3:……..Metabolite identification methods are published in Jain. Et al…..(paper under submission)."], id="feature-details"),
-                    html.Div(className="option-details", children=[
-                             "Please cite the following: Jain A, ...paper details here"], id="link-details"),
-                    html.Div(className="option-details", children=[
-                             "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain."], id="project-details"),
-                    html.Div(className="option-details", children=[
-                             "Please contact Caroline Johnson: caroline.johnson@yale.edu  or Abhishek Jain: a.jain@yale.edu for any inquiries"], id="contact-details"),
-                ])
-            ])
-        ],),
-    ]),
-])
+# mega_menu = html.Div([
+#     html.Div(className="navbar", children=[
+        
+#         html.Div(className="tab", children=[
+#             "Study Information 1",
+#             html.Div(className="dropdown-content", id="dropdown-content-1", children=[
+#                 html.Div(className="options-column", children=[
+#                     html.Div(className="option", children=[
+#                              "Sample cohort informatio"], id="cohort-option"),
+#                     html.Div(className="option", children=[
+#                              "Sample preparation and LC-MS Analysis"], id="preparation-option"),
+#                     html.Div(className="option", children=[
+#                              "Metabolic feature identification"], id="feature-option"),
+#                     html.Div(className="option", children=[
+#                              "Link to publication and citing the database"], id="link-option"),
+#                     html.Div(className="option", children=[
+#                              "Project and funding information"], id="project-option"),
+#                     html.Div(className="option", children=[
+#                              "Contact"], id="contact-option")
+#                 ]),
+#                 html.Div(className="options-column", children=[
+#                     html.Div(className="option-details", children=[
+#                         "Patient-matched tumor tissues and normal mucosa tissues (collected furthest away from tumor within the subsite) were surgically removed during colectomy for colorectal cancer in the operating room at Memorial Sloan Kettering Cancer Center (MSKCC), New York, NY, USA, frozen immediately in liquid nitrogen and stored at -80oC before analysis. Sample were collected in 1991-2001. The Yale University Institutional Review Board (IRB) determined that the study conducted in this publication was not considered to be Human Subjects Research and did not require an IRB review (IRB/HSC# 1612018746). Patient characteristics can be found in supplementary table 1 in our publication: (link)."
+#                     ], id="cohort-details"),
+#                     html.Div(className="option-details", children=["Detailed sample preparation and LC-MS information can be found in our publication here (link). The data displayed in this database was acquired from the analysis of patient-matched tumor tissues and normal mucosa using a UPLC-ESI-QTOFMS (H-Class ACQUITY and Xevo G2-XS; Waters Corporation, Milford, MA, USA) was used for MS data acquisitionby RPLC ESI positive and HILIC ESI negative mode. We chose to make our data available in the format of this database, other data requests, along with protocols and codes can be made by email, please see contact us section."], id="preparation-details"),
+#                     html.Div(className="option-details", children=["In this database we have displayed all metabolite features generated from the analysis of the tumor tissues and normal mucosa tissues, by electrospray ionization (ESI) mode; negative or positive. These features are displayed in Section 1. For subsequent sections we only display annotated metabolites. The level of annotation is defined by the metabolomics standards initiative (MSI) levels; Level 1:…….Level 2:…….Level 3:……..Metabolite identification methods are published in Jain. Et al…..(paper under submission)."], id="feature-details"),
+#                     html.Div(className="option-details", children=[
+#                              "Please cite the following: Jain A, ...paper details here"], id="link-details"),
+#                     html.Div(className="option-details", children=[
+#                              "The data acquired in this database was supported by funding from the American Cancer Society awarded to Caroline Johnson, and the Yale Center for Clinical Investigation awarded to Abhishek Jain."], id="project-details"),
+#                     html.Div(className="option-details", children=[
+#                              "Please contact Caroline Johnson: caroline.johnson@yale.edu  or Abhishek Jain: a.jain@yale.edu for any inquiries"], id="contact-details"),
+#                 ])
+#             ])
+#         ],),
+#     ]),
+# ])
 footer_layout = html.Footer(
     className='footer',
     id='footer',
@@ -686,7 +687,6 @@ main_layout = dbc.Container(
         html.Div(
             className='header-bar',
             children=[
-                mega_menu,
                 dbc.Row(
                 [
                     html.Div(className="tab", children=[

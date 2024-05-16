@@ -13,13 +13,13 @@ body {
 }
 
 
-.navbar {
+/* .navbar {
     display: flex;
     justify-content: left;
     background-color: #333;
     color: white;
     padding: 10px;
-}
+} */
 
 /* Style for the tabs */
 .tab {
@@ -35,52 +35,53 @@ a:hover { text-decoration: none; }
 a:active { text-decoration: none; }
 
 /* Dropdown content */
-.dropdown-content {
+/* .dropdown-content {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
     min-width: 800px;
-    max-height: 300px; /* Set a maximum height for the dropdown content */
-    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+    max-height: 300px; /* Set a maximum height for the dropdown content 
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height 
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    right: 0; /* Position the dropdown on the right side */
-    margin-left: 355px; /* Ensure proper spacing from the tab */ /* Enable vertical scrolling if content exceeds max height */
-}
+    right: 0; /* Position the dropdown on the right side 
+    margin-left: 355px; /* Ensure proper spacing from the tab  Enable vertical scrolling if content exceeds max height 
+} */
 
 /* Show dropdown content on hover */
 .tab:hover .dropdown-content {
-    display: flex; /* Display dropdown content as flex on hover */
+     display: flex; /* Display dropdown content as flex on hover  */
 }
 
 /* Style for the options inside the dropdown */
-.options-column {
-    flex:250%; /* Each column takes 50% width */
-    border-right: 1px solid #ccc; /* Border between columns */
-    overflow-x: auto; /* Enable horizontal scrolling */
-}
+/* .options-column {
+    flex:250%; /* Each column takes 50% width 
+    border-right: 1px solid #ccc; /* Border between columns 
+    overflow-x: auto; /* Enable horizontal scrolling 
+} */
 
 /* Style for main options */
-.option {
+/* .option {
     padding: 10px;
-    border-bottom: 1px solid #ddd; /* Border between options */
-    color: black; /* Main options in red */
-    cursor: pointer; /* Change cursor to pointer on hover */
-}
+    border-bottom: 1px solid #ddd; /* Border between options 
+    color: black; /* Main options in red 
+    cursor: pointer; /* Change cursor to pointer on hover 
+} */
 
 /* Style for option details */
-.option-details {
+/* .option-details {
     display: none;
     padding: 10px;
     font-style: italic;
-    color: black; /* Details in green */
-    flex: 1; /* Take up the whole space in the column */
-}
+    color: black; /* Details in green 
+    flex: 1; /* Take up the whole space in the column 
+} */
 
 /* Header bar */
 .header-bar {
+    height: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
   background-color: #333;
   color: white;
@@ -119,28 +120,28 @@ a:active { text-decoration: none; }
 }
 
 /* Dropdown content (hidden by default) */
-.dropdown-content {
+/* .dropdown-content {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  width: 80%; /* Set width to 80% of the screen size */
+  width: 80%; /* Set width to 80% of the screen size 
   left: 40%;
   transform: translateX(-50%);
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
-}
+} */
 /* Show the dropdown content on hover */
-.dropdown:hover .dropdown-content {
+/* .dropdown:hover .dropdown-content {
   display: block;
-}
+} */
 
 
 /* Mega Menu header */
-.dropdown-content .header {
+/* .dropdown-content .header {
   background-color: #333;
   color: white;
   padding: 10px;
-}
+} */
 
 .column {
     float: left;
