@@ -38,7 +38,7 @@ tabs_mz = dcc.Tabs(
                         dbc.Col(
                             [
                                 html.Label(
-                                    "Select Compound mz:",
+                                    "Select Compound:",
                                     id="mz-h-section",
                                     className="select-label",
                                 ),
@@ -129,7 +129,7 @@ tabs_mz = dcc.Tabs(
                         dbc.Col(
                             [
                                 html.Label(
-                                    "Select Compound mz:",
+                                    "Select Compound:",
                                     id="mz-plus-section",
                                     className="select-label",
                                 ),
@@ -223,7 +223,7 @@ tabs_compare = dcc.Tabs(
                     dbc.Row(
                         [
                             html.Label(
-                                "Select Compound mz Compare:",
+                                "Select Compound:",
                                 id="mz-compare-section",
                                 className="select-label",
                             ),
@@ -284,7 +284,7 @@ tabs_compare = dcc.Tabs(
                             dbc.Col(
                                 [
                                     html.Label(
-                                        "Select Compound RCC LCC mz Compare:",
+                                        "Select Compound:",
                                         id="mz-compare-rcc-lcc-section",
                                         className="select-label",
                                     ),
@@ -786,7 +786,7 @@ main_layout = dbc.Container(
         dbc.Row([
                 dbc.Col([
                     html.Label(
-                        "Select Compound meta:",
+                        "Select Compound:",
                         id="meta-section",
                         className="select-label",
                     ),
@@ -886,7 +886,7 @@ main_layout = dbc.Container(
                 dbc.Col(
                     [
                         html.Label(
-                            "Select Compound mz Linear:",
+                            "Select Compound:",
                             id="mz-linear-section",
                             className="select-label",
                         ),

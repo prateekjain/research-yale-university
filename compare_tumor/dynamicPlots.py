@@ -30,7 +30,7 @@ def tumor_vs_normal_plot(query_case, query_control, final_get_side_val, region_n
     elif 0.01 < qFdr <= 0.05:
         qFdrStars = '*'
     else:
-        qFdrStars = 'NA'
+        qFdrStars = 'NA'    
 
     # Create a scatter plot
     scatter_plot = make_subplots()
