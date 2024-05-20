@@ -407,7 +407,7 @@ tabs_survival = dcc.Tabs(
                 dbc.Col(
                     [
                         html.Label(
-                            "Select Subsites Specific Survival:",
+                            "Select Compounds:",
                             id="mz-forest-specific-section",
                             className="select-label",
                         ),
@@ -459,7 +459,7 @@ tabs_survival = dcc.Tabs(
                 dbc.Col(
                     [
                         html.Label(
-                            "Select Forest Plot mx:",
+                            "Select Compound:",
                             id="mz-forest-section",
                             className="select-label",
                         ),
