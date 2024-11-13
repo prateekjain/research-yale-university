@@ -13,7 +13,7 @@ region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
 load_dotenv()
-db_url = os.getenv('DATABASE_URL')
+db_url = os.getenv('db_url')
 
 
 def selected_mz_cleaning(selected_mz):

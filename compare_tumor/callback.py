@@ -9,6 +9,7 @@ import io
 import base64
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
 import numpy as np
 from PIL import Image
 from compare_tumor.constant import *
@@ -18,7 +19,7 @@ import plotly.tools as tls
 from compare_tumor.data_functions import get_mz_values, get_case_columns_query, get_case_columns_vs_query, vs_columnNames, add_comparison_lines, get_case_columns_linear_query, get_cecum_and_ascending_mz_values, get_q05_mz_values, selected_mz_cleaning, get_dropdown_options, forest_plot,forest_plot_rcc_lcc, get_one_qfdr_value
 
 from compare_tumor.dynamicPlots import tumor_vs_normal_plot, all_regions_plots, comparable_plots, addAnotations
-
+matplotlib.use("Agg")  
 region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
