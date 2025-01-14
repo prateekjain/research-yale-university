@@ -683,7 +683,7 @@ button_table2 = html.Table([
     className="table-container2"
 )
 
-google_analytics_scripts = google_analytics_scripts = html.Div([
+google_analytics_scripts = html.Div([
     html.Script(
         src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
         async=True
