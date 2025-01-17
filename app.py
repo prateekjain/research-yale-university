@@ -10,14 +10,41 @@ region = ["cecum", "ascending", "transverse",
           "descending", "sigmoid", "rectosigmoid", "rectum"]
 
 external_stylesheets = ['assets/stylesheet.css', 'dbc.themes.BOOTSTRAP']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets,
+app = dash.Dash(__name__, 
+                
+                external_stylesheets=external_stylesheets,
                 suppress_callback_exceptions=True)
 app.title = 'Colorectal Cancer Metabolome'
 server = app.server
 
-
-
-
+# Add Google Analytics tracking code
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-W6VVKGXT93');
+        </script>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
 
 app.layout = html.Div([
     # google_analytics_scripts, 

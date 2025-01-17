@@ -699,18 +699,18 @@ button_table2 = html.Table([
 main_layout = dbc.Container(
     [
         # Add Google Analytics tracking code at the top of the container
-        html.Script(
-            src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
-            **{"async": True}
-        ),
-        html.Script(
-            children="""
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-W6VVKGXT93');
-            """
-        ),
+        # html.Script(
+        #     src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
+        #     **{"async": True}
+        # ),
+        # html.Script(
+        #     children="""
+        #         window.dataLayer = window.dataLayer || [];
+        #         function gtag(){dataLayer.push(arguments);}
+        #         gtag('js', new Date());
+        #         gtag('config', 'G-W6VVKGXT93');
+        #     """
+        # ),
         html.Div(
             className='header-bar',
             children=[
