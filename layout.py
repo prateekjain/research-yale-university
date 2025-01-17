@@ -698,15 +698,15 @@ button_table2 = html.Table([
 
 main_layout = dbc.Container(
     [
-        # Add your Google Analytics scripts here:
+        # Add Google Analytics tracking code at the top of the container
         html.Script(
-            src=f"https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
-            async=True
+            src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
+            **{"async": True}
         ),
         html.Script(
-            children=f"""
+            children="""
                 window.dataLayer = window.dataLayer || [];
-                function gtag(){{dataLayer.push(arguments);}}
+                function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'G-W6VVKGXT93');
             """
@@ -1011,7 +1011,8 @@ main_layout = dbc.Container(
                 ),
             ]
         ),
-    footer_layout     
+        footer_layout     
     ],
     fluid=True,
+    
 )
