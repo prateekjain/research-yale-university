@@ -16,19 +16,19 @@ app.title = 'Colorectal Cancer Metabolome'
 server = app.server
 
 
-google_analytics_scripts = html.Div([
-    html.Script(**{"async": True}, src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93"),
-    html.Script("""
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-W6VVKGXT93');
-    """)
-])
+# google_analytics_scripts = html.Div([
+#     html.Script(**{"async": True}, src="https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93"),
+#     html.Script("""
+#         window.dataLayer = window.dataLayer || [];
+#         function gtag(){dataLayer.push(arguments);}
+#         gtag('js', new Date());
+#         gtag('config', 'G-W6VVKGXT93');
+#     """)
+# ])
 
 
 app.layout = html.Div([
-    google_analytics_scripts, 
+    # google_analytics_scripts, 
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content'),
 ])
