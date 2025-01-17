@@ -698,8 +698,19 @@ button_table2 = html.Table([
 
 main_layout = dbc.Container(
     [
-        # google_analytics_scripts,
-        
+        # Add your Google Analytics scripts here:
+        html.Script(
+            src=f"https://www.googletagmanager.com/gtag/js?id=G-W6VVKGXT93",
+            async=True
+        ),
+        html.Script(
+            children=f"""
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){{dataLayer.push(arguments);}}
+                gtag('js', new Date());
+                gtag('config', 'G-W6VVKGXT93');
+            """
+        ),
         html.Div(
             className='header-bar',
             children=[
