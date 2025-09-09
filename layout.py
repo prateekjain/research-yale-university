@@ -794,7 +794,7 @@ main_layout = dbc.Container(
                     dcc.RadioItems(
                         id="filter-radio",
                         options=[
-                            {"label": "All metabolites", "value": "all"},
+                            {"label": "All metabolites_", "value": "all"},
                             {"label": "Metabolites altered across all subsites",
                              "value": "across_all"},
                             {"label": "Subsites specific alterations",
